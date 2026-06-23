@@ -137,7 +137,29 @@
     --electric:#0ea5e9;--fire:#f97316;--volt:#22c55e;--purple:#8b5cf6;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'DM Sans',sans-serif;background:#f1f5f9;color:var(--ink);min-height:100vh}
+  body{
+    font-family:'DM Sans',sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    background-color:#0f172a;
+    background-image: url('https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=1920&q=60&auto=format&fit=crop');
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    background-repeat:no-repeat;
+  }
+  body::before{
+    content:'';
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,0.72);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    z-index:0;
+  }
+  header, nav, .section{position:relative;z-index:1}
+  .section{background:transparent}
+  .card{background:rgba(255,255,255,0.95);backdrop-filter:blur(4px)}
 
   /* HEADER */
   header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0f172a 100%);color:#fff;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.3)}
@@ -315,6 +337,7 @@
   <div class="tab" onclick="showTab('compras',this)">Lista de Compras</div>
   <div class="tab" onclick="showTab('registro',this)">Check-in</div>
   <div class="tab" onclick="showTab('historico',this)">Histórico</div>
+  <div class="tab" onclick="showTab('graficos',this)">📊 Gráficos</div>
   <div class="tab" onclick="showTab('reab',this)">Reabilitação LCA</div>
 </nav>
 
@@ -421,8 +444,8 @@
 
   <div class="meal-block pre">
     <div class="meal-name">☀️ Café da Manhã / Pré-Treino — 07h00</div>
-    <div class="meal-items">• 4 ovos inteiros mexidos ou estrelados<br>• 150g de frango desfiado ou atum (lata)<br>• 80g de aveia ou 3 fatias de pão integral<br>• 150g de batata-doce cozida ou 1 banana grande + 1 fruta<br>• Café preto s/ açúcar</div>
-    <div class="meal-macros">P: ~65g · C: ~95g · G: ~20g · ~820 kcal</div>
+    <div class="meal-items">• 4 ovos inteiros mexidos ou estrelados<br>• 80g de aveia ou 3 fatias de pão integral<br>• 1 banana grande + 1 fruta<br>• Café preto s/ açúcar</div>
+    <div class="meal-macros">P: ~30g · C: ~70g · G: ~16g · ~545 kcal</div>
   </div>
   <div class="meal-block post">
     <div class="meal-name">💪 Pós-Treino — até 60 min após</div>
@@ -446,8 +469,13 @@
   </div>
   <div class="meal-block eve">
     <div class="meal-name">🌃 Ceia (opcional) — 22h00</div>
-    <div class="meal-items">• 200g de queijo cottage ou 30g de caseína<br>• <em>Proteína de absorção lenta — protege a musculatura durante o sono</em></div>
-    <div class="meal-macros">P: ~25g · C: ~5g · G: ~3g · ~145 kcal</div>
+    <div class="meal-items">• 30g de caseína + uma das opções abaixo:<br>
+      &nbsp;&nbsp;— 200g de iogurte grego natural (s/ açúcar)<br>
+      &nbsp;&nbsp;— 200g de Skyr / iogurte islandês (mais proteico)<br>
+      &nbsp;&nbsp;— 200ml de leite integral ou desnatado<br>
+      &nbsp;&nbsp;— 200ml de bebida de soja (opção sem lactose)<br>
+    • <em>Proteína de absorção lenta — protege a musculatura durante o sono</em></div>
+    <div class="meal-macros">P: ~30g · C: ~10g · G: ~5g · ~200 kcal</div>
   </div>
   <hr class="divider">
   <div class="card">
@@ -996,13 +1024,54 @@
   <div class="section-content">
   <div class="sec-header"><div class="sec-title" style="color:#fff">Planejamento Semanal</div><span class="sec-badge badge-gold">MICROCICLO</span></div>
   <div class="week-grid">
-    <div class="week-day"><div class="week-day-name">SEG</div><span class="week-tag wt-gym">MUSC A</span><span class="week-tag wt-core">CORE A</span><span class="week-tag wt-pool">NATAÇÃO</span></div>
-    <div class="week-day"><div class="week-day-name">TER</div><span class="week-tag wt-gym">MUSC B</span><span class="week-tag wt-core">CORE B</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
-    <div class="week-day"><div class="week-day-name">QUA</div><span class="week-tag wt-pool">NATAÇÃO</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
-    <div class="week-day"><div class="week-day-name">QUI</div><span class="week-tag wt-gym">MUSC C</span><span class="week-tag wt-core">CORE A</span><span class="week-tag wt-pool">NATAÇÃO</span></div>
-    <div class="week-day"><div class="week-day-name">SEX</div><span class="week-tag wt-gym">MUSC D</span><span class="week-tag wt-core">CORE B</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
-    <div class="week-day"><div class="week-day-name">SAB</div><span class="week-tag wt-pool">NATAÇÃO</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
-    <div class="week-day"><div class="week-day-name">DOM</div><span class="week-tag wt-rest">DESCANSO</span></div>
+    <div class="week-day">
+      <div class="week-day-name">SEG</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">🌅 MANHÃ</span>
+      <span class="week-tag wt-gym">MUSC C</span>
+      <span class="week-tag wt-core">CORE</span>
+      <span class="week-tag wt-cardio">CARDIO</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
+      <span class="week-tag wt-pool">NATAÇÃO</span>
+    </div>
+    <div class="week-day">
+      <div class="week-day-name">TER</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">☀️ ALMOÇO</span>
+      <span class="week-tag wt-pool">NATAÇÃO ⭐</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
+      <span class="week-tag wt-gym">MUSC A</span>
+      <span class="week-tag wt-core">CORE</span>
+    </div>
+    <div class="week-day">
+      <div class="week-day-name">QUA</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">☀️ ALMOÇO</span>
+      <span class="week-tag wt-pool">NATAÇÃO</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
+      <span class="week-tag wt-core">CORE</span>
+    </div>
+    <div class="week-day">
+      <div class="week-day-name">QUI</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">☀️ ALMOÇO</span>
+      <span class="week-tag wt-cardio">CARDIO</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
+      <span class="week-tag wt-gym">MUSC B</span>
+      <span class="week-tag wt-core">CORE</span>
+    </div>
+    <div class="week-day">
+      <div class="week-day-name">SEX</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">🌅 MANHÃ</span>
+      <span class="week-tag wt-gym">MUSC D</span>
+      <span class="week-tag wt-core">CORE</span>
+      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">☀️ ALMOÇO</span>
+      <span class="week-tag wt-pool">NATAÇÃO ⭐</span>
+    </div>
+    <div class="week-day">
+      <div class="week-day-name">SAB</div>
+      <span class="week-tag wt-cardio">CARDIO</span>
+    </div>
+    <div class="week-day">
+      <div class="week-day-name">DOM</div>
+      <span class="week-tag wt-rest">DESCANSO</span>
+    </div>
   </div>
   <div class="alert alert-warn">⚠️ <strong>Treino duplo (musculação + natação):</strong> priorize natação antes, ou 4–6h de intervalo. Detectado automaticamente no check-in.</div>
   <div class="card">
@@ -1027,7 +1096,8 @@
   <div class="alert alert-info">🛒 Lista gerada com base na dieta semanal. Marque o que já tem em casa e gere uma lista limpa para o mercado.</div>
   <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
     <button class="btn btn-sm" onclick="marcarTodos(false)">Desmarcar tudo</button>
-    <button class="btn btn-sm" style="background:var(--mid)" onclick="marcarTodos(true)">Marcar tudo</button>
+    <button class="btn btn-sm" style="background:#6b7280" onclick="marcarTodos(true)">Marcar tudo</button>
+    <button class="btn btn-sm" style="background:#25d366" onclick="enviarWhatsApp()">📲 Enviar para WhatsApp</button>
   </div>
 
   <div class="card">
@@ -1160,6 +1230,101 @@
       <tbody id="historico-body"></tbody>
     </table>
   </div>
+  </div>
+</div>
+
+<!-- ══ GRÁFICOS ══ -->
+<div id="graficos" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 40%" alt="Gráficos" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">GRÁFICOS DE EVOLUÇÃO</div>
+      <div class="hero-sub" style="color:#38bdf8">PERFORMANCE · FORÇA · SAÚDE</div>
+    </div>
+  </div>
+  <div class="section-content">
+    <div class="sec-header"><div class="sec-title">Evolução em Gráficos</div><span class="sec-badge badge-pool">LINHA DO TEMPO</span></div>
+
+    <div class="alert alert-info">📊 Os gráficos são gerados automaticamente com base nos seus registros de check-in e log de cargas. Quanto mais dados, mais rica a visualização.</div>
+
+    <!-- CORPO E COMPOSIÇÃO -->
+    <div class="card">
+      <div class="card-title">⚖️ Peso Corporal (kg)</div>
+      <canvas id="g-peso" style="max-height:200px"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔥 % de Gordura — Método Navy</div>
+      <canvas id="g-bf" style="max-height:200px"></canvas>
+    </div>
+
+    <!-- TREINO E SAÚDE -->
+    <div class="card">
+      <div class="card-title">💧 Consumo de Água (L)</div>
+      <canvas id="g-agua" style="max-height:200px"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">😴 Qualidade do Sono (1–5)</div>
+      <canvas id="g-sono" style="max-height:200px"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🍽️ Calorias Ingeridas vs Gastas (kcal)</div>
+      <canvas id="g-kcal" style="max-height:200px"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">❤️ Frequência Cardíaca Média (bpm)</div>
+      <canvas id="g-fc" style="max-height:200px"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏋️ Frequência de Treinos por Modalidade</div>
+      <canvas id="g-modalidade" style="max-height:220px"></canvas>
+    </div>
+
+    <!-- MUSCULAÇÃO -->
+    <div style="border-top:2px solid #e2e8f0;margin:1.5rem 0 1rem;padding-top:.5rem">
+      <div class="sec-title" style="font-size:1.3rem">Evolução de Cargas — Musculação</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔵 Barra Fixa (Pull-up) — Carga Máxima por Sessão</div>
+      <canvas id="g-pullup" style="max-height:180px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">🔵 Supino Reto — Carga Máxima por Sessão</div>
+      <canvas id="g-supino" style="max-height:180px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">🔵 Remada Curvada — Carga Máxima por Sessão</div>
+      <canvas id="g-remada" style="max-height:180px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">🔵 Puxada Frontal — Carga Máxima por Sessão</div>
+      <canvas id="g-pulldown" style="max-height:180px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">🔵 Desenvolvimento Militar — Carga Máxima por Sessão</div>
+      <canvas id="g-press" style="max-height:180px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">🔵 Hip Thrust — Carga Máxima por Sessão</div>
+      <canvas id="g-hipthrust" style="max-height:180px"></canvas>
+    </div>
+
+    <!-- VOLUME TOTAL -->
+    <div class="card">
+      <div class="card-title">📦 Volume Total por Sessão (kg × reps) — Supino</div>
+      <canvas id="g-vol-supino" style="max-height:180px"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-title">📦 Volume Total por Sessão (kg × reps) — Barra Fixa</div>
+      <canvas id="g-vol-pullup" style="max-height:180px"></canvas>
+    </div>
+
   </div>
 </div>
 
@@ -1651,6 +1816,23 @@ function marcarTodos(checked) {
   });
 }
 
+function enviarWhatsApp() {
+  const itens = [];
+  document.querySelectorAll('.lista-item.checked span').forEach(el => {
+    itens.push('✅ ' + el.textContent.trim());
+  });
+  if (itens.length === 0) {
+    alert('Marque pelo menos um item antes de enviar!');
+    return;
+  }
+  const texto = '🛒 *Lista de Compras — Performance Luiz*
+
+' + itens.join('
+');
+  const url = 'https://wa.me/?text=' + encodeURIComponent(texto);
+  window.open(url, '_blank');
+}
+
 // ── BACKUP ──
 function exportarBackup() {
   const registros=getRegistros();
@@ -1727,6 +1909,191 @@ renderCoreDone();
 renderHistorico();
 renderCharts();
 calcProjecao(getRegistros());
+
+// ── GRÁFICOS AVANÇADOS ──
+let _grafCharts = {};
+
+function destroyChart(id) {
+  if (_grafCharts[id]) { _grafCharts[id].destroy(); delete _grafCharts[id]; }
+}
+
+function makeLineChart(canvasId, labels, datasets, yLabel='', metaLine=null) {
+  destroyChart(canvasId);
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  if (labels.length < 2) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '13px DM Sans';
+    ctx.textAlign = 'center';
+    ctx.fillText('Mínimo 2 registros para exibir o gráfico', canvas.width/2, 60);
+    return;
+  }
+
+  const colors = ['#0284c7','#ea580c','#16a34a','#d97706','#8b5cf6','#ec4899'];
+  const dsets = datasets.map((d,i) => ({
+    label: d.label,
+    data: d.data,
+    borderColor: d.color || colors[i % colors.length],
+    backgroundColor: (d.color || colors[i % colors.length]) + '18',
+    borderWidth: 2.5,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+    tension: 0.35,
+    fill: datasets.length === 1,
+    borderDash: d.dash || []
+  }));
+
+  if (metaLine) {
+    dsets.push({
+      label: metaLine.label,
+      data: Array(labels.length).fill(metaLine.value),
+      borderColor: metaLine.color || '#16a34a',
+      borderWidth: 1.5,
+      borderDash: [6,4],
+      pointRadius: 0,
+      fill: false
+    });
+  }
+
+  _grafCharts[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: { labels, datasets: dsets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280', boxWidth: 12 } },
+        tooltip: { backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#94a3b8', padding: 10 }
+      },
+      scales: {
+        x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: '#f1f5f9' } },
+        y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: v => v + (yLabel ? ' ' + yLabel : '') }, grid: { color: '#f1f5f9' } }
+      }
+    }
+  });
+}
+
+function renderGraficos() {
+  const registros = getRegistros().filter(r => r.data).reverse();
+
+  // 1. PESO
+  const comPeso = registros.filter(r => r.peso);
+  makeLineChart('g-peso',
+    comPeso.map(r => r.data),
+    [{ label: 'Peso', data: comPeso.map(r => parseFloat(r.peso)), color: '#0284c7' }],
+    'kg', { label: 'Meta (92 kg)', value: 92, color: '#16a34a' }
+  );
+
+  // 2. % GORDURA
+  const comBF = registros.filter(r => r.pescoco && r.cintura);
+  makeLineChart('g-bf',
+    comBF.map(r => r.data),
+    [{ label: '% Gordura', data: comBF.map(r => calcNavyBF(r.pescoco, r.cintura, ALTURA_CM)), color: '#ea580c' }],
+    '%', { label: 'Meta (14%)', value: 14, color: '#16a34a' }
+  );
+
+  // 3. ÁGUA
+  const comAgua = registros.filter(r => r.agua);
+  makeLineChart('g-agua',
+    comAgua.map(r => r.data),
+    [{ label: 'Água', data: comAgua.map(r => parseFloat(r.agua)), color: '#0ea5e9' }],
+    'L', { label: 'Meta (3,5L)', value: 3.5, color: '#16a34a' }
+  );
+
+  // 4. SONO
+  const comSono = registros.filter(r => r.sono);
+  makeLineChart('g-sono',
+    comSono.map(r => r.data),
+    [{ label: 'Qualidade do Sono', data: comSono.map(r => parseInt(r.sono)), color: '#8b5cf6' }],
+    ''
+  );
+
+  // 5. KCAL INGERIDAS VS GASTAS
+  const comKcal = registros.filter(r => r.kcal || r.kcal_gasta);
+  makeLineChart('g-kcal',
+    comKcal.map(r => r.data),
+    [
+      { label: 'Ingeridas', data: comKcal.map(r => r.kcal ? parseFloat(r.kcal) : null), color: '#0284c7' },
+      { label: 'Gastas (treino)', data: comKcal.map(r => r.kcal_gasta ? parseFloat(r.kcal_gasta) : null), color: '#ea580c' }
+    ],
+    'kcal'
+  );
+
+  // 6. FC MÉDIA
+  const comFC = registros.filter(r => r.fc_media);
+  makeLineChart('g-fc',
+    comFC.map(r => r.data),
+    [{ label: 'FC Média', data: comFC.map(r => parseFloat(r.fc_media)), color: '#ef4444' }],
+    'bpm'
+  );
+
+  // 7. FREQUÊNCIA DE TREINOS POR MODALIDADE (contagem semanal)
+  const modalidades = ['natação','musculação','core','cardio'];
+  const cores = ['#0284c7','#ea580c','#16a34a','#d97706'];
+  // Group by week
+  const semanas = {};
+  registros.forEach(r => {
+    if (!r.treinos) return;
+    const d = new Date(r.data);
+    const semana = r.data.substring(0,7); // YYYY-MM
+    if (!semanas[semana]) semanas[semana] = { natação:0, musculação:0, core:0, cardio:0 };
+    modalidades.forEach(m => {
+      if (r.treinos.toLowerCase().includes(m)) semanas[semana][m]++;
+    });
+  });
+  const semLabels = Object.keys(semanas).sort();
+  if (semLabels.length >= 1) {
+    makeLineChart('g-modalidade',
+      semLabels,
+      modalidades.map((m,i) => ({
+        label: m.charAt(0).toUpperCase() + m.slice(1),
+        data: semLabels.map(s => semanas[s][m] || 0),
+        color: cores[i]
+      })),
+      'x/mês'
+    );
+  }
+
+  // 8. CARGAS DE MUSCULAÇÃO
+  const exercicios = [
+    { id: 'pullup', canvas: 'g-pullup', color: '#0284c7' },
+    { id: 'supino', canvas: 'g-supino', color: '#ea580c' },
+    { id: 'remada', canvas: 'g-remada', color: '#16a34a' },
+    { id: 'pulldown', canvas: 'g-pulldown', color: '#8b5cf6' },
+    { id: 'press', canvas: 'g-press', color: '#d97706' },
+    { id: 'hipthrust', canvas: 'g-hipthrust', color: '#ec4899' },
+  ];
+
+  exercicios.forEach(ex => {
+    const hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]').reverse();
+    const labels = hist.map(h => h.data);
+    const maxCargas = hist.map(h => Math.max(...h.series.map(s => s.carga)));
+    makeLineChart(ex.canvas, labels,
+      [{ label: 'Carga máxima', data: maxCargas, color: ex.color }],
+      'kg'
+    );
+  });
+
+  // 9. VOLUME TOTAL
+  ['supino','pullup'].forEach((ex, i) => {
+    const hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]').reverse();
+    const labels = hist.map(h => h.data);
+    const vols = hist.map(h => h.series.reduce((acc, s) => acc + s.carga * s.reps, 0));
+    makeLineChart('g-vol-' + ex, labels,
+      [{ label: 'Volume (kg×reps)', data: vols, color: i === 0 ? '#0284c7' : '#ea580c' }],
+      'kg'
+    );
+  });
+}
+
+// Override showTab to render graficos when tab is opened
+const _origShowTab = showTab;
+showTab = function(id, el) {
+  _origShowTab(id, el);
+  if (id === 'graficos') renderGraficos();
+};
 </script>
 </body>
 </html>
