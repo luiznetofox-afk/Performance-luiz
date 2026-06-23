@@ -193,6 +193,7 @@
   .card-value{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;letter-spacing:.05em;line-height:1;color:var(--ink)}
   .card-sub{font-size:.75rem;color:var(--mid);margin-top:.2rem}
   .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+  .wk-time{font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px;font-weight:700}
   @media(max-width:600px){.grid-4{grid-template-columns:1fr 1fr}}
 
   /* SECTION HEADER */
@@ -1512,7 +1513,7 @@ function renderCargaHist(ex) {
 
   // Last session
   const ultimo = hist[0];
-  const seriesTxt = ultimo.series.map(s => `S${s.serie}: ${s.carga}kg×${s.reps}`).join(' · ');
+  const seriesTxt = ultimo.series.map(function(s){return 'S'+s.serie+': '+s.carga+'kg x '+s.reps;}).join(' | ');
 
   // PR: max carga across all sessions and all series
   let pr = 0;
@@ -1579,7 +1580,7 @@ function initChat() {
   document.getElementById('chat-buttons').style.display = 'none';
   document.getElementById('chat-input-wrap').style.display = 'flex';
   const hoje = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
-  botMsg(`Boa noite! 👋 Check-in de hoje, <strong>${hoje}</strong>.`);
+  botMsg('Boa noite! Check-in de hoje: <strong>' + hoje + '</strong>.');
   setTimeout(askStep, 700);
 }
 
@@ -1636,8 +1637,8 @@ function askStep() {
   else if (step==='agua') { botMsg('Quantos <strong>litros de água</strong> você bebeu?'); showInput('Ex: 3.5'); }
   else if (step==='treinos') { botMsg('Quais <strong>treinos</strong> você fez? (marque todos)'); showButtons([{label:'🏊 Natação',value:'natação'},{label:'💪 Musculação',value:'musculação'},{label:'🔥 Core',value:'core'},{label:'🚴 Cardio',value:'cardio'},{label:'😴 Descanso',value:'descanso'},{label:'✅ Concluído',value:'__done__'}]); }
   else if (step==='sono') { botMsg('Como foi o <strong>sono</strong> de ontem à noite?'); showButtons([{label:'😴 Péssimo (1)',value:'1'},{label:'😕 Ruim (2)',value:'2'},{label:'😐 Ok (3)',value:'3'},{label:'😊 Bom (4)',value:'4'},{label:'🌟 Excelente (5)',value:'5'}]); }
-  else if (step==='kcal_gasta') { botMsg('🔥 Quantas <strong>calorias você gastou</strong> nos treinos hoje? (veja no Mi Fitness, ou "pular")'); showInput('Ex: 650'); }
-  else if (step==='fc_media') { botMsg('❤️ Qual foi a <strong>frequência cardíaca média</strong> durante o treino? (veja no Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
+  else if (step==='kcal_gasta') { botMsg('Quantas <strong>calorias voce gastou</strong> nos treinos hoje? (Mi Fitness, ou "pular")'); showInput('Ex: 650'); }
+  else if (step==='fc_media') { botMsg('Qual foi a <strong>FC media</strong> durante o treino? (Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
   else if (step==='obs') { botMsg('Alguma <strong>observação</strong> sobre o dia? (ou "nada")'); showInput('Energia, alimentação, dores...'); }
   else if (step==='medidas_check') { botMsg('📏 Semana de <strong>medidas corporais</strong>! Tem fita métrica em mãos?'); showButtons([{label:'Sim, vou medir',value:'sim'},{label:'Não, pular',value:'nao'}]); }
   else if (step==='pescoco') { botMsg('Meça o <strong>pescoço</strong> na parte mais estreita (cm):'); showInput('Ex: 15.5'); }
@@ -1659,7 +1660,7 @@ function processAnswer(val) {
   } else if (step==='agua') {
     if (isNaN(n)||n<0||n>15) { botMsg('⚠️ Valor inválido. Ex: 3.5'); return; }
     chatState.agua=n;
-    if (n < 3.5) botMsg(`⚠️ <strong>Hidratação abaixo da meta!</strong> Você bebeu ${n}L mas a meta é 3,5L. Tente compensar amanhã!`);
+    if (n < 3.5) botMsg('<strong>Hidratacao abaixo da meta!</strong> Voce bebeu ' + n + 'L mas a meta e 3,5L.');
     chatState.step++; setTimeout(askStep,350);
   } else if (step==='kcal_gasta') {
     if (val.toLowerCase()==='pular') { chatState.kcal_gasta=null; }
@@ -1676,7 +1677,7 @@ function processAnswer(val) {
     } else {
       if (!chatState.treinos.includes(val)) chatState.treinos.push(val);
       const duplo = chatState.treinos.includes('natação') && chatState.treinos.includes('musculação');
-      botMsg(`✅ <em>${val}</em> adicionado.${duplo ? ' 🔄 <strong>Treino duplo detectado — adicione +150 kcal em carbs hoje!</strong>' : ''} Selecione mais ou clique Concluído.`);
+      botMsg('<b>' + val + '</b> adicionado.' + (duplo ? ' TREINO DUPLO: +150 kcal em carbs!' : '') + ' Selecione mais ou clique Concluido.');
     }
   } else if (step==='sono') {
     chatState.sono=val; chatState.step++; setTimeout(askStep,350);
@@ -1703,20 +1704,22 @@ function mostrarResumo() {
     const bf = calcNavyBF(chatState.pescoco, chatState.cintura, ALTURA_CM);
     const mm = (chatState.peso*(1-bf/100)).toFixed(1);
     const mg = (chatState.peso*bf/100).toFixed(1);
-    bfTxt = `<br>📏 <strong>% Gordura:</strong> ${bf}% — Magra: ${mm}kg / Gorda: ${mg}kg`;
+    bfTxt = '<br>% Gordura: <strong>' + bf + '%</strong> - Magra: ' + mm + 'kg / Gorda: ' + mg + 'kg';
     document.getElementById('bf-display').textContent = bf + '%';
   }
   const stars = '★'.repeat(parseInt(chatState.sono||0))+'☆'.repeat(5-parseInt(chatState.sono||0));
   const aguaOk = chatState.agua >= 3.5;
-  botMsg(`<strong>Resumo — ${chatState.data}:</strong><br>
-    ⚖️ <strong>Peso:</strong> ${chatState.peso} kg<br>
-    ${chatState.kcal ? `🍽️ <strong>Calorias:</strong> ${chatState.kcal} kcal<br>` : ''}
-    💧 <strong>Água:</strong> ${aguaOk?'✅':'⚠️'} ${chatState.agua}L<br>
-    🏋️ <strong>Treinos:</strong> ${chatState.treinos.join(', ')}<br>
-    ${chatState.kcal_gasta ? `🔥 <strong>Kcal gastas:</strong> ${chatState.kcal_gasta} kcal<br>` : ''}
-    ${chatState.fc_media ? `❤️ <strong>FC média:</strong> ${chatState.fc_media} bpm<br>` : ''}
-    😴 <strong>Sono:</strong> ${stars}<br>
-    ${chatState.obs?`📝 ${chatState.obs}<br>`:''}${bfTxt}`);
+  var resumoTxt = '<strong>Resumo - ' + chatState.data + ':</strong><br>' +
+    'Peso: <strong>' + chatState.peso + ' kg</strong><br>' +
+    (chatState.kcal ? 'Calorias: <strong>' + chatState.kcal + ' kcal</strong><br>' : '') +
+    'Agua: <strong>' + (aguaOk ? 'OK' : 'ABAIXO') + ' ' + chatState.agua + 'L</strong><br>' +
+    'Treinos: <strong>' + chatState.treinos.join(', ') + '</strong><br>' +
+    (chatState.kcal_gasta ? 'Kcal gastas: <strong>' + chatState.kcal_gasta + ' kcal</strong><br>' : '') +
+    (chatState.fc_media ? 'FC media: <strong>' + chatState.fc_media + ' bpm</strong><br>' : '') +
+    'Sono: ' + stars + '<br>' +
+    (chatState.obs ? 'Obs: ' + chatState.obs + '<br>' : '') +
+    bfTxt;
+  botMsg(resumoTxt);
 
   setTimeout(() => {
     const wrap = document.getElementById('chat-buttons');
@@ -1752,17 +1755,17 @@ function renderHistorico() {
   vazio.style.display='none'; tabela.style.display='block';
   if (registros[0].peso) document.getElementById('peso-display').textContent=registros[0].peso;
   tbody.innerHTML = registros.map(r => {
-    let bfTxt='—';
+    var bfTxt='-';
     if (r.pescoco && r.cintura) { const bf=calcNavyBF(r.pescoco,r.cintura,ALTURA_CM); bfTxt=bf+'%'; }
     return `<tr>
-      <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:.7rem">${r.data||'—'}</td>
-      <td><strong>${r.peso?r.peso+' kg':'—'}</strong></td>
-      <td>${r.agua?r.agua+'L':'—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem">${r.kcal?r.kcal+' kcal':'—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.kcal_gasta?r.kcal_gasta+' kcal':'—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.fc_media?r.fc_media+' bpm':'—'}</td>
-      <td style="font-size:.7rem">${r.treinos||'—'}</td>
-      <td>${r.sono?'★'.repeat(parseInt(r.sono)):'—'}</td>
+      <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:.7rem">${r.data||'-'}</td>
+      <td><strong>${r.peso?r.peso+' kg':'-'}</strong></td>
+      <td>${r.agua?r.agua+'L':'-'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem">${r.kcal?r.kcal+' kcal':'-'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.kcal_gasta?r.kcal_gasta+' kcal':'-'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.fc_media?r.fc_media+' bpm':'-'}</td>
+      <td style="font-size:.7rem">${r.treinos||'-'}</td>
+      <td>${r.sono?'*'.repeat(parseInt(r.sono)):'—'}</td>
       <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--pool)">${bfTxt}</td>
       <td style="font-size:.73rem;max-width:100px;color:var(--mid)">${r.obs||''}</td>
     </tr>`;
@@ -1852,7 +1855,7 @@ function importarBackup(event) {
       const novos=data.registros.filter(r=>!tsSet.has(r.ts));
       const merged=[...existentes,...novos].sort((a,b)=>b.ts-a.ts);
       saveRegistros(merged); renderHistorico(); renderCharts();
-      alert(`✅ ${novos.length} novo(s) registro(s) importado(s).`);
+      alert(novos.length + ' novo(s) registro(s) importado(s).');
     } catch {alert('❌ Erro ao ler arquivo.');}
   };
   reader.readAsText(file); event.target.value='';
