@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Performance — Luiz</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue, push } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdM1_-hStt5ZZNoaSyUsC3_yqldKRCWGs",
+    authDomain: "performance---luiz.firebaseapp.com",
+    databaseURL: "https://performance---luiz-default-rtdb.firebaseio.com",
+    projectId: "performance---luiz",
+    storageBucket: "performance---luiz.firebasestorage.app",
+    messagingSenderId: "402871726688",
+    appId: "1:402871726688:web:03866de051a25d1134c905"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // ── SYNC STATUS ──
+  function setSyncStatus(msg, cor) {
+    const el = document.getElementById('sync-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = cor || '#aaa';
+  }
+
+  // ── SAVE TO FIREBASE ──
+  window.fbSaveRegistros = async function(registros) {
+    try {
+      setSyncStatus('Salvando na nuvem...', '#c9a84c');
+      await set(ref(db, 'registros'), registros);
+      setSyncStatus('✅ Sincronizado', '#3a6b3e');
+    } catch(e) {
+      setSyncStatus('⚠️ Erro ao salvar: ' + e.message, '#e05a2b');
+    }
+  };
+
+  // ── SAVE CARGAS TO FIREBASE ──
+  window.fbSaveCarga = async function(ex, data) {
+    try {
+      await set(ref(db, 'cargas/' + ex), data);
+    } catch(e) { console.error('Erro ao salvar carga:', e); }
+  };
+
+  // ── SAVE CORE DONE TO FIREBASE ──
+  window.fbSaveCoreDone = async function(data) {
+    try {
+      await set(ref(db, 'core_done'), data);
+    } catch(e) { console.error('Erro ao salvar core:', e); }
+  };
+
+  // ── SAVE CIRURGIA DATE ──
+  window.fbSaveDataCirurgia = async function(data) {
+    try {
+      await set(ref(db, 'config/data_cirurgia'), data);
+    } catch(e) { console.error('Erro ao salvar data cirurgia:', e); }
+  };
+
+  // ── INITIAL LOAD FROM FIREBASE ──
+  async function carregarDados() {
+    setSyncStatus('Carregando da nuvem...', '#c9a84c');
+    try {
+      // Registros
+      const snapReg = await get(ref(db, 'registros'));
+      if (snapReg.exists()) {
+        const dados = snapReg.val();
+        const arr = Array.isArray(dados) ? dados : Object.values(dados);
+        localStorage.setItem('luiz_registros', JSON.stringify(arr));
+      }
+
+      // Cargas
+      const snapCargas = await get(ref(db, 'cargas'));
+      if (snapCargas.exists()) {
+        const cargas = snapCargas.val();
+        Object.keys(cargas).forEach(ex => {
+          localStorage.setItem('carga_' + ex, JSON.stringify(cargas[ex]));
+        });
+      }
+
+      // Core done
+      const snapCore = await get(ref(db, 'core_done'));
+      if (snapCore.exists()) {
+        localStorage.setItem('core_done', JSON.stringify(snapCore.val()));
+      }
+
+      // Data cirurgia
+      const snapCir = await get(ref(db, 'config/data_cirurgia'));
+      if (snapCir.exists()) {
+        localStorage.setItem('data_cirurgia', snapCir.val());
+        document.getElementById('data-cirurgia').value = snapCir.val();
+      }
+
+      setSyncStatus('✅ Dados carregados da nuvem', '#3a6b3e');
+      // Re-render with cloud data
+      if (window.renderHistorico) { renderHistorico(); renderCharts(); calcProjecao(getRegistros()); }
+      if (window.renderCoreDone) renderCoreDone();
+      if (window.atualizarCirurgia) atualizarCirurgia();
+      ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni']
+        .forEach(ex => { if(window.renderCargaHist) renderCargaHist(ex); });
+
+    } catch(e) {
+      setSyncStatus('⚠️ Sem conexão — usando dados locais', '#e05a2b');
+    }
+  }
+
+  // ── REALTIME LISTENER (sync across devices) ──
+  onValue(ref(db, 'registros'), (snapshot) => {
+    if (snapshot.exists()) {
+      const dados = snapshot.val();
+      const arr = Array.isArray(dados) ? dados : Object.values(dados);
+      const local = JSON.parse(localStorage.getItem('luiz_registros') || '[]');
+      // Only update if cloud has more recent data
+      if (arr.length > 0) {
+        localStorage.setItem('luiz_registros', JSON.stringify(arr));
+        if (window.renderHistorico) { renderHistorico(); renderCharts(); calcProjecao(getRegistros()); }
+        setSyncStatus('✅ Sincronizado', '#3a6b3e');
+      }
+    }
+  });
+
+  // Load on start
+  carregarDados();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap');
+  :root {
+    --ink:#111827;--paper:#f8fafc;--pool:#0284c7;--pool-light:#e0f2fe;
+    --burn:#ea580c;--burn-light:#fff7ed;--moss:#16a34a;--moss-light:#f0fdf4;
+    --gold:#d97706;--gold-light:#fffbeb;--mid:#6b7280;--rule:#e5e7eb;
+    --white:#ffffff;--card:#ffffff;
+    --electric:#0ea5e9;--fire:#f97316;--volt:#22c55e;--purple:#8b5cf6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:#f1f5f9;color:var(--ink);min-height:100vh}
+
+  /* HEADER */
+  header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#0f172a 100%);color:#fff;padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.3)}
+  .logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.12em;background:linear-gradient(90deg,#38bdf8,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .header-meta{font-family:'DM Mono',monospace;font-size:.65rem;color:#94a3b8;text-align:right;line-height:1.6}
+  .deadline-chip{display:inline-block;background:linear-gradient(90deg,#ea580c,#f97316);color:#fff;font-family:'DM Mono',monospace;font-size:.63rem;padding:2px 9px;border-radius:20px;margin-top:2px;font-weight:600}
+
+  /* NAV */
+  nav{background:#fff;border-bottom:2px solid #e2e8f0;display:flex;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  nav::-webkit-scrollbar{display:none}
+  .tab{padding:.72rem 1.1rem;font-size:.75rem;font-weight:700;color:#94a3b8;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:all .2s;user-select:none;text-transform:uppercase;letter-spacing:.05em}
+  .tab:hover{color:#0f172a;background:#f8fafc}
+  .tab.active{color:#0284c7;border-bottom-color:#0284c7;background:#f0f9ff}
+
+  /* SECTIONS */
+  .section{display:none;padding:0 0 4rem;max-width:900px;margin:0 auto}
+  .section.active{display:block}
+  .section-content{padding:1.25rem 1rem 0}
+
+  /* HERO BANNER */
+  .hero-wrap{position:relative;height:190px;overflow:hidden}
+  .hero-wrap img{width:100%;height:190px;object-fit:cover;object-position:center;display:block;filter:brightness(.75)}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(15,23,42,.1),rgba(15,23,42,.8))}
+  .hero-text{position:absolute;bottom:1rem;left:1.25rem}
+  .hero-title{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:.1em;color:#fff;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+  .hero-sub{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;margin-top:.15rem}
+
+  /* CARDS */
+  .card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:1.25rem;margin-bottom:1rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .card-title{font-family:'DM Mono',monospace;font-size:.63rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mid);margin-bottom:.5rem}
+  .card-value{font-family:'Bebas Neue',sans-serif;font-size:2.3rem;letter-spacing:.05em;line-height:1;color:var(--ink)}
+  .card-sub{font-size:.75rem;color:var(--mid);margin-top:.2rem}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+  @media(max-width:600px){.grid-4{grid-template-columns:1fr 1fr}}
+
+  /* SECTION HEADER */
+  .sec-header{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1.25rem;margin-top:.5rem;flex-wrap:wrap}
+  .sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;letter-spacing:.08em;color:var(--ink)}
+  .sec-badge{font-family:'DM Mono',monospace;font-size:.62rem;padding:3px 10px;border-radius:20px;font-weight:700}
+  .badge-pool{background:#dbeafe;color:#1d4ed8}
+  .badge-burn{background:#ffedd5;color:#c2410c}
+  .badge-moss{background:#dcfce7;color:#15803d}
+  .badge-gold{background:#fef3c7;color:#b45309}
+
+  /* MACRO PILLS */
+  .macro-row{display:flex;gap:.75rem;flex-wrap:wrap;margin:.75rem 0}
+  .macro-pill{flex:1;min-width:80px;border-radius:12px;padding:.75rem;text-align:center}
+  .macro-pill .val{font-family:'Bebas Neue',sans-serif;font-size:1.65rem;letter-spacing:.04em;display:block}
+  .macro-pill .lbl{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;margin-top:.1rem;display:block}
+  .pill-prot{background:#dbeafe}.pill-prot .val{color:#1d4ed8}.pill-prot .lbl{color:#3b82f6}
+  .pill-carb{background:#ffedd5}.pill-carb .val{color:#c2410c}.pill-carb .lbl{color:#ea580c}
+  .pill-fat{background:#fef3c7}.pill-fat .val{color:#b45309}.pill-fat .lbl{color:#d97706}
+  .pill-kcal{background:#dcfce7}.pill-kcal .val{color:#15803d}.pill-kcal .lbl{color:#16a34a}
+
+  /* MEAL BLOCKS */
+  .meal-block{border-left:4px solid var(--pool);padding:.65rem .9rem .65rem 1rem;margin-bottom:.9rem;background:linear-gradient(135deg,#f0f9ff,#fff);border-radius:0 10px 10px 0;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .meal-block.pre{border-color:var(--burn);background:linear-gradient(135deg,#fff7ed,#fff)}
+  .meal-block.post{border-color:var(--moss);background:linear-gradient(135deg,#f0fdf4,#fff)}
+  .meal-block.eve{border-color:var(--gold);background:linear-gradient(135deg,#fffbeb,#fff)}
+  .meal-name{font-family:'DM Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mid);margin-bottom:.3rem;font-weight:600}
+  .meal-items{font-size:.84rem;line-height:1.75;color:#374151}
+  .meal-macros{font-family:'DM Mono',monospace;font-size:.62rem;color:#0284c7;margin-top:.35rem;font-weight:600}
+
+  /* EXERCISE BLOCKS */
+  .ex-block{border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:.9rem;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .ex-head{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;padding:.7rem 1rem;display:flex;justify-content:space-between;align-items:center}
+  .ex-head-name{font-weight:700;font-size:.88rem;color:#fff}
+  .ex-head-tag{font-family:'DM Mono',monospace;font-size:.58rem;color:#38bdf8;letter-spacing:.1em;text-transform:uppercase;background:rgba(56,189,248,.15);padding:2px 8px;border-radius:20px}
+  .ex-body{padding:.8rem 1rem;font-size:.82rem;line-height:1.75;background:#fff;color:#374151}
+  .ex-body strong{color:#0284c7}
+  .ex-log-row{padding:.65rem 1rem;background:#f8fafc;border-top:1px solid #e2e8f0}
+  .ex-log-series{display:flex;flex-direction:column;gap:.4rem}
+  .ex-log-series-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+  .ex-log-series-row input{background:#fff;border:1.5px solid #e2e8f0;border-radius:6px;padding:.3rem .5rem;font-family:'DM Mono',monospace;font-size:.72rem;width:72px;outline:none;color:#111827}
+  .ex-log-series-row input:focus{border-color:#0284c7;box-shadow:0 0 0 2px #0284c720}
+  .ex-log-series-row label{font-family:'DM Mono',monospace;font-size:.6rem;color:#6b7280;white-space:nowrap}
+  .ex-log-series-row .serie-label{font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:#0284c7;min-width:22px}
+  .ex-log-hist{font-family:'DM Mono',monospace;font-size:.62rem;color:#6b7280;margin-top:.4rem;line-height:1.6}
+  .ex-tip{font-family:'DM Mono',monospace;font-size:.62rem;color:#6b7280;background:#f8fafc;padding:.4rem .9rem;border-top:1px solid #e2e8f0;line-height:1.5}
+  .ex-done-row{padding:.5rem 1rem;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;align-items:center;gap:.75rem}
+  .ex-done-row.done{background:#f0fdf4}
+  .ex-done-btn{background:#fff;border:1.5px solid #e2e8f0;border-radius:20px;padding:.32rem .9rem;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:600;cursor:pointer;color:#374151;transition:all .2s}
+  .ex-done-btn.done{background:#16a34a;color:#fff;border-color:#16a34a}
+  .ex-done-label{font-family:'DM Mono',monospace;font-size:.62rem;color:#9ca3af}
+  .ex-done-label.done{color:#16a34a;font-weight:600}
+
+  /* DAY HEADER */
+  .day-header{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.12em;color:#0284c7;border-bottom:2px solid #bfdbfe;padding-bottom:.4rem;margin:1.4rem 0 .85rem}
+
+  /* BUTTONS */
+  .btn{background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;border:none;border-radius:8px;padding:.65rem 1.4rem;font-family:'DM Sans',sans-serif;font-size:.86rem;font-weight:700;cursor:pointer;transition:all .2s;align-self:flex-start;box-shadow:0 2px 8px rgba(2,132,199,.3)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(2,132,199,.4)}
+  .btn-sm{padding:.38rem .85rem;font-size:.75rem}
+  .btn-danger{background:linear-gradient(135deg,#ea580c,#c2410c);box-shadow:0 2px 8px rgba(234,88,12,.3)}
+  .btn-danger:hover{box-shadow:0 4px 14px rgba(234,88,12,.4)}
+  .btn-moss{background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 2px 8px rgba(22,163,74,.3)}
+  .btn-gold{background:linear-gradient(135deg,#d97706,#b45309);color:#fff;box-shadow:0 2px 8px rgba(217,119,6,.3)}
+
+  /* LOG TABLE */
+  .log-table{width:100%;border-collapse:collapse;font-size:.78rem}
+  .log-table th{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;text-align:left;padding:.55rem .6rem;border-bottom:2px solid #e2e8f0;background:#f8fafc}
+  .log-table td{padding:.5rem .6rem;border-bottom:1px solid #f1f5f9;vertical-align:top;color:#374151}
+  .log-table tr:hover td{background:#f0f9ff}
+
+  /* COUNTDOWN */
+  .countdown-block{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;border-radius:14px;padding:1.4rem;display:flex;align-items:center;gap:1.5rem;margin-bottom:1.25rem;box-shadow:0 4px 20px rgba(15,23,42,.3)}
+  .countdown-num{font-family:'Bebas Neue',sans-serif;font-size:4rem;color:#38bdf8;line-height:1;min-width:60px;text-align:center;text-shadow:0 0 20px rgba(56,189,248,.4)}
+  .countdown-label{font-size:.76rem;color:#94a3b8;line-height:1.75}
+  .countdown-label strong{color:#fff;display:block;font-size:.95rem}
+
+  /* ALERTS */
+  .alert{border-radius:10px;padding:.8rem 1rem;font-size:.81rem;line-height:1.65;margin-bottom:1rem}
+  .alert-info{background:#eff6ff;border-left:4px solid #3b82f6;color:#1e40af}
+  .alert-warn{background:#fff7ed;border-left:4px solid #f97316;color:#9a3412}
+  .alert-success{background:#f0fdf4;border-left:4px solid #22c55e;color:#14532d}
+
+  /* EVIDENCE */
+  .evidence{font-family:'DM Mono',monospace;font-size:.61rem;background:#f0f9ff;border-left:3px solid #0284c7;padding:.45rem .8rem;color:#0369a1;border-radius:0 6px 6px 0;margin-top:.6rem;line-height:1.55}
+
+  /* DIVIDER */
+  .divider{border:none;border-top:2px solid #e2e8f0;margin:1.25rem 0}
+
+  /* WEEK GRID */
+  .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:1rem}
+  .week-day{background:#fff;border:1.5px solid #e2e8f0;border-radius:8px;padding:.4rem;font-size:.63rem;text-align:center;min-height:80px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .week-day-name{font-family:'DM Mono',monospace;font-size:.56rem;color:#6b7280;text-transform:uppercase;border-bottom:1px solid #f1f5f9;padding-bottom:3px;margin-bottom:4px;font-weight:700}
+  .week-tag{display:block;border-radius:4px;padding:2px 3px;margin-bottom:2px;font-size:.56rem;font-weight:700;text-align:center}
+  .wt-pool{background:#dbeafe;color:#1d4ed8}
+  .wt-gym{background:#ffedd5;color:#c2410c}
+  .wt-core{background:#dcfce7;color:#15803d}
+  .wt-cardio{background:#fef3c7;color:#b45309}
+  .wt-rest{background:#f3f4f6;color:#6b7280}
+
+  /* LISTA COMPRAS */
+  .lista-item{display:flex;align-items:center;gap:.65rem;padding:.45rem 0;border-bottom:1px solid #f1f5f9;font-size:.83rem;color:#374151;cursor:pointer;transition:color .15s}
+  .lista-item:last-child{border-bottom:none}
+  .lista-item input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:#0284c7}
+  .lista-item.checked span{text-decoration:line-through;color:#9ca3af}
+
+  /* REAB */
+  .reab-phase{border:1.5px solid #e2e8f0;border-radius:12px;overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .reab-head{padding:.65rem 1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
+  .reab-body{padding:.8rem 1rem;font-size:.82rem;line-height:1.9;background:#fff;color:#374151}
+
+  @media(max-width:600px){
+    .week-grid{gap:3px}
+    .week-day{padding:.3rem;min-height:72px}
+    .grid-4{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <div style="width:38px;height:38px;background:linear-gradient(135deg,#0284c7,#38bdf8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🏊</div>
+    <div>
+      <div class="logo">PERFORMANCE // LUIZ</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.53rem;color:#64748b;letter-spacing:.1em">ATLETA · DELEGADO · BRASÍLIA</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    96,9 kg · 1,82m · 42 anos<br>
+    <span class="deadline-chip">🎯 29/07/2026</span><br>
+    <span id="sync-status" style="font-size:.58rem;color:#64748b">Conectando à nuvem...</span>
+  </div>
+</header>
+
+<nav>
+  <div class="tab active" onclick="showTab('visao',this)">Visão Geral</div>
+  <div class="tab" onclick="showTab('dieta',this)">Dieta</div>
+  <div class="tab" onclick="showTab('musculacao',this)">Musculação</div>
+  <div class="tab" onclick="showTab('core',this)">Core</div>
+  <div class="tab" onclick="showTab('semana',this)">Semana</div>
+  <div class="tab" onclick="showTab('compras',this)">Lista de Compras</div>
+  <div class="tab" onclick="showTab('registro',this)">Check-in</div>
+  <div class="tab" onclick="showTab('historico',this)">Histórico</div>
+  <div class="tab" onclick="showTab('reab',this)">Reabilitação LCA</div>
+</nav>
+
+<!-- ══ VISÃO GERAL ══ -->
+<div id="visao" class="section active">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 30%" alt="VISÃO GERAL" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">VISÃO GERAL</div>
+      <div class="hero-sub" style="color:#38bdf8">SEU PROGRESSO · METAS · DADOS</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="countdown-block">
+    <div>
+      <div class="countdown-num" id="dias-restantes">—</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:#aaa;text-align:center">DIAS</div>
+    </div>
+    <div class="countdown-label">
+      <strong id="countdown-msg">Calculando...</strong>
+      Prazo: 29 de julho de 2026 · Déficit: 500–600 kcal/dia<br>
+      Meta de perda: ~3–5 kg de gordura · Cirurgia LCA: ~45 dias
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:1rem">
+    <div class="card">
+      <div class="card-title">Peso Atual</div>
+      <div class="card-value" id="peso-display">96,9</div>
+      <div class="card-sub">kg</div>
+    </div>
+    <div class="card">
+      <div class="card-title">% Gordura</div>
+      <div class="card-value" id="bf-display">18,6%</div>
+      <div class="card-sub" id="bf-sub">último registro</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Projeção Meta</div>
+      <div class="card-value" id="proj-display">—</div>
+      <div class="card-sub" id="proj-sub">registros insuficientes</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Dias até Cirurgia</div>
+      <div class="card-value" id="dias-cirurgia">—</div>
+      <div class="card-sub">LCA · <span id="data-cirurgia-display">definir data</span></div>
+    </div>
+  </div>
+
+  <!-- Definir data cirurgia -->
+  <div class="card" style="padding:.75rem 1.25rem">
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+      <div style="font-family:'DM Mono',monospace;font-size:.66rem;color:var(--mid);text-transform:uppercase">Data da Cirurgia LCA</div>
+      <input type="date" id="data-cirurgia" style="background:var(--white);border:1px solid var(--rule);border-radius:5px;padding:.35rem .6rem;font-family:'DM Mono',monospace;font-size:.78rem;outline:none" onchange="salvarDataCirurgia()">
+      <div style="font-size:.75rem;color:var(--mid)">Defina para ativar o contador</div>
+    </div>
+  </div>
+
+  <!-- Alerta treino duplo -->
+  <div id="alerta-treino-duplo" style="display:none" class="alert alert-info">
+    🔄 <strong>Dia de treino duplo detectado!</strong> Hoje você treinou natação + musculação. Adicione <strong>+150–200 kcal em carboidratos</strong> às refeições — batata-doce, arroz ou banana. Meta ajustada: ~2.800–2.850 kcal.
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cálculo Calórico</div>
+    <div style="font-size:.81rem;line-height:1.7;margin-bottom:.5rem">
+      <strong>TMB (Mifflin-St Jeor):</strong> 1.993 kcal ·
+      <strong>Fator atividade:</strong> ×1,725 →
+      <strong>GET:</strong> ~3.238 kcal ·
+      <strong>Déficit:</strong> −580 kcal →
+      <strong>Meta: 2.658 kcal/dia</strong>
+    </div>
+    <div class="evidence">📚 Revisão 2025 (Frontiers in Nutrition, 4.429 participantes): déficit de 500–600 kcal/dia é o range com menor catabolismo muscular em atletas com treino concorrente de alta intensidade.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Macros Diários</div>
+    <div class="macro-row">
+      <div class="macro-pill pill-prot"><span class="val">207g</span><span class="lbl">Proteína</span></div>
+      <div class="macro-pill pill-carb"><span class="val">293g</span><span class="lbl">Carboidrato</span></div>
+      <div class="macro-pill pill-fat"><span class="val">73g</span><span class="lbl">Gordura</span></div>
+      <div class="macro-pill pill-kcal"><span class="val">2658</span><span class="lbl">kcal</span></div>
+    </div>
+    <div class="evidence">📚 ISSN 2025: 2,3–3,1 g/kg de massa magra maximiza preservação muscular em déficit. Para 78,9 kg MM: 207g/dia (2,62 g/kg).</div>
+  </div>
+
+  <div class="alert alert-warn">⚠️ <strong>Este painel é uma ferramenta de acompanhamento, não substitui avaliação médica ou nutricional profissional.</strong></div>
+  </div>
+</div>
+
+<!-- ══ DIETA ══ -->
+<div id="dieta" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 40%" alt="PLANO ALIMENTAR" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">PLANO ALIMENTAR</div>
+      <div class="hero-sub" style="color:#86efac">2.658 KCAL · DÉFICIT CONTROLADO</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Plano Alimentar</div><span class="sec-badge badge-pool">2.658 KCAL</span></div>
+  <div class="alert alert-info">🔄 <strong>Treino duplo (natação + musculação):</strong> adicione 150–200 kcal em carboidratos. <strong>Só cardio leve:</strong> reduza 100 kcal em carboidratos.</div>
+
+  <div class="meal-block pre">
+    <div class="meal-name">☀️ Café da Manhã / Pré-Treino — 07h00</div>
+    <div class="meal-items">• 4 ovos inteiros mexidos ou estrelados<br>• 150g de frango desfiado ou atum (lata)<br>• 80g de aveia ou 3 fatias de pão integral<br>• 150g de batata-doce cozida ou 1 banana grande + 1 fruta<br>• Café preto s/ açúcar</div>
+    <div class="meal-macros">P: ~65g · C: ~95g · G: ~20g · ~820 kcal</div>
+  </div>
+  <div class="meal-block post">
+    <div class="meal-name">💪 Pós-Treino — até 60 min após</div>
+    <div class="meal-items">• 40g de Whey Protein (shake com água ou leite desnatado)<br>• 1 banana ou 40g de maltodextrina<br>• <em>Opcional: 5g de creatina monohidratada</em></div>
+    <div class="meal-macros">P: ~40g · C: ~30g · G: ~3g · ~310 kcal</div>
+  </div>
+  <div class="meal-block">
+    <div class="meal-name">🍽️ Almoço — 13h00</div>
+    <div class="meal-items">• 200g de carne vermelha magra ou frango<br>• 80g de arroz integral (cru) ou 200g de batata-doce<br>• Feijão ou lentilha (4 col. sopa)<br>• Legumes à vontade (brócolis, abobrinha, cenoura)</div>
+    <div class="meal-macros">P: ~55g · C: ~75g · G: ~12g · ~635 kcal</div>
+  </div>
+  <div class="meal-block eve">
+    <div class="meal-name">🌙 Lanche Tarde — 16h30</div>
+    <div class="meal-items">• 3 ovos cozidos<br>• 30g de castanhas (mix ou castanha-do-pará)</div>
+    <div class="meal-macros">P: ~22g · C: ~4g · G: ~18g · ~265 kcal</div>
+  </div>
+  <div class="meal-block">
+    <div class="meal-name">🌙 Jantar — 20h00</div>
+    <div class="meal-items">• 200g de peixe (tilápia, salmão, atum fresco) ou frango<br>• Legumes refogados ou grelhados à vontade<br>• Salada com azeite de oliva (1 col. sopa)<br>• <em>Sem carboidratos simples à noite</em></div>
+    <div class="meal-macros">P: ~42g · C: ~15g · G: ~12g · ~335 kcal</div>
+  </div>
+  <div class="meal-block eve">
+    <div class="meal-name">🌃 Ceia (opcional) — 22h00</div>
+    <div class="meal-items">• 200g de queijo cottage ou 30g de caseína<br>• <em>Proteína de absorção lenta — protege a musculatura durante o sono</em></div>
+    <div class="meal-macros">P: ~25g · C: ~5g · G: ~3g · ~145 kcal</div>
+  </div>
+  <hr class="divider">
+  <div class="card">
+    <div class="card-title">Suplementação</div>
+    <div style="font-size:.83rem;line-height:1.8">• <strong>Whey Protein</strong> — pós-treino · <strong>Creatina</strong> 5g/dia · <strong>Ômega-3</strong> 2–3g EPA+DHA · <strong>Vitamina D3</strong> 2–4k UI · <strong>Magnésio</strong> 300–400mg (noite)</div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ MUSCULAÇÃO ══ -->
+<div id="musculacao" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 25%" alt="MUSCULAÇÃO" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">MUSCULAÇÃO</div>
+      <div class="hero-sub" style="color:#fda4af">FORÇA MÁXIMA · PERFORMANCE NA ÁGUA</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Musculação para Natação</div><span class="sec-badge badge-burn">4x / SEMANA</span></div>
+  <div class="alert alert-info">📚 Força máxima (80–95% 1RM, 3–5 séries × 3–6 reps, 2–5 min descanso) é o protocolo com maior evidência para melhora de performance na natação (Jin et al., Frontiers Physiology, 2024).</div>
+  <div class="alert alert-success">📋 <strong>Log de cargas:</strong> registre o peso usado em cada exercício para acompanhar sua progressão ao longo das semanas.</div>
+
+  <div class="day-header">DIA A — PUXADA (Costas + Bíceps)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Barra Fixa (Pull-up)</span><span class="ex-head-tag">OURO PARA NATAÇÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4–5 × 4–6 · <strong>Pegada:</strong> larga/neutra alternada · <strong>Amplitude:</strong> extensão total embaixo, queixo acima da barra · <strong>Descanso:</strong> 3 min · Retrai escápulas antes de puxar (shoulder packing)</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('pullup',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-pullup" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-pullup" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-pullup" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-pullup" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S5</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-pullup" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-pullup"></div>
+  </div>
+    <div class="ex-tip">🎯 Mimetiza diretamente a fase de tração do nado livre e borboleta.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Remada Curvada com Barra</span><span class="ex-head-tag">CADEIA POSTERIOR</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 5–6 · <strong>Amplitude:</strong> barra toca o abdômen, quase extensão total dos cotovelos · <strong>Execução:</strong> tronco a 45°, escápulas contraídas no topo · <strong>Descanso:</strong> 3 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('remada',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-remada"></div>
+  </div>
+    <div class="ex-tip">🎯 Fortalece romboides e trapézio médio — estabilidade escapular e prevenção de lesão no ombro.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Puxada Frontal (Lat Pulldown)</span><span class="ex-head-tag">ESPECÍFICO NATAÇÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 8–10 · <strong>Amplitude:</strong> pegada larga, puxar até o peito superior · <strong>Execução:</strong> peitoral para fora, cotovelos apontando para baixo · <strong>Descanso:</strong> 2 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('pulldown',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pulldown" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-pulldown" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-pulldown" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-pulldown" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-pulldown" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-pulldown" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-pulldown"></div>
+  </div>
+    <div class="ex-tip">🎯 Simula diretamente a fase de tração na natação.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Rosca Direta (Bíceps)</span><span class="ex-head-tag">ISOLAMENTO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 10–12 · Controlado, sem balançar o tronco · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('rosca',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-rosca" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-rosca" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-rosca" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-rosca" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-rosca" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-rosca" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-rosca"></div>
+  </div>
+    <div class="ex-tip">🎯 Bíceps ativo na fase de tração inicial do freestyle.</div>
+  </div>
+
+  <div class="day-header">DIA B — EMPURRÃO (Peito + Tríceps + Ombro)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Supino Reto com Barra</span><span class="ex-head-tag">OURO PARA NATAÇÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4–5 × 4–6 (85–90% 1RM) · <strong>Amplitude:</strong> barra toca o peito, extensão completa no topo · <strong>Execução:</strong> pés no chão, escápulas retraídas, arco lombar natural · <strong>Descanso:</strong> 3–4 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('supino',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-supino" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-supino" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-supino" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-supino" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S5</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-supino" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-supino"></div>
+  </div>
+    <div class="ex-tip">📚 1RM no supino explica 50–60% da performance nos 50–100m nado livre (Keiner et al.).</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Desenvolvimento Militar (Press)</span><span class="ex-head-tag">OMBROS</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 5–6 · <strong>Amplitude:</strong> barra nas clavículas, extensão total acima da cabeça · Core contraído, sem hiperextender a lombar · <strong>Descanso:</strong> 3 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('press',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-press" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-press" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-press" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-press" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-press"></div>
+  </div>
+    <div class="ex-tip">🎯 Deltoide anterior e médio — entrada e recuperação do braço na água.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Tríceps Corda (Pulley)</span><span class="ex-head-tag">ISOLAMENTO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 10–12 · Extensão completa dos cotovelos · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('triceps',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-triceps" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-triceps" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-triceps" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-triceps" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-triceps" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-triceps" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-triceps"></div>
+  </div>
+    <div class="ex-tip">🎯 Tríceps muito ativo na segunda metade do pull no freestyle.</div>
+  </div>
+
+  <div class="day-header">DIA C — MEMBROS INFERIORES (Adaptado — LCA pré-cirúrgico)</div>
+  <div class="alert alert-warn">⚠️ <strong>Protocolo adaptado para LCA rompido.</strong> Sem carga compressiva, sem cisalhamento, sem impacto. Reavalie após cirurgia e reabilitação.</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Extensão de Quadril em Quatro Apoios</span><span class="ex-head-tag">GLÚTEO / SEM JOELHO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 15–20 cada lado (caneleira progressiva) · Coluna neutra, elevar perna estendida para trás contraindo glúteo · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('glute4',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-glute4" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-glute4" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-glute4" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-glute4" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-glute4"></div>
+  </div>
+    <div class="ex-tip">🎯 Glúteo máximo sem stress no joelho — cadeia posterior para saídas e chute.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Hip Thrust no Banco</span><span class="ex-head-tag">GLÚTEO + POSTERIOR</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 10–12 (barra ou haltere sobre o quadril) · Ombros no banco, pés no chão, joelhos a ~90° · Elevar quadril até extensão, contrair 2 seg, descer com controle · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('hipthrust',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-hipthrust" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-hipthrust" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-hipthrust" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-hipthrust" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-hipthrust"></div>
+  </div>
+    <div class="ex-tip">🎯 Aprovado para pré-cirúrgico de LCA — sem cisalhamento tibial.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Cadeira Abdutora</span><span class="ex-head-tag">ESTABILIDADE</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 15 (carga moderada) · Abrir as pernas com controle · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('abdutor',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-abdutor" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-abdutor" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-abdutor" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-abdutor" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-abdutor" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-abdutor" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-abdutor"></div>
+  </div>
+    <div class="ex-tip">🎯 Abdutores de quadril — estabilidade lateral para o chute.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Elevação Pélvica Unilateral</span><span class="ex-head-tag">ESTABILIDADE PÉLVICA</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 12 cada lado · Deitado, uma perna estendida no ar, elevar quadril com a perna de apoio · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-tip">🎯 Corrige desequilíbrios entre os lados — importante para compensar inatividade pós-cirúrgica.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Panturrilha em Pé (Calf Raise)</span><span class="ex-head-tag">PROPULSÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 20 (peso corporal ou halteres) · Subir na ponta dos pés com extensão total, descer lento · Pode usar degrau para maior amplitude · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('calf',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-calf" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-calf" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-calf" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-calf" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-calf"></div>
+  </div>
+    <div class="ex-tip">🎯 Sem nenhum stress no LCA — propulsão do chute.</div>
+  </div>
+
+  <div class="day-header">DIA D — FULL BODY FUNCIONAL (Potência + Integração)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Slam + Arremesso Rotacional (Medicine Ball)</span><span class="ex-head-tag">EXPLOSÃO / SEM JOELHO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 6 cada (medicine ball 6–8 kg) · <strong>Slam:</strong> elevar acima da cabeça, arremessar no chão com força máxima · <strong>Rotacional:</strong> rotar tronco e arremessar lateralmente na parede · <strong>Descanso:</strong> 2 min · Apenas tronco e membros superiores — sem salto</div>
+    <div class="ex-tip">🎯 Substitui o Power Clean — potência de tronco e braços sem stress no LCA.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Remada Unilateral com Haltere</span><span class="ex-head-tag">ASSIMETRIA</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 8 cada lado · Apoio no banco, cotovelo sobe verticalmente, escápula retraída no topo · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('remada-uni',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-uni" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-uni" min="1">
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-uni" min="1">
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-remada-uni"></div>
+  </div>
+    <div class="ex-tip">🎯 Corrige desequilíbrios laterais comuns em nadadores.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Face Pull + Rotação Externa</span><span class="ex-head-tag">SAÚDE DO OMBRO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 15 (carga leve) · Puxar corda em direção ao rosto, cotovelos acima dos ombros, rotação externa no final · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-tip">⚠️ OBRIGATÓRIO todo treino — protege o manguito rotador.</div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ CORE ══ -->
+<div id="core" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 35%" alt="TREINO DE CORE" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">TREINO DE CORE</div>
+      <div class="hero-sub" style="color:#86efac">ESTABILIDADE · STREAMLINE · POTÊNCIA</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Treino de Core</div><span class="sec-badge badge-moss">4x / SEMANA</span></div>
+  <div class="alert alert-success">🏊 <strong>Filosofia:</strong> Core para natação = estabilidade anti-rotação, transferência de força tronco superior/inferior e manutenção do streamline em alta fadiga.</div>
+
+  <div class="day-header">SESSÃO A — Anti-Rotação + Estabilidade (Seg / Qui)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Prancha Frontal com Variação</span><span class="ex-head-tag">STREAMLINE</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 45 seg estático + 3 × 30 seg com toque de ombro alternado · Corpo rígido cabeça ao calcanhar · <strong>Progressão:</strong> disco nas costas quando 60 seg ficar fácil</div>
+    <div class="ex-tip">🎯 Mantém a posição hidrodinâmica durante o nado.</div>
+    <div class="ex-done-row" id="done-row-prancha-frontal">
+      <button class="ex-done-btn" id="done-btn-prancha-frontal" onclick="toggleCoreDone('prancha-frontal')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-prancha-frontal">não realizado hoje</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Prancha Lateral + Abdução de Quadril</span><span class="ex-head-tag">ANTI-LATERAL</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 30 seg cada lado + 10 reps de abdução · Quadril elevado, corpo em linha diagonal rígida · <strong>Descanso:</strong> 45 seg entre lados</div>
+    <div class="ex-tip">🎯 Estabilidade lateral — rotação controlada no freestyle e nado costas.</div>
+    <div class="ex-done-row" id="done-row-prancha-lateral">
+      <button class="ex-done-btn" id="done-btn-prancha-lateral" onclick="toggleCoreDone('prancha-lateral')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-prancha-lateral">não realizado hoje</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Pallof Press (Anti-Rotação)</span><span class="ex-head-tag">FORÇA ROTACIONAL</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10 cada lado (cabo ou elástico) · Pé perpendicular ao cabo, estender os braços controlando a rotação · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-tip">🎯 Treina resistência à rotação — nadar em linha reta com eficiência.</div>
+    <div class="ex-done-row" id="done-row-pallof-press">
+      <button class="ex-done-btn" id="done-btn-pallof-press" onclick="toggleCoreDone('pallof-press')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-pallof-press">não realizado hoje</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Dead Bug</span><span class="ex-head-tag">COORDENAÇÃO NEURAL</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 8 cada lado (braço oposto ao pé) · Lombar colada no chão TODO O TEMPO · Movimento lento, expirar ao descer · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-tip">🎯 Coordenação contralateral — exatamente o padrão neuromotor do nado livre.</div>
+    <div class="ex-done-row" id="done-row-dead-bug">
+      <button class="ex-done-btn" id="done-btn-dead-bug" onclick="toggleCoreDone('dead-bug')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-dead-bug">não realizado hoje</span>
+    </div>
+  </div>
+
+  <div class="day-header">SESSÃO B — Força + Potência (Ter / Sex)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Ab Wheel (Roda Abdominal)</span><span class="ex-head-tag">FORÇA MÁXIMA CORE</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 4 × 6–8 · Amplitude progressiva · Quadril não afunda, lombar neutra, volta controlada · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-tip">🎯 Maior ativação do reto abdominal + oblíquos + iliopsoas.</div>
+    <div class="ex-done-row" id="done-row-ab-wheel">
+      <button class="ex-done-btn" id="done-btn-ab-wheel" onclick="toggleCoreDone('ab-wheel')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-ab-wheel">não realizado hoje</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Rotação com Medicine Ball</span><span class="ex-head-tag">POTÊNCIA ROTACIONAL</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 8 cada lado (4–6 kg) · Rotar tronco com potência máxima, lançar na parede diagonal · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-tip">🎯 Potência rotacional do tronco — principal motor da propulsão no crawl.</div>
+    <div class="ex-done-row" id="done-row-med-ball">
+      <button class="ex-done-btn" id="done-btn-med-ball" onclick="toggleCoreDone('med-ball')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-med-ball">não realizado hoje</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Hanging Leg Raise</span><span class="ex-head-tag">CORE INFERIOR</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10–12 · Pernas retas quando conseguir, joelhos dobrados para iniciar · Sem balanço, lombar posteriorizada no topo · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-tip">🎯 Iliopsoas — potência do chute e streamline nas saídas subaquáticas.</div>
+    <div class="ex-done-row" id="done-row-hanging-leg">
+      <button class="ex-done-btn" id="done-btn-hanging-leg" onclick="toggleCoreDone('hanging-leg')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-hanging-leg">não realizado hoje</span>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Freestyle Plank (Rotação de Braço)</span><span class="ex-head-tag">ESPECÍFICO NATAÇÃO</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 8 cada braço · Posição de flexão, girar o ombro simulando o movimento do freestyle · Core contraído o tempo todo · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-tip">🎯 Estabilidade de core + mobilidade de ombro no padrão exato do nado livre.</div>
+    <div class="ex-done-row" id="done-row-freestyle-plank">
+      <button class="ex-done-btn" id="done-btn-freestyle-plank" onclick="toggleCoreDone('freestyle-plank')">✓ Marcar como feito</button>
+      <span class="ex-done-label" id="done-lbl-freestyle-plank">não realizado hoje</span>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ SEMANA ══ -->
+<div id="semana" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 60%" alt="SEMANA DE TREINO" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">SEMANA DE TREINO</div>
+      <div class="hero-sub" style="color:#38bdf8">MICROCICLO · PERIODIZAÇÃO</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Planejamento Semanal</div><span class="sec-badge badge-gold">MICROCICLO</span></div>
+  <div class="week-grid">
+    <div class="week-day"><div class="week-day-name">SEG</div><span class="week-tag wt-gym">MUSC A</span><span class="week-tag wt-core">CORE A</span><span class="week-tag wt-pool">NATAÇÃO</span></div>
+    <div class="week-day"><div class="week-day-name">TER</div><span class="week-tag wt-gym">MUSC B</span><span class="week-tag wt-core">CORE B</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
+    <div class="week-day"><div class="week-day-name">QUA</div><span class="week-tag wt-pool">NATAÇÃO</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
+    <div class="week-day"><div class="week-day-name">QUI</div><span class="week-tag wt-gym">MUSC C</span><span class="week-tag wt-core">CORE A</span><span class="week-tag wt-pool">NATAÇÃO</span></div>
+    <div class="week-day"><div class="week-day-name">SEX</div><span class="week-tag wt-gym">MUSC D</span><span class="week-tag wt-core">CORE B</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
+    <div class="week-day"><div class="week-day-name">SAB</div><span class="week-tag wt-pool">NATAÇÃO</span><span class="week-tag wt-cardio">CARDIO 30'</span></div>
+    <div class="week-day"><div class="week-day-name">DOM</div><span class="week-tag wt-rest">DESCANSO</span></div>
+  </div>
+  <div class="alert alert-warn">⚠️ <strong>Treino duplo (musculação + natação):</strong> priorize natação antes, ou 4–6h de intervalo. Detectado automaticamente no check-in.</div>
+  <div class="card">
+    <div class="card-title">Cardio — Protocolo</div>
+    <div style="font-size:.82rem;line-height:1.8">• <strong>Tipo:</strong> esteira com inclinação, bike ou elíptico · <strong>Intensidade:</strong> Zona 2 (60–70% FCmax) · <strong>FC máx estimada:</strong> 178 bpm → Zona 2: 107–125 bpm · <strong>Duração:</strong> 30–40 min</div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ LISTA DE COMPRAS ══ -->
+<div id="compras" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 50%" alt="LISTA DE COMPRAS" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">LISTA DE COMPRAS</div>
+      <div class="hero-sub" style="color:#86efac">MERCADO SEMANAL · NUTRIÇÃO</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Lista de Compras</div><span class="sec-badge badge-pool">SEMANAL</span></div>
+  <div class="alert alert-info">🛒 Lista gerada com base na dieta semanal. Marque o que já tem em casa e gere uma lista limpa para o mercado.</div>
+  <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap">
+    <button class="btn btn-sm" onclick="marcarTodos(false)">Desmarcar tudo</button>
+    <button class="btn btn-sm" style="background:var(--mid)" onclick="marcarTodos(true)">Marcar tudo</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🥩 Proteínas</div>
+    <div id="lista-proteinas">
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Frango (filé/peito) — ~1,5 kg/semana</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Atum em lata — 6 unidades</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Carne vermelha magra (patinho/coxão) — 800g</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Peixe (tilápia ou salmão) — 800g</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Ovos — 28 unidades (4x/dia)</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Whey Protein — reposição conforme necessário</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Queijo cottage — 400g</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Iogurte grego natural (sem açúcar) — 4x 200g</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🍠 Carboidratos</div>
+    <div id="lista-carbs">
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Batata-doce — 2 kg</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Arroz integral — 1 kg</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Aveia em flocos — 500g</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Pão integral — 1 pacote</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Banana — 1 cacho (7 unidades)</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Maçã ou pera — 4 unidades</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Feijão ou lentilha — 500g</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🥦 Vegetais e Legumes</div>
+    <div id="lista-vegs">
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Brócolis — 500g</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Abobrinha — 2 unidades</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Cenoura — 4 unidades</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Salada verde (mix) — 2 pacotes</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Tomate — 4 unidades</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🫒 Gorduras e Outros</div>
+    <div id="lista-outros">
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Azeite de oliva extra virgem — 500ml</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Castanhas mix ou castanha-do-pará — 200g</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Café (pó ou grão) — reposição</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Creatina monohidratada — reposição</span></div>
+      <div class="lista-item" onclick="toggleItem(this)"><input type="checkbox"><span>Ômega-3 — reposição</span></div>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- ══ CHECK-IN ══ -->
+<div id="registro" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 20%" alt="CHECK-IN DIÁRIO" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">CHECK-IN DIÁRIO</div>
+      <div class="hero-sub" style="color:#38bdf8">REGISTRO · EVOLUÇÃO · CONSISTÊNCIA</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Check-in do Dia</div><span class="sec-badge badge-pool">ASSISTENTE GUIADO</span></div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div id="chat-messages" style="padding:1rem;min-height:320px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:.75rem;background:#f8fafc"></div>
+    <div style="border-top:1px solid #e2e8f0;padding:.75rem;background:#fff">
+      <div id="chat-input-wrap" style="display:flex;gap:.5rem">
+        <input id="chat-input" type="text" placeholder="Digite sua resposta..."
+          style="flex:1;background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:8px;padding:.55rem .75rem;font-family:'DM Sans',sans-serif;font-size:.86rem;outline:none;color:#111827"
+          onkeydown="if(event.key==='Enter')enviarResposta()">
+        <button class="btn" onclick="enviarResposta()">Enviar</button>
+      </div>
+      <div id="chat-buttons" style="display:none;flex-wrap:wrap;gap:.5rem;margin-top:.5rem"></div>
+    </div>
+  </div>
+  <div class="alert alert-info" style="margin-top:1rem;font-size:.77rem">💡 <strong>Dica:</strong> Configure um alarme às 22h com o lembrete <em>"Abrir painel — check-in"</em>.</div>
+  </div>
+</div>
+
+<!-- ══ HISTÓRICO ══ -->
+<div id="historico" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 40%" alt="HISTÓRICO" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">HISTÓRICO</div>
+      <div class="hero-sub" style="color:#38bdf8">DADOS · GRÁFICOS · EVOLUÇÃO</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Histórico & Gráficos</div><span class="sec-badge badge-gold">EVOLUÇÃO</span></div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+    <div style="font-size:.81rem;color:var(--mid)" id="total-registros">0 registros</div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn btn-sm btn-moss" onclick="exportarBackup()">⬇️ Exportar backup</button>
+      <button class="btn btn-sm btn-gold" onclick="document.getElementById('import-file').click()">⬆️ Importar</button>
+      <button class="btn btn-sm btn-danger" onclick="limparHistorico()">🗑️ Limpar</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(event)">
+    </div>
+  </div>
+
+  <!-- Gráfico Peso -->
+  <div class="card" id="chart-peso-card" style="display:none">
+    <div class="card-title">Evolução do Peso</div>
+    <canvas id="pesoChart" style="max-height:200px"></canvas>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem">
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">INÍCIO</div><div id="stat-inicio" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem">—</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">ATUAL</div><div id="stat-atual" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--pool)">—</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">VARIAÇÃO</div><div id="stat-var" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem">—</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">META</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--moss)">~92 kg</div></div>
+    </div>
+  </div>
+
+  <!-- Gráfico % Gordura -->
+  <div class="card" id="chart-bf-card" style="display:none">
+    <div class="card-title">Evolução do % de Gordura (Método Navy)</div>
+    <canvas id="bfChart" style="max-height:200px"></canvas>
+    <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem">
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">INICIAL</div><div id="bf-stat-inicio" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem">—</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">ATUAL</div><div id="bf-stat-atual" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--pool)">—</div></div>
+      <div><div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--mid)">META</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--moss)">&lt;14%</div></div>
+    </div>
+  </div>
+
+  <div id="historico-vazio" class="alert alert-info">Nenhum registro ainda. Use a aba "Check-in" para começar.</div>
+
+  <div id="historico-tabela" style="display:none;overflow-x:auto">
+    <table class="log-table">
+      <thead><tr><th>Data</th><th>Peso</th><th>Água</th><th>Kcal Ingerida</th><th>Kcal Gasta</th><th>FC Média</th><th>Treinos</th><th>Sono</th><th>% Gord.</th><th>Obs</th></tr></thead>
+      <tbody id="historico-body"></tbody>
+    </table>
+  </div>
+  </div>
+</div>
+
+<!-- ══ REABILITAÇÃO LCA ══ -->
+<div id="reab" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 30%" alt="REABILITAÇÃO LCA" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">REABILITAÇÃO LCA</div>
+      <div class="hero-sub" style="color:#fda4af">PROTOCOLO PÓS-CIRURGIA · RETORNO</div>
+    </div>
+  </div>
+  <div class="section-content">
+  <div class="sec-header"><div class="sec-title" style="color:#fff">Reabilitação LCA</div><span class="sec-badge badge-burn">PÓS-CIRURGIA</span></div>
+  <div class="alert alert-warn">⚠️ <strong>Atenção:</strong> Este protocolo é baseado na literatura científica de reabilitação de LCA. Siga sempre as orientações do seu fisioterapeuta e cirurgião, que têm prioridade sobre qualquer informação aqui.</div>
+
+  <div class="reab-phase">
+    <div class="reab-head" style="background:var(--burn-light)">
+      <strong style="color:var(--burn)">FASE 1 — Semanas 1–2 · Controle da Dor e Edema</strong>
+      <span class="sec-badge badge-burn">PÓS-OP IMEDIATO</span>
+    </div>
+    <div class="reab-body">
+      <strong>Objetivos:</strong> Reduzir dor e edema, recuperar extensão completa do joelho, ativar quadríceps<br>
+      <strong>Exercícios:</strong><br>
+      • Gelo 20 min a cada 2–3h<br>
+      • Elevação do membro operado<br>
+      • Contração isométrica do quadríceps (sem movimento)<br>
+      • Extensão passiva do joelho (meta: 0° de extensão na semana 1)<br>
+      • Mobilização de patela<br>
+      • Deambulação com muleta conforme dor
+    </div>
+  </div>
+
+  <div class="reab-phase">
+    <div class="reab-head" style="background:var(--gold-light)">
+      <strong style="color:#8a6a1a">FASE 2 — Semanas 3–6 · Recuperação de Mobilidade</strong>
+      <span class="sec-badge badge-gold">MOBILIDADE</span>
+    </div>
+    <div class="reab-body">
+      <strong>Objetivos:</strong> Flexão 0–90°, marcha sem muleta, iniciar trabalho muscular<br>
+      <strong>Exercícios:</strong><br>
+      • Flexão ativa assistida do joelho (0–90°)<br>
+      • Mini-agachamento (0–45°) com apoio<br>
+      • Elevação da perna estendida (SLR) — 3 × 15<br>
+      • Bicicleta ergométrica (sem resistência)<br>
+      • Cadeia cinética fechada leve (step)<br>
+      • Natação: apenas braços (pull buoy) — liberação médica
+    </div>
+  </div>
+
+  <div class="reab-phase">
+    <div class="reab-head" style="background:var(--pool-light)">
+      <strong style="color:var(--pool)">FASE 3 — Semanas 7–12 · Fortalecimento</strong>
+      <span class="sec-badge badge-pool">FORÇA</span>
+    </div>
+    <div class="reab-body">
+      <strong>Objetivos:</strong> Flexão &gt;120°, força &gt;60% do membro contralateral, retornar à natação completa<br>
+      <strong>Exercícios:</strong><br>
+      • Agachamento progressivo (0–60°, depois 0–90°)<br>
+      • Leg Press progressivo (carga baixa → moderada)<br>
+      • Prensa unilateral<br>
+      • Hip Thrust com carga progressiva<br>
+      • Bicicleta com resistência moderada<br>
+      • Natação completa (freestyle + costas): liberação médica ~semana 10–12<br>
+      • Musculação membros superiores: retorno total
+    </div>
+  </div>
+
+  <div class="reab-phase">
+    <div class="reab-head" style="background:var(--moss-light)">
+      <strong style="color:var(--moss)">FASE 4 — Meses 3–6 · Retorno à Performance</strong>
+      <span class="sec-badge badge-moss">PERFORMANCE</span>
+    </div>
+    <div class="reab-body">
+      <strong>Objetivos:</strong> Força &gt;80–90% do contralateral, retorno ao treino completo, propriocepção avançada<br>
+      <strong>Exercícios:</strong><br>
+      • Agachamento completo com carga progressiva<br>
+      • Levantamento terra (RDL e convencional)<br>
+      • Exercícios pliométricos progressivos (step, caixote)<br>
+      • Corrida em linha reta (início ~mês 4–5, liberação médica)<br>
+      • Retorno ao protocolo completo de musculação para natação<br>
+      • Treinamento de velocidade na natação
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Natação durante a Reabilitação</div>
+    <div style="font-size:.82rem;line-height:1.8">
+      • <strong>Semanas 1–6:</strong> Apenas braços com pull buoy (sem chute) — confirmar com cirurgião<br>
+      • <strong>Semanas 7–12:</strong> Retorno progressivo ao nado completo — velocidade baixa<br>
+      • <strong>Mês 3+:</strong> Retorno ao volume e intensidade normal<br>
+      • <strong>Dica:</strong> A natação é um dos melhores aliados da reabilitação — impacto zero e amplitude controlada
+    </div>
+    <div class="evidence">📚 Revisão JOSPT 2023: retorno à natação competitiva ocorre em média entre 3–6 meses pós-reconstrução de LCA, com protocolo adequado. Critérios: força &gt;80% do membro contralateral e ausência de dor.</div>
+  </div>
+  </div>
+</div>
+
+<script>
+const ALTURA_CM = 182;
+const META_PESO = 92;
+const META_BF = 14;
+let chatState = {};
+
+// ── TABS ──
+function showTab(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'registro') initChat();
+  if (id === 'historico') { renderHistorico(); renderCharts(); }
+}
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const deadline = new Date('2026-07-29T00:00:00');
+  const now = new Date();
+  const diff = Math.ceil((deadline - now) / 86400000);
+  document.getElementById('dias-restantes').textContent = Math.abs(diff);
+  document.getElementById('countdown-msg').textContent =
+    diff > 0 ? diff + ' dias para o prazo.' : diff === 0 ? 'É hoje! 💪' : 'Prazo encerrado há ' + Math.abs(diff) + ' dias.';
+}
+updateCountdown();
+
+// ── CIRURGIA ──
+function salvarDataCirurgia() {
+  const val = document.getElementById('data-cirurgia').value;
+  if (!val) return;
+  localStorage.setItem('data_cirurgia', val);
+  if (window.fbSaveDataCirurgia) window.fbSaveDataCirurgia(val);
+  atualizarCirurgia();
+}
+function atualizarCirurgia() {
+  const saved = localStorage.getItem('data_cirurgia');
+  if (saved) {
+    document.getElementById('data-cirurgia').value = saved;
+    const diff = Math.ceil((new Date(saved) - new Date()) / 86400000);
+    document.getElementById('dias-cirurgia').textContent = diff > 0 ? diff : 'Realizada';
+    document.getElementById('data-cirurgia-display').textContent = saved;
+  }
+}
+atualizarCirurgia();
+
+// ── STORAGE ──
+function getRegistros() { try { return JSON.parse(localStorage.getItem('luiz_registros') || '[]'); } catch { return []; } }
+function saveRegistros(r) {
+  localStorage.setItem('luiz_registros', JSON.stringify(r));
+  if (window.fbSaveRegistros) window.fbSaveRegistros(r);
+}
+
+// ── LOG CARGAS ──
+function logCarga(ex, numSeries) {
+  const hoje = new Date().toISOString().split('T')[0];
+  const series = [];
+  for (let i = 1; i <= numSeries; i++) {
+    const carga = document.getElementById(`s${i}-carga-${ex}`)?.value;
+    const reps  = document.getElementById(`s${i}-reps-${ex}`)?.value;
+    if (carga && reps) series.push({ serie: i, carga: parseFloat(carga), reps: parseInt(reps) });
+  }
+  if (series.length === 0) { alert('Preencha pelo menos uma série.'); return; }
+  const key = 'carga_' + ex;
+  const hist = JSON.parse(localStorage.getItem(key) || '[]');
+  hist.unshift({ data: hoje, series, ts: Date.now() });
+  if (hist.length > 60) hist.pop();
+  localStorage.setItem(key, JSON.stringify(hist));
+  if (window.fbSaveCarga) window.fbSaveCarga(ex, hist);
+  renderCargaHist(ex);
+  // Clear fields
+  for (let i = 1; i <= numSeries; i++) {
+    const c = document.getElementById(`s${i}-carga-${ex}`);
+    const r = document.getElementById(`s${i}-reps-${ex}`);
+    if (c) c.value = '';
+    if (r) r.value = '';
+  }
+}
+
+function renderCargaHist(ex) {
+  const el = document.getElementById('hist-' + ex);
+  if (!el) return;
+  const hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
+  if (hist.length === 0) return;
+
+  // Last session
+  const ultimo = hist[0];
+  const seriesTxt = ultimo.series.map(s => `S${s.serie}: ${s.carga}kg×${s.reps}`).join(' · ');
+
+  // PR: max carga across all sessions and all series
+  let pr = 0;
+  hist.forEach(h => h.series.forEach(s => { if (s.carga > pr) pr = s.carga; }));
+
+  // Volume last session
+  const vol = ultimo.series.reduce((acc, s) => acc + s.carga * s.reps, 0);
+
+  el.innerHTML = `<span style="color:var(--pool)">Última sessão (${ultimo.data}):</span> ${seriesTxt}<br>
+    <span style="color:var(--mid)">Volume: ${vol.toFixed(0)} kg · PR: ${pr} kg</span>`;
+}
+
+// Init cargas
+['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni']
+  .forEach(ex => renderCargaHist(ex));
+
+// ── PROJEÇÃO ──
+function calcProjecao(registros) {
+  const comPeso = registros.filter(r => r.peso && r.data).reverse();
+  if (comPeso.length < 4) { document.getElementById('proj-display').textContent = '—'; document.getElementById('proj-sub').textContent = 'mín. 4 registros'; return; }
+  const ultimos7 = comPeso.slice(-7);
+  const perdaSemana = (parseFloat(ultimos7[0].peso) - parseFloat(ultimos7[ultimos7.length-1].peso));
+  const perdaDia = perdaSemana / (ultimos7.length - 1);
+  const pesoAtual = parseFloat(comPeso[comPeso.length-1].peso);
+  if (perdaDia <= 0) { document.getElementById('proj-display').textContent = '—'; document.getElementById('proj-sub').textContent = 'sem perda recente'; return; }
+  const diasParaMeta = Math.ceil((pesoAtual - META_PESO) / perdaDia);
+  const dataMeta = new Date(Date.now() + diasParaMeta * 86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+  const deadline = new Date('2026-07-29');
+  const diasRestantes = Math.ceil((deadline - new Date()) / 86400000);
+  document.getElementById('proj-display').textContent = dataMeta;
+  document.getElementById('proj-sub').textContent = diasParaMeta <= diasRestantes ? '✅ no prazo' : '⚠️ atrás do prazo';
+}
+
+// ── ALERTA TREINO DUPLO ──
+function verificarTreinoDuplo() {
+  const reg = getRegistros();
+  if (reg.length === 0) return;
+  const hoje = new Date().toISOString().split('T')[0];
+  const regHoje = reg.find(r => r.data === hoje);
+  if (!regHoje) return;
+  const treinos = (regHoje.treinos || '').toLowerCase();
+  const duplo = treinos.includes('natação') && treinos.includes('musculação');
+  document.getElementById('alerta-treino-duplo').style.display = duplo ? 'block' : 'none';
+}
+verificarTreinoDuplo();
+
+// ── NAVY BF ──
+function calcNavyBF(pescoco, cintura, altura) {
+  return Math.round((495 / (1.0324 - 0.19077 * Math.log10(cintura - pescoco) + 0.15456 * Math.log10(altura)) - 450) * 10) / 10;
+}
+function devePedirMedidas() {
+  const registros = getRegistros();
+  const comMedidas = registros.find(r => r.pescoco);
+  if (!comMedidas) return registros.length > 0;
+  return Math.floor((new Date() - new Date(comMedidas.data)) / 86400000) >= 7;
+}
+
+// ── CHAT ──
+const STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','medidas_check','pescoco','cintura','quadril','confirmar'];
+
+function initChat() {
+  chatState = { step:0, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null, pescoco:null, cintura:null, quadril:null, pedirMedidas:devePedirMedidas() };
+  document.getElementById('chat-messages').innerHTML = '';
+  document.getElementById('chat-buttons').style.display = 'none';
+  document.getElementById('chat-input-wrap').style.display = 'flex';
+  const hoje = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  botMsg(`Boa noite! 👋 Check-in de hoje, <strong>${hoje}</strong>.`);
+  setTimeout(askStep, 700);
+}
+
+function botMsg(txt) {
+  const el = document.createElement('div');
+  el.style.cssText = 'background:#eff6ff;border-left:3px solid #3b82f6;padding:.65rem .9rem;border-radius:0 10px 10px 0;font-size:.83rem;line-height:1.65;max-width:88%;align-self:flex-start;color:#1e3a5f';
+  el.innerHTML = txt;
+  document.getElementById('chat-messages').appendChild(el);
+  document.getElementById('chat-messages').scrollTop = 9999;
+}
+function userMsg(txt) {
+  const el = document.createElement('div');
+  el.style.cssText = 'background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;padding:.65rem .9rem;border-radius:10px 0 0 10px;font-size:.83rem;line-height:1.65;max-width:88%;align-self:flex-end;box-shadow:0 2px 8px rgba(2,132,199,.25)';
+  el.textContent = txt;
+  document.getElementById('chat-messages').appendChild(el);
+  document.getElementById('chat-messages').scrollTop = 9999;
+}
+function showButtons(opts) {
+  const wrap = document.getElementById('chat-buttons');
+  document.getElementById('chat-input-wrap').style.display = 'none';
+  wrap.innerHTML = '';
+  wrap.style.display = 'flex';
+  opts.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-sm';
+    btn.style.cssText = 'background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0;font-weight:600;border-radius:20px';
+    btn.textContent = o.label;
+    btn.onclick = () => { userMsg(o.label); processAnswer(o.value); };
+    wrap.appendChild(btn);
+  });
+}
+function showInput(ph) {
+  document.getElementById('chat-buttons').style.display = 'none';
+  document.getElementById('chat-input-wrap').style.display = 'flex';
+  const inp = document.getElementById('chat-input');
+  inp.placeholder = ph; inp.value = '';
+  setTimeout(() => inp.focus(), 80);
+}
+function enviarResposta() {
+  const val = document.getElementById('chat-input').value.trim();
+  if (!val) return;
+  userMsg(val); document.getElementById('chat-input').value = '';
+  processAnswer(val);
+}
+
+function activeSteps() {
+  return chatState.pedirMedidas ? STEPS : STEPS.filter(s => !['medidas_check','pescoco','cintura','quadril'].includes(s));
+}
+
+function askStep() {
+  const step = activeSteps()[chatState.step];
+  if (step==='peso') { botMsg('Qual foi o seu <strong>peso</strong> hoje? (kg)'); showInput('Ex: 95.8'); }
+  else if (step==='kcal') { botMsg('Quantas <strong>calorias</strong> você consumiu hoje? (ou "pular")'); showInput('Ex: 2650'); }
+  else if (step==='agua') { botMsg('Quantos <strong>litros de água</strong> você bebeu?'); showInput('Ex: 3.5'); }
+  else if (step==='treinos') { botMsg('Quais <strong>treinos</strong> você fez? (marque todos)'); showButtons([{label:'🏊 Natação',value:'natação'},{label:'💪 Musculação',value:'musculação'},{label:'🔥 Core',value:'core'},{label:'🚴 Cardio',value:'cardio'},{label:'😴 Descanso',value:'descanso'},{label:'✅ Concluído',value:'__done__'}]); }
+  else if (step==='sono') { botMsg('Como foi o <strong>sono</strong> de ontem à noite?'); showButtons([{label:'😴 Péssimo (1)',value:'1'},{label:'😕 Ruim (2)',value:'2'},{label:'😐 Ok (3)',value:'3'},{label:'😊 Bom (4)',value:'4'},{label:'🌟 Excelente (5)',value:'5'}]); }
+  else if (step==='kcal_gasta') { botMsg('🔥 Quantas <strong>calorias você gastou</strong> nos treinos hoje? (veja no Mi Fitness, ou "pular")'); showInput('Ex: 650'); }
+  else if (step==='fc_media') { botMsg('❤️ Qual foi a <strong>frequência cardíaca média</strong> durante o treino? (veja no Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
+  else if (step==='obs') { botMsg('Alguma <strong>observação</strong> sobre o dia? (ou "nada")'); showInput('Energia, alimentação, dores...'); }
+  else if (step==='medidas_check') { botMsg('📏 Semana de <strong>medidas corporais</strong>! Tem fita métrica em mãos?'); showButtons([{label:'Sim, vou medir',value:'sim'},{label:'Não, pular',value:'nao'}]); }
+  else if (step==='pescoco') { botMsg('Meça o <strong>pescoço</strong> na parte mais estreita (cm):'); showInput('Ex: 15.5'); }
+  else if (step==='cintura') { botMsg('Meça a <strong>cintura</strong> na altura do umbigo (cm):'); showInput('Ex: 94'); }
+  else if (step==='quadril') { botMsg('Meça o <strong>quadril</strong> na parte mais larga (cm):'); showInput('Ex: 104'); }
+  else if (step==='confirmar') mostrarResumo();
+}
+
+function processAnswer(val) {
+  const step = activeSteps()[chatState.step];
+  const n = parseFloat(val.replace(',','.'));
+
+  if (step==='peso') {
+    if (isNaN(n)||n<40||n>200) { botMsg('⚠️ Valor inválido. Ex: 95.8'); return; }
+    chatState.peso=n; chatState.step++; setTimeout(askStep,350);
+  } else if (step==='kcal') {
+    if (val.toLowerCase()==='pular') { chatState.kcal=null; } else { chatState.kcal=isNaN(n)?null:n; }
+    chatState.step++; setTimeout(askStep,350);
+  } else if (step==='agua') {
+    if (isNaN(n)||n<0||n>15) { botMsg('⚠️ Valor inválido. Ex: 3.5'); return; }
+    chatState.agua=n;
+    if (n < 3.5) botMsg(`⚠️ <strong>Hidratação abaixo da meta!</strong> Você bebeu ${n}L mas a meta é 3,5L. Tente compensar amanhã!`);
+    chatState.step++; setTimeout(askStep,350);
+  } else if (step==='kcal_gasta') {
+    if (val.toLowerCase()==='pular') { chatState.kcal_gasta=null; }
+    else { const n2=parseFloat(val.replace(',','.')); chatState.kcal_gasta=isNaN(n2)?null:n2; }
+    chatState.step++; setTimeout(askStep,350);
+  } else if (step==='fc_media') {
+    if (val.toLowerCase()==='pular') { chatState.fc_media=null; }
+    else { const n2=parseFloat(val.replace(',','.')); chatState.fc_media=isNaN(n2)?null:n2; }
+    chatState.step++; setTimeout(askStep,350);
+  } else if (step==='treinos') {
+    if (val==='__done__') {
+      if (chatState.treinos.length===0) { botMsg('Selecione pelo menos uma opção.'); return; }
+      chatState.step++; setTimeout(askStep,350);
+    } else {
+      if (!chatState.treinos.includes(val)) chatState.treinos.push(val);
+      const duplo = chatState.treinos.includes('natação') && chatState.treinos.includes('musculação');
+      botMsg(`✅ <em>${val}</em> adicionado.${duplo ? ' 🔄 <strong>Treino duplo detectado — adicione +150 kcal em carbs hoje!</strong>' : ''} Selecione mais ou clique Concluído.`);
+    }
+  } else if (step==='sono') {
+    chatState.sono=val; chatState.step++; setTimeout(askStep,350);
+  } else if (step==='obs') {
+    chatState.obs=val.toLowerCase()==='nada'?'':val; chatState.step++; setTimeout(askStep,350);
+  } else if (step==='medidas_check') {
+    if (val==='nao') { chatState.pedirMedidas=false; chatState.step+=4; } else chatState.step++;
+    setTimeout(askStep,350);
+  } else if (step==='pescoco') {
+    if (isNaN(n)||n<20||n>60) { botMsg('⚠️ Inválido. Ex: 15.5'); return; }
+    chatState.pescoco=n; chatState.step++; setTimeout(askStep,350);
+  } else if (step==='cintura') {
+    if (isNaN(n)||n<40||n>200) { botMsg('⚠️ Inválido. Ex: 94'); return; }
+    chatState.cintura=n; chatState.step++; setTimeout(askStep,350);
+  } else if (step==='quadril') {
+    if (isNaN(n)||n<40||n>200) { botMsg('⚠️ Inválido. Ex: 106'); return; }
+    chatState.quadril=n; chatState.step++; setTimeout(askStep,350);
+  }
+}
+
+function mostrarResumo() {
+  let bfTxt='';
+  if (chatState.pescoco && chatState.cintura) {
+    const bf = calcNavyBF(chatState.pescoco, chatState.cintura, ALTURA_CM);
+    const mm = (chatState.peso*(1-bf/100)).toFixed(1);
+    const mg = (chatState.peso*bf/100).toFixed(1);
+    bfTxt = `<br>📏 <strong>% Gordura:</strong> ${bf}% — Magra: ${mm}kg / Gorda: ${mg}kg`;
+    document.getElementById('bf-display').textContent = bf + '%';
+  }
+  const stars = '★'.repeat(parseInt(chatState.sono||0))+'☆'.repeat(5-parseInt(chatState.sono||0));
+  const aguaOk = chatState.agua >= 3.5;
+  botMsg(`<strong>Resumo — ${chatState.data}:</strong><br>
+    ⚖️ <strong>Peso:</strong> ${chatState.peso} kg<br>
+    ${chatState.kcal ? `🍽️ <strong>Calorias:</strong> ${chatState.kcal} kcal<br>` : ''}
+    💧 <strong>Água:</strong> ${aguaOk?'✅':'⚠️'} ${chatState.agua}L<br>
+    🏋️ <strong>Treinos:</strong> ${chatState.treinos.join(', ')}<br>
+    ${chatState.kcal_gasta ? `🔥 <strong>Kcal gastas:</strong> ${chatState.kcal_gasta} kcal<br>` : ''}
+    ${chatState.fc_media ? `❤️ <strong>FC média:</strong> ${chatState.fc_media} bpm<br>` : ''}
+    😴 <strong>Sono:</strong> ${stars}<br>
+    ${chatState.obs?`📝 ${chatState.obs}<br>`:''}${bfTxt}`);
+
+  setTimeout(() => {
+    const wrap = document.getElementById('chat-buttons');
+    document.getElementById('chat-input-wrap').style.display='none';
+    wrap.innerHTML=''; wrap.style.display='flex';
+    const b1=document.createElement('button'); b1.className='btn'; b1.textContent='✅ Confirmar e Salvar'; b1.onclick=confirmarSalvar; wrap.appendChild(b1);
+    const b2=document.createElement('button'); b2.className='btn'; b2.style.cssText='background:var(--white);color:var(--ink);border:1px solid var(--rule)'; b2.textContent='🔄 Recomeçar'; b2.onclick=initChat; wrap.appendChild(b2);
+  }, 500);
+}
+
+function confirmarSalvar() {
+  const reg = { data:chatState.data, peso:chatState.peso, kcal:chatState.kcal||null, agua:chatState.agua, kcal_gasta:chatState.kcal_gasta||null, fc_media:chatState.fc_media||null, treinos:chatState.treinos.join(', '), sono:chatState.sono, obs:chatState.obs||'', pescoco:chatState.pescoco||null, cintura:chatState.cintura||null, quadril:chatState.quadril||null, ts:Date.now() };
+  const registros = getRegistros(); registros.unshift(reg); saveRegistros(registros);
+  document.getElementById('chat-buttons').style.display='none';
+  document.getElementById('peso-display').textContent=chatState.peso;
+  verificarTreinoDuplo();
+  calcProjecao(registros);
+  botMsg('🎯 <strong>Salvo!</strong> Consistência é o que vai te levar ao resultado até 29/07. 💪');
+  setTimeout(()=>{
+    const b=document.createElement('button'); b.className='btn btn-sm'; b.style.marginTop='.5rem'; b.textContent='+ Novo registro'; b.onclick=initChat;
+    document.getElementById('chat-messages').appendChild(b);
+    document.getElementById('chat-messages').scrollTop=9999;
+  }, 700);
+}
+
+// ── HISTORICO ──
+function renderHistorico() {
+  const registros = getRegistros();
+  const vazio=document.getElementById('historico-vazio'), tabela=document.getElementById('historico-tabela');
+  const tbody=document.getElementById('historico-body'), total=document.getElementById('total-registros');
+  total.textContent = registros.length + ' registro' + (registros.length!==1?'s':'');
+  if (registros.length===0) { vazio.style.display='block'; tabela.style.display='none'; return; }
+  vazio.style.display='none'; tabela.style.display='block';
+  if (registros[0].peso) document.getElementById('peso-display').textContent=registros[0].peso;
+  tbody.innerHTML = registros.map(r => {
+    let bfTxt='—';
+    if (r.pescoco && r.cintura) { const bf=calcNavyBF(r.pescoco,r.cintura,ALTURA_CM); bfTxt=bf+'%'; }
+    return `<tr>
+      <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:.7rem">${r.data||'—'}</td>
+      <td><strong>${r.peso?r.peso+' kg':'—'}</strong></td>
+      <td>${r.agua?r.agua+'L':'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem">${r.kcal?r.kcal+' kcal':'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.kcal_gasta?r.kcal_gasta+' kcal':'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.fc_media?r.fc_media+' bpm':'—'}</td>
+      <td style="font-size:.7rem">${r.treinos||'—'}</td>
+      <td>${r.sono?'★'.repeat(parseInt(r.sono)):'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--pool)">${bfTxt}</td>
+      <td style="font-size:.73rem;max-width:100px;color:var(--mid)">${r.obs||''}</td>
+    </tr>`;
+  }).join('');
+  calcProjecao(registros);
+  // update bf display
+  const comBF = registros.find(r => r.pescoco && r.cintura);
+  if (comBF) { const bf=calcNavyBF(comBF.pescoco,comBF.cintura,ALTURA_CM); document.getElementById('bf-display').textContent=bf+'%'; document.getElementById('bf-sub').textContent=comBF.data; }
+}
+
+// ── CHARTS ──
+let _pesoChart, _bfChart;
+function renderCharts() {
+  const registros = getRegistros();
+  const comPeso = registros.filter(r=>r.peso&&r.data).reverse();
+  const comBF   = registros.filter(r=>r.pescoco&&r.cintura&&r.data).reverse();
+
+  // Peso chart
+  const pesoCard = document.getElementById('chart-peso-card');
+  if (comPeso.length >= 2) {
+    pesoCard.style.display='block';
+    const labels=comPeso.map(r=>r.data), pesos=comPeso.map(r=>parseFloat(r.peso));
+    const inicio=pesos[0], atual=pesos[pesos.length-1], variac=(atual-inicio).toFixed(1);
+    document.getElementById('stat-inicio').textContent=inicio+' kg';
+    document.getElementById('stat-atual').textContent=atual+' kg';
+    const ve=document.getElementById('stat-var'); ve.textContent=(variac>0?'+':'')+variac+' kg'; ve.style.color=variac<=0?'var(--moss)':'var(--burn)';
+    if (_pesoChart) _pesoChart.destroy();
+    _pesoChart = new Chart(document.getElementById('pesoChart').getContext('2d'),{type:'line',data:{labels,datasets:[{label:'Peso (kg)',data:pesos,borderColor:'#006b8f',backgroundColor:'rgba(0,107,143,0.08)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'Meta (92 kg)',data:Array(labels.length).fill(92),borderColor:'#3a6b3e',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b6b6b'}}},scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',maxTicksLimit:8},grid:{color:'#e8e4dc'}},y:{min:Math.min(...pesos)-1,max:Math.max(...pesos)+1,ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',callback:v=>v+' kg'},grid:{color:'#e8e4dc'}}}}});
+  } else pesoCard.style.display='none';
+
+  // BF chart
+  const bfCard = document.getElementById('chart-bf-card');
+  if (comBF.length >= 2) {
+    bfCard.style.display='block';
+    const labels=comBF.map(r=>r.data), bfs=comBF.map(r=>calcNavyBF(r.pescoco,r.cintura,ALTURA_CM));
+    document.getElementById('bf-stat-inicio').textContent=bfs[0]+'%';
+    document.getElementById('bf-stat-atual').textContent=bfs[bfs.length-1]+'%';
+    if (_bfChart) _bfChart.destroy();
+    _bfChart = new Chart(document.getElementById('bfChart').getContext('2d'),{type:'line',data:{labels,datasets:[{label:'% Gordura',data:bfs,borderColor:'#e05a2b',backgroundColor:'rgba(224,90,43,0.07)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'Meta (<14%)',data:Array(labels.length).fill(14),borderColor:'#3a6b3e',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b6b6b'}}},scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',maxTicksLimit:8},grid:{color:'#e8e4dc'}},y:{min:Math.min(...bfs)-1,max:Math.max(...bfs)+1,ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',callback:v=>v+'%'},grid:{color:'#e8e4dc'}}}}});
+  } else bfCard.style.display='none';
+}
+
+// ── LISTA COMPRAS ──
+function toggleItem(el) {
+  el.classList.toggle('checked');
+  el.querySelector('input').checked = el.classList.contains('checked');
+}
+function marcarTodos(checked) {
+  document.querySelectorAll('.lista-item').forEach(el => {
+    if (checked) el.classList.add('checked'); else el.classList.remove('checked');
+    el.querySelector('input').checked = checked;
+  });
+}
+
+// ── BACKUP ──
+function exportarBackup() {
+  const registros=getRegistros();
+  if (registros.length===0){alert('Nenhum registro para exportar.');return;}
+  const blob=new Blob([JSON.stringify({versao:'1.0',exportado_em:new Date().toISOString(),atleta:'Luiz — PCDF Performance',registros},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`checkin_backup_${new Date().toISOString().split('T')[0]}.json`; a.click(); URL.revokeObjectURL(a.href);
+}
+function importarBackup(event) {
+  const file=event.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try {
+      const data=JSON.parse(e.target.result);
+      if (!data.registros||!Array.isArray(data.registros)){alert('❌ Arquivo inválido.');return;}
+      const existentes=getRegistros(), tsSet=new Set(existentes.map(r=>r.ts));
+      const novos=data.registros.filter(r=>!tsSet.has(r.ts));
+      const merged=[...existentes,...novos].sort((a,b)=>b.ts-a.ts);
+      saveRegistros(merged); renderHistorico(); renderCharts();
+      alert(`✅ ${novos.length} novo(s) registro(s) importado(s).`);
+    } catch {alert('❌ Erro ao ler arquivo.');}
+  };
+  reader.readAsText(file); event.target.value='';
+}
+function limparHistorico(){if(confirm('Apagar todos os registros?')){localStorage.removeItem('luiz_registros');renderHistorico();renderCharts();}}
+
+// ── CORE DONE ──
+const CORE_IDS = ['prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'];
+
+function getCoreStatus() {
+  try { return JSON.parse(localStorage.getItem('core_done') || '{}'); } catch { return {}; }
+}
+function saveCoreStatus(s) {
+  localStorage.setItem('core_done', JSON.stringify(s));
+  if (window.fbSaveCoreDone) window.fbSaveCoreDone(s);
+}
+
+function toggleCoreDone(id) {
+  const hoje = new Date().toISOString().split('T')[0];
+  const status = getCoreStatus();
+  const key = hoje + '_' + id;
+  status[key] = !status[key];
+  saveCoreStatus(status);
+  renderCoreDone();
+}
+
+function renderCoreDone() {
+  const hoje = new Date().toISOString().split('T')[0];
+  const status = getCoreStatus();
+  CORE_IDS.forEach(id => {
+    const key = hoje + '_' + id;
+    const done = !!status[key];
+    const btn = document.getElementById('done-btn-' + id);
+    const lbl = document.getElementById('done-lbl-' + id);
+    const row = document.getElementById('done-row-' + id);
+    if (!btn) return;
+    if (done) {
+      btn.textContent = '✓ Feito!';
+      btn.classList.add('done');
+      lbl.textContent = 'concluído hoje ✅';
+      lbl.classList.add('done');
+      row.classList.add('done');
+    } else {
+      btn.textContent = '✓ Marcar como feito';
+      btn.classList.remove('done');
+      lbl.textContent = 'não realizado hoje';
+      lbl.classList.remove('done');
+      row.classList.remove('done');
+    }
+  });
+}
+renderCoreDone();
+
+// ── INIT ──
+renderHistorico();
+renderCharts();
+calcProjecao(getRegistros());
+</script>
+</body>
+</html>
