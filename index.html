@@ -1431,641 +1431,559 @@ const META_PESO = 92;
 const META_BF = 14;
 let chatState = {};
 
-// ── TABS ──
+// TABS
 function showTab(id, el) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
   el.classList.add('active');
   if (id === 'registro') initChat();
   if (id === 'historico') { renderHistorico(); renderCharts(); }
-  if (id === 'graficos') { if(window.renderGraficos) renderGraficos(); }
+  if (id === 'graficos') { if (window.renderGraficos) renderGraficos(); }
 }
 
-// ── COUNTDOWN ──
+// COUNTDOWN
 function updateCountdown() {
-  const deadline = new Date('2026-07-29T00:00:00');
-  const now = new Date();
-  const diff = Math.ceil((deadline - now) / 86400000);
+  var deadline = new Date('2026-07-29T00:00:00');
+  var now = new Date();
+  var diff = Math.ceil((deadline - now) / 86400000);
   document.getElementById('dias-restantes').textContent = Math.abs(diff);
-  document.getElementById('countdown-msg').textContent =
-    diff > 0 ? diff + ' dias para o prazo.' : diff === 0 ? 'É hoje! 💪' : 'Prazo encerrado há ' + Math.abs(diff) + ' dias.';
+  var msg = diff > 0 ? diff + ' dias para o prazo.' : diff === 0 ? 'E hoje!' : 'Prazo encerrado ha ' + Math.abs(diff) + ' dias.';
+  document.getElementById('countdown-msg').textContent = msg;
 }
 updateCountdown();
 
-// ── CIRURGIA ──
+// CIRURGIA
 function salvarDataCirurgia() {
-  const val = document.getElementById('data-cirurgia').value;
+  var val = document.getElementById('data-cirurgia').value;
   if (!val) return;
   localStorage.setItem('data_cirurgia', val);
   if (window.fbSaveDataCirurgia) window.fbSaveDataCirurgia(val);
   atualizarCirurgia();
 }
 function atualizarCirurgia() {
-  const saved = localStorage.getItem('data_cirurgia');
+  var saved = localStorage.getItem('data_cirurgia');
   if (saved) {
     document.getElementById('data-cirurgia').value = saved;
-    const diff = Math.ceil((new Date(saved) - new Date()) / 86400000);
+    var diff = Math.ceil((new Date(saved) - new Date()) / 86400000);
     document.getElementById('dias-cirurgia').textContent = diff > 0 ? diff : 'Realizada';
     document.getElementById('data-cirurgia-display').textContent = saved;
   }
 }
 atualizarCirurgia();
 
-// ── STORAGE ──
-function getRegistros() { try { return JSON.parse(localStorage.getItem('luiz_registros') || '[]'); } catch { return []; } }
+// STORAGE
+function getRegistros() {
+  try { return JSON.parse(localStorage.getItem('luiz_registros') || '[]'); } catch(e) { return []; }
+}
 function saveRegistros(r) {
   localStorage.setItem('luiz_registros', JSON.stringify(r));
   if (window.fbSaveRegistros) window.fbSaveRegistros(r);
 }
 
-// ── LOG CARGAS ──
+// LOG CARGAS
 function logCarga(ex, numSeries) {
-  const hoje = new Date().toISOString().split('T')[0];
-  const series = [];
-  for (let i = 1; i <= numSeries; i++) {
-    const carga = document.getElementById(`s${i}-carga-${ex}`)?.value;
-    const reps  = document.getElementById(`s${i}-reps-${ex}`)?.value;
-    if (carga && reps) series.push({ serie: i, carga: parseFloat(carga), reps: parseInt(reps) });
+  var hoje = new Date().toISOString().split('T')[0];
+  var series = [];
+  for (var i = 1; i <= numSeries; i++) {
+    var carga = document.getElementById('s' + i + '-carga-' + ex);
+    var reps = document.getElementById('s' + i + '-reps-' + ex);
+    if (carga && reps && carga.value && reps.value) {
+      series.push({ serie: i, carga: parseFloat(carga.value), reps: parseInt(reps.value) });
+    }
   }
-  if (series.length === 0) { alert('Preencha pelo menos uma série.'); return; }
-  const key = 'carga_' + ex;
-  const hist = JSON.parse(localStorage.getItem(key) || '[]');
-  hist.unshift({ data: hoje, series, ts: Date.now() });
+  if (series.length === 0) { alert('Preencha pelo menos uma serie.'); return; }
+  var key = 'carga_' + ex;
+  var hist = JSON.parse(localStorage.getItem(key) || '[]');
+  hist.unshift({ data: hoje, series: series, ts: Date.now() });
   if (hist.length > 60) hist.pop();
   localStorage.setItem(key, JSON.stringify(hist));
   if (window.fbSaveCarga) window.fbSaveCarga(ex, hist);
   renderCargaHist(ex);
-  // Clear fields
-  for (let i = 1; i <= numSeries; i++) {
-    const c = document.getElementById(`s${i}-carga-${ex}`);
-    const r = document.getElementById(`s${i}-reps-${ex}`);
+  for (var j = 1; j <= numSeries; j++) {
+    var c = document.getElementById('s' + j + '-carga-' + ex);
+    var r = document.getElementById('s' + j + '-reps-' + ex);
     if (c) c.value = '';
     if (r) r.value = '';
   }
 }
 
 function renderCargaHist(ex) {
-  const el = document.getElementById('hist-' + ex);
+  var el = document.getElementById('hist-' + ex);
   if (!el) return;
-  const hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
+  var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
   if (hist.length === 0) return;
-
-  // Last session
-  const ultimo = hist[0];
-  const seriesTxt = ultimo.series.map(function(s){return 'S'+s.serie+': '+s.carga+'kg x '+s.reps;}).join(' | ');
-
-  // PR: max carga across all sessions and all series
-  let pr = 0;
-  hist.forEach(h => h.series.forEach(s => { if (s.carga > pr) pr = s.carga; }));
-
-  // Volume last session
-  const vol = ultimo.series.reduce((acc, s) => acc + s.carga * s.reps, 0);
-
-  el.innerHTML = `<span style="color:var(--pool)">Última sessão (${ultimo.data}):</span> ${seriesTxt}<br>
-    <span style="color:var(--mid)">Volume: ${vol.toFixed(0)} kg · PR: ${pr} kg</span>`;
+  var ultimo = hist[0];
+  var seriesTxt = ultimo.series.map(function(s) { return 'S' + s.serie + ': ' + s.carga + 'kg x ' + s.reps; }).join(' | ');
+  var pr = 0;
+  hist.forEach(function(h) { h.series.forEach(function(s) { if (s.carga > pr) pr = s.carga; }); });
+  var vol = ultimo.series.reduce(function(acc, s) { return acc + s.carga * s.reps; }, 0);
+  el.innerHTML = '<span style="color:#0284c7">Ultima sessao (' + ultimo.data + '):</span> ' + seriesTxt + '<br><span style="color:#6b7280">Volume: ' + vol.toFixed(0) + ' kg | PR: ' + pr + ' kg</span>';
 }
 
-// Init cargas
-['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni']
-  .forEach(ex => renderCargaHist(ex));
+['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni'].forEach(function(ex) { renderCargaHist(ex); });
 
-// ── PROJEÇÃO ──
+// PROJECAO
 function calcProjecao(registros) {
-  const comPeso = registros.filter(r => r.peso && r.data).reverse();
-  if (comPeso.length < 4) { document.getElementById('proj-display').textContent = '—'; document.getElementById('proj-sub').textContent = 'mín. 4 registros'; return; }
-  const ultimos7 = comPeso.slice(-7);
-  const perdaSemana = (parseFloat(ultimos7[0].peso) - parseFloat(ultimos7[ultimos7.length-1].peso));
-  const perdaDia = perdaSemana / (ultimos7.length - 1);
-  const pesoAtual = parseFloat(comPeso[comPeso.length-1].peso);
-  if (perdaDia <= 0) { document.getElementById('proj-display').textContent = '—'; document.getElementById('proj-sub').textContent = 'sem perda recente'; return; }
-  const diasParaMeta = Math.ceil((pesoAtual - META_PESO) / perdaDia);
-  const dataMeta = new Date(Date.now() + diasParaMeta * 86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-  const deadline = new Date('2026-07-29');
-  const diasRestantes = Math.ceil((deadline - new Date()) / 86400000);
+  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse();
+  if (comPeso.length < 4) {
+    document.getElementById('proj-display').textContent = '--';
+    document.getElementById('proj-sub').textContent = 'min. 4 registros';
+    return;
+  }
+  var ultimos = comPeso.slice(-7);
+  var perdaDia = (parseFloat(ultimos[0].peso) - parseFloat(ultimos[ultimos.length-1].peso)) / (ultimos.length - 1);
+  var pesoAtual = parseFloat(comPeso[comPeso.length-1].peso);
+  if (perdaDia <= 0) {
+    document.getElementById('proj-display').textContent = '--';
+    document.getElementById('proj-sub').textContent = 'sem perda recente';
+    return;
+  }
+  var diasParaMeta = Math.ceil((pesoAtual - META_PESO) / perdaDia);
+  var dataMeta = new Date(Date.now() + diasParaMeta * 86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+  var diasRestantes = Math.ceil((new Date('2026-07-29') - new Date()) / 86400000);
   document.getElementById('proj-display').textContent = dataMeta;
-  document.getElementById('proj-sub').textContent = diasParaMeta <= diasRestantes ? '✅ no prazo' : '⚠️ atrás do prazo';
+  document.getElementById('proj-sub').textContent = diasParaMeta <= diasRestantes ? 'no prazo' : 'atras do prazo';
 }
 
-// ── ALERTA TREINO DUPLO ──
+// ALERTA TREINO DUPLO
 function verificarTreinoDuplo() {
-  const reg = getRegistros();
+  var reg = getRegistros();
   if (reg.length === 0) return;
-  const hoje = new Date().toISOString().split('T')[0];
-  const regHoje = reg.find(r => r.data === hoje);
+  var hoje = new Date().toISOString().split('T')[0];
+  var regHoje = reg.find(function(r) { return r.data === hoje; });
   if (!regHoje) return;
-  const treinos = (regHoje.treinos || '').toLowerCase();
-  const duplo = treinos.includes('natação') && treinos.includes('musculação');
+  var treinos = (regHoje.treinos || '').toLowerCase();
+  var duplo = treinos.indexOf('natacao') >= 0 && treinos.indexOf('musculacao') >= 0;
+  if (!duplo) duplo = treinos.indexOf('nata') >= 0 && treinos.indexOf('muscula') >= 0;
   document.getElementById('alerta-treino-duplo').style.display = duplo ? 'block' : 'none';
 }
 verificarTreinoDuplo();
 
-// ── NAVY BF ──
+// NAVY BF
 function calcNavyBF(pescoco, cintura, altura) {
   return Math.round((495 / (1.0324 - 0.19077 * Math.log10(cintura - pescoco) + 0.15456 * Math.log10(altura)) - 450) * 10) / 10;
 }
 function devePedirMedidas() {
-  const registros = getRegistros();
-  const comMedidas = registros.find(r => r.pescoco);
+  var registros = getRegistros();
+  var comMedidas = registros.find(function(r) { return r.pescoco; });
   if (!comMedidas) return registros.length > 0;
   return Math.floor((new Date() - new Date(comMedidas.data)) / 86400000) >= 7;
 }
 
-// ── CHAT ──
-const STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','medidas_check','pescoco','cintura','quadril','confirmar'];
+// CHAT
+var STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','medidas_check','pescoco','cintura','quadril','confirmar'];
 
 function initChat() {
   chatState = { step:0, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null, pescoco:null, cintura:null, quadril:null, pedirMedidas:devePedirMedidas() };
   document.getElementById('chat-messages').innerHTML = '';
   document.getElementById('chat-buttons').style.display = 'none';
   document.getElementById('chat-input-wrap').style.display = 'flex';
-  const hoje = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  var hoje = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
   botMsg('Boa noite! Check-in de hoje: <strong>' + hoje + '</strong>.');
   setTimeout(askStep, 700);
 }
 
 function botMsg(txt) {
-  const el = document.createElement('div');
+  var el = document.createElement('div');
   el.style.cssText = 'background:#eff6ff;border-left:3px solid #3b82f6;padding:.65rem .9rem;border-radius:0 10px 10px 0;font-size:.83rem;line-height:1.65;max-width:88%;align-self:flex-start;color:#1e3a5f';
   el.innerHTML = txt;
   document.getElementById('chat-messages').appendChild(el);
   document.getElementById('chat-messages').scrollTop = 9999;
 }
 function userMsg(txt) {
-  const el = document.createElement('div');
+  var el = document.createElement('div');
   el.style.cssText = 'background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;padding:.65rem .9rem;border-radius:10px 0 0 10px;font-size:.83rem;line-height:1.65;max-width:88%;align-self:flex-end;box-shadow:0 2px 8px rgba(2,132,199,.25)';
   el.textContent = txt;
   document.getElementById('chat-messages').appendChild(el);
   document.getElementById('chat-messages').scrollTop = 9999;
 }
 function showButtons(opts) {
-  const wrap = document.getElementById('chat-buttons');
+  var wrap = document.getElementById('chat-buttons');
   document.getElementById('chat-input-wrap').style.display = 'none';
   wrap.innerHTML = '';
   wrap.style.display = 'flex';
-  opts.forEach(o => {
-    const btn = document.createElement('button');
+  opts.forEach(function(o) {
+    var btn = document.createElement('button');
     btn.className = 'btn btn-sm';
     btn.style.cssText = 'background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0;font-weight:600;border-radius:20px';
     btn.textContent = o.label;
-    btn.onclick = () => { userMsg(o.label); processAnswer(o.value); };
+    btn.onclick = function() { userMsg(o.label); processAnswer(o.value); };
     wrap.appendChild(btn);
   });
 }
 function showInput(ph) {
   document.getElementById('chat-buttons').style.display = 'none';
   document.getElementById('chat-input-wrap').style.display = 'flex';
-  const inp = document.getElementById('chat-input');
+  var inp = document.getElementById('chat-input');
   inp.placeholder = ph; inp.value = '';
-  setTimeout(() => inp.focus(), 80);
+  setTimeout(function() { inp.focus(); }, 80);
 }
 function enviarResposta() {
-  const val = document.getElementById('chat-input').value.trim();
+  var val = document.getElementById('chat-input').value.trim();
   if (!val) return;
   userMsg(val); document.getElementById('chat-input').value = '';
   processAnswer(val);
 }
 
 function activeSteps() {
-  return chatState.pedirMedidas ? STEPS : STEPS.filter(s => !['medidas_check','pescoco','cintura','quadril'].includes(s));
+  return chatState.pedirMedidas ? STEPS : STEPS.filter(function(s) { return ['medidas_check','pescoco','cintura','quadril'].indexOf(s) < 0; });
 }
 
 function askStep() {
-  const step = activeSteps()[chatState.step];
-  if (step==='peso') { botMsg('Qual foi o seu <strong>peso</strong> hoje? (kg)'); showInput('Ex: 95.8'); }
-  else if (step==='kcal') { botMsg('Quantas <strong>calorias</strong> você consumiu hoje? (ou "pular")'); showInput('Ex: 2650'); }
-  else if (step==='agua') { botMsg('Quantos <strong>litros de água</strong> você bebeu?'); showInput('Ex: 3.5'); }
-  else if (step==='treinos') { botMsg('Quais <strong>treinos</strong> você fez? (marque todos)'); showButtons([{label:'🏊 Natação',value:'natação'},{label:'💪 Musculação',value:'musculação'},{label:'🔥 Core',value:'core'},{label:'🚴 Cardio',value:'cardio'},{label:'😴 Descanso',value:'descanso'},{label:'✅ Concluído',value:'__done__'}]); }
-  else if (step==='sono') { botMsg('Como foi o <strong>sono</strong> de ontem à noite?'); showButtons([{label:'😴 Péssimo (1)',value:'1'},{label:'😕 Ruim (2)',value:'2'},{label:'😐 Ok (3)',value:'3'},{label:'😊 Bom (4)',value:'4'},{label:'🌟 Excelente (5)',value:'5'}]); }
-  else if (step==='kcal_gasta') { botMsg('Quantas <strong>calorias voce gastou</strong> nos treinos hoje? (Mi Fitness, ou "pular")'); showInput('Ex: 650'); }
-  else if (step==='fc_media') { botMsg('Qual foi a <strong>FC media</strong> durante o treino? (Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
-  else if (step==='obs') { botMsg('Alguma <strong>observação</strong> sobre o dia? (ou "nada")'); showInput('Energia, alimentação, dores...'); }
-  else if (step==='medidas_check') { botMsg('📏 Semana de <strong>medidas corporais</strong>! Tem fita métrica em mãos?'); showButtons([{label:'Sim, vou medir',value:'sim'},{label:'Não, pular',value:'nao'}]); }
-  else if (step==='pescoco') { botMsg('Meça o <strong>pescoço</strong> na parte mais estreita (cm):'); showInput('Ex: 15.5'); }
-  else if (step==='cintura') { botMsg('Meça a <strong>cintura</strong> na altura do umbigo (cm):'); showInput('Ex: 94'); }
-  else if (step==='quadril') { botMsg('Meça o <strong>quadril</strong> na parte mais larga (cm):'); showInput('Ex: 104'); }
-  else if (step==='confirmar') mostrarResumo();
+  var step = activeSteps()[chatState.step];
+  if (step === 'peso') { botMsg('Qual foi o seu <strong>peso</strong> hoje? (kg)'); showInput('Ex: 95.8'); }
+  else if (step === 'kcal') { botMsg('Quantas <strong>calorias</strong> voce consumiu? (ou "pular")'); showInput('Ex: 2650'); }
+  else if (step === 'agua') { botMsg('Quantos <strong>litros de agua</strong> voce bebeu?'); showInput('Ex: 3.5'); }
+  else if (step === 'kcal_gasta') { botMsg('Quantas <strong>calorias voce gastou</strong> nos treinos? (Mi Fitness, ou "pular")'); showInput('Ex: 650'); }
+  else if (step === 'fc_media') { botMsg('Qual foi a <strong>FC media</strong> durante o treino? (Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
+  else if (step === 'treinos') { botMsg('Quais <strong>treinos</strong> voce fez? (marque todos)'); showButtons([{label:'Natacao',value:'natacao'},{label:'Musculacao',value:'musculacao'},{label:'Core',value:'core'},{label:'Cardio',value:'cardio'},{label:'Descanso',value:'descanso'},{label:'Concluido',value:'__done__'}]); }
+  else if (step === 'sono') { botMsg('Como foi o <strong>sono</strong> de ontem?'); showButtons([{label:'Pessimo (1)',value:'1'},{label:'Ruim (2)',value:'2'},{label:'Ok (3)',value:'3'},{label:'Bom (4)',value:'4'},{label:'Excelente (5)',value:'5'}]); }
+  else if (step === 'obs') { botMsg('Alguma <strong>observacao</strong>? (ou "nada")'); showInput('Energia, alimentacao, dores...'); }
+  else if (step === 'medidas_check') { botMsg('Semana de <strong>medidas corporais</strong>! Tem fita metrica?'); showButtons([{label:'Sim, vou medir',value:'sim'},{label:'Nao, pular',value:'nao'}]); }
+  else if (step === 'pescoco') { botMsg('Meça o <strong>pescoco</strong> na parte mais estreita (cm):'); showInput('Ex: 15.5'); }
+  else if (step === 'cintura') { botMsg('Meça a <strong>cintura</strong> na altura do umbigo (cm):'); showInput('Ex: 94'); }
+  else if (step === 'quadril') { botMsg('Meça o <strong>quadril</strong> na parte mais larga (cm):'); showInput('Ex: 106'); }
+  else if (step === 'confirmar') mostrarResumo();
 }
 
 function processAnswer(val) {
-  const step = activeSteps()[chatState.step];
-  const n = parseFloat(val.replace(',','.'));
-
-  if (step==='peso') {
-    if (isNaN(n)||n<40||n>200) { botMsg('⚠️ Valor inválido. Ex: 95.8'); return; }
-    chatState.peso=n; chatState.step++; setTimeout(askStep,350);
-  } else if (step==='kcal') {
-    if (val.toLowerCase()==='pular') { chatState.kcal=null; } else { chatState.kcal=isNaN(n)?null:n; }
-    chatState.step++; setTimeout(askStep,350);
-  } else if (step==='agua') {
-    if (isNaN(n)||n<0||n>15) { botMsg('⚠️ Valor inválido. Ex: 3.5'); return; }
-    chatState.agua=n;
-    if (n < 3.5) botMsg('<strong>Hidratacao abaixo da meta!</strong> Voce bebeu ' + n + 'L mas a meta e 3,5L.');
-    chatState.step++; setTimeout(askStep,350);
-  } else if (step==='kcal_gasta') {
-    if (val.toLowerCase()==='pular') { chatState.kcal_gasta=null; }
-    else { const n2=parseFloat(val.replace(',','.')); chatState.kcal_gasta=isNaN(n2)?null:n2; }
-    chatState.step++; setTimeout(askStep,350);
-  } else if (step==='fc_media') {
-    if (val.toLowerCase()==='pular') { chatState.fc_media=null; }
-    else { const n2=parseFloat(val.replace(',','.')); chatState.fc_media=isNaN(n2)?null:n2; }
-    chatState.step++; setTimeout(askStep,350);
-  } else if (step==='treinos') {
-    if (val==='__done__') {
-      if (chatState.treinos.length===0) { botMsg('Selecione pelo menos uma opção.'); return; }
-      chatState.step++; setTimeout(askStep,350);
+  var step = activeSteps()[chatState.step];
+  var n = parseFloat(val.replace(',','.'));
+  if (step === 'peso') {
+    if (isNaN(n) || n < 40 || n > 200) { botMsg('Valor invalido. Ex: 95.8'); return; }
+    chatState.peso = n; chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'kcal') {
+    chatState.kcal = val.toLowerCase() === 'pular' ? null : (isNaN(n) ? null : n);
+    chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'agua') {
+    if (isNaN(n) || n < 0 || n > 15) { botMsg('Valor invalido. Ex: 3.5'); return; }
+    chatState.agua = n;
+    if (n < 3.5) botMsg('<strong>Hidratacao abaixo da meta!</strong> Voce bebeu ' + n + 'L (meta: 3,5L).');
+    chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'kcal_gasta') {
+    chatState.kcal_gasta = val.toLowerCase() === 'pular' ? null : (isNaN(n) ? null : n);
+    chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'fc_media') {
+    chatState.fc_media = val.toLowerCase() === 'pular' ? null : (isNaN(n) ? null : n);
+    chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'treinos') {
+    if (val === '__done__') {
+      if (chatState.treinos.length === 0) { botMsg('Selecione pelo menos uma opcao.'); return; }
+      chatState.step++; setTimeout(askStep, 350);
     } else {
-      if (!chatState.treinos.includes(val)) chatState.treinos.push(val);
-      const duplo = chatState.treinos.includes('natação') && chatState.treinos.includes('musculação');
+      if (chatState.treinos.indexOf(val) < 0) chatState.treinos.push(val);
+      var duplo = chatState.treinos.indexOf('natacao') >= 0 && chatState.treinos.indexOf('musculacao') >= 0;
       botMsg('<b>' + val + '</b> adicionado.' + (duplo ? ' TREINO DUPLO: +150 kcal em carbs!' : '') + ' Selecione mais ou clique Concluido.');
     }
-  } else if (step==='sono') {
-    chatState.sono=val; chatState.step++; setTimeout(askStep,350);
-  } else if (step==='obs') {
-    chatState.obs=val.toLowerCase()==='nada'?'':val; chatState.step++; setTimeout(askStep,350);
-  } else if (step==='medidas_check') {
-    if (val==='nao') { chatState.pedirMedidas=false; chatState.step+=4; } else chatState.step++;
-    setTimeout(askStep,350);
-  } else if (step==='pescoco') {
-    if (isNaN(n)||n<20||n>60) { botMsg('⚠️ Inválido. Ex: 15.5'); return; }
-    chatState.pescoco=n; chatState.step++; setTimeout(askStep,350);
-  } else if (step==='cintura') {
-    if (isNaN(n)||n<40||n>200) { botMsg('⚠️ Inválido. Ex: 94'); return; }
-    chatState.cintura=n; chatState.step++; setTimeout(askStep,350);
-  } else if (step==='quadril') {
-    if (isNaN(n)||n<40||n>200) { botMsg('⚠️ Inválido. Ex: 106'); return; }
-    chatState.quadril=n; chatState.step++; setTimeout(askStep,350);
+  } else if (step === 'sono') {
+    chatState.sono = val; chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'obs') {
+    chatState.obs = val.toLowerCase() === 'nada' ? '' : val; chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'medidas_check') {
+    if (val === 'nao') { chatState.pedirMedidas = false; chatState.step += 4; } else chatState.step++;
+    setTimeout(askStep, 350);
+  } else if (step === 'pescoco') {
+    if (isNaN(n) || n < 20 || n > 60) { botMsg('Invalido. Ex: 15.5'); return; }
+    chatState.pescoco = n; chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'cintura') {
+    if (isNaN(n) || n < 40 || n > 200) { botMsg('Invalido. Ex: 94'); return; }
+    chatState.cintura = n; chatState.step++; setTimeout(askStep, 350);
+  } else if (step === 'quadril') {
+    if (isNaN(n) || n < 40 || n > 200) { botMsg('Invalido. Ex: 106'); return; }
+    chatState.quadril = n; chatState.step++; setTimeout(askStep, 350);
   }
 }
 
 function mostrarResumo() {
-  let bfTxt='';
+  var bfTxt = '';
   if (chatState.pescoco && chatState.cintura) {
-    const bf = calcNavyBF(chatState.pescoco, chatState.cintura, ALTURA_CM);
-    const mm = (chatState.peso*(1-bf/100)).toFixed(1);
-    const mg = (chatState.peso*bf/100).toFixed(1);
+    var bf = calcNavyBF(chatState.pescoco, chatState.cintura, ALTURA_CM);
+    var mm = (chatState.peso * (1 - bf/100)).toFixed(1);
+    var mg = (chatState.peso * bf/100).toFixed(1);
     bfTxt = '<br>% Gordura: <strong>' + bf + '%</strong> - Magra: ' + mm + 'kg / Gorda: ' + mg + 'kg';
     document.getElementById('bf-display').textContent = bf + '%';
   }
-  const stars = '★'.repeat(parseInt(chatState.sono||0))+'☆'.repeat(5-parseInt(chatState.sono||0));
-  const aguaOk = chatState.agua >= 3.5;
-  var resumoTxt = '<strong>Resumo - ' + chatState.data + ':</strong><br>' +
+  var stars = '';
+  for (var s = 0; s < parseInt(chatState.sono || 0); s++) stars += '*';
+  var aguaOk = chatState.agua >= 3.5;
+  var html = '<strong>Resumo - ' + chatState.data + ':</strong><br>' +
     'Peso: <strong>' + chatState.peso + ' kg</strong><br>' +
     (chatState.kcal ? 'Calorias: <strong>' + chatState.kcal + ' kcal</strong><br>' : '') +
-    'Agua: <strong>' + (aguaOk ? 'OK' : 'ABAIXO') + ' ' + chatState.agua + 'L</strong><br>' +
+    'Agua: <strong>' + (aguaOk ? 'OK' : 'ABAIXO') + ' - ' + chatState.agua + 'L</strong><br>' +
     'Treinos: <strong>' + chatState.treinos.join(', ') + '</strong><br>' +
     (chatState.kcal_gasta ? 'Kcal gastas: <strong>' + chatState.kcal_gasta + ' kcal</strong><br>' : '') +
     (chatState.fc_media ? 'FC media: <strong>' + chatState.fc_media + ' bpm</strong><br>' : '') +
     'Sono: ' + stars + '<br>' +
     (chatState.obs ? 'Obs: ' + chatState.obs + '<br>' : '') +
     bfTxt;
-  botMsg(resumoTxt);
-
-  setTimeout(() => {
-    const wrap = document.getElementById('chat-buttons');
-    document.getElementById('chat-input-wrap').style.display='none';
-    wrap.innerHTML=''; wrap.style.display='flex';
-    const b1=document.createElement('button'); b1.className='btn'; b1.textContent='✅ Confirmar e Salvar'; b1.onclick=confirmarSalvar; wrap.appendChild(b1);
-    const b2=document.createElement('button'); b2.className='btn'; b2.style.cssText='background:var(--white);color:var(--ink);border:1px solid var(--rule)'; b2.textContent='🔄 Recomeçar'; b2.onclick=initChat; wrap.appendChild(b2);
+  botMsg(html);
+  setTimeout(function() {
+    var wrap = document.getElementById('chat-buttons');
+    document.getElementById('chat-input-wrap').style.display = 'none';
+    wrap.innerHTML = ''; wrap.style.display = 'flex';
+    var b1 = document.createElement('button'); b1.className = 'btn'; b1.textContent = 'Confirmar e Salvar'; b1.onclick = confirmarSalvar; wrap.appendChild(b1);
+    var b2 = document.createElement('button'); b2.className = 'btn'; b2.style.cssText = 'background:#fff;color:#374151;border:1px solid #e2e8f0'; b2.textContent = 'Recomecar'; b2.onclick = initChat; wrap.appendChild(b2);
   }, 500);
 }
 
 function confirmarSalvar() {
-  const reg = { data:chatState.data, peso:chatState.peso, kcal:chatState.kcal||null, agua:chatState.agua, kcal_gasta:chatState.kcal_gasta||null, fc_media:chatState.fc_media||null, treinos:chatState.treinos.join(', '), sono:chatState.sono, obs:chatState.obs||'', pescoco:chatState.pescoco||null, cintura:chatState.cintura||null, quadril:chatState.quadril||null, ts:Date.now() };
-  const registros = getRegistros(); registros.unshift(reg); saveRegistros(registros);
-  document.getElementById('chat-buttons').style.display='none';
-  document.getElementById('peso-display').textContent=chatState.peso;
+  var reg = { data:chatState.data, peso:chatState.peso, kcal:chatState.kcal||null, agua:chatState.agua, kcal_gasta:chatState.kcal_gasta||null, fc_media:chatState.fc_media||null, treinos:chatState.treinos.join(', '), sono:chatState.sono, obs:chatState.obs||'', pescoco:chatState.pescoco||null, cintura:chatState.cintura||null, quadril:chatState.quadril||null, ts:Date.now() };
+  var registros = getRegistros(); registros.unshift(reg); saveRegistros(registros);
+  document.getElementById('chat-buttons').style.display = 'none';
+  document.getElementById('peso-display').textContent = chatState.peso;
   verificarTreinoDuplo();
   calcProjecao(registros);
-  botMsg('🎯 <strong>Salvo!</strong> Consistência é o que vai te levar ao resultado até 29/07. 💪');
-  setTimeout(()=>{
-    const b=document.createElement('button'); b.className='btn btn-sm'; b.style.marginTop='.5rem'; b.textContent='+ Novo registro'; b.onclick=initChat;
+  botMsg('<strong>Salvo com sucesso!</strong> Consistencia e o que vai te levar ao resultado ate 29/07.');
+  setTimeout(function() {
+    var b = document.createElement('button'); b.className = 'btn btn-sm'; b.style.marginTop = '.5rem'; b.textContent = '+ Novo registro'; b.onclick = initChat;
     document.getElementById('chat-messages').appendChild(b);
-    document.getElementById('chat-messages').scrollTop=9999;
+    document.getElementById('chat-messages').scrollTop = 9999;
   }, 700);
 }
 
-// ── HISTORICO ──
+// HISTORICO
 function renderHistorico() {
-  const registros = getRegistros();
-  const vazio=document.getElementById('historico-vazio'), tabela=document.getElementById('historico-tabela');
-  const tbody=document.getElementById('historico-body'), total=document.getElementById('total-registros');
-  total.textContent = registros.length + ' registro' + (registros.length!==1?'s':'');
-  if (registros.length===0) { vazio.style.display='block'; tabela.style.display='none'; return; }
-  vazio.style.display='none'; tabela.style.display='block';
-  if (registros[0].peso) document.getElementById('peso-display').textContent=registros[0].peso;
-  tbody.innerHTML = registros.map(r => {
-    var bfTxt='-';
-    if (r.pescoco && r.cintura) { const bf=calcNavyBF(r.pescoco,r.cintura,ALTURA_CM); bfTxt=bf+'%'; }
-    return `<tr>
-      <td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:.7rem">${r.data||'-'}</td>
-      <td><strong>${r.peso?r.peso+' kg':'-'}</strong></td>
-      <td>${r.agua?r.agua+'L':'-'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem">${r.kcal?r.kcal+' kcal':'-'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.kcal_gasta?r.kcal_gasta+' kcal':'-'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--burn)">${r.fc_media?r.fc_media+' bpm':'-'}</td>
-      <td style="font-size:.7rem">${r.treinos||'-'}</td>
-      <td>${r.sono?'*'.repeat(parseInt(r.sono)):'—'}</td>
-      <td style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--pool)">${bfTxt}</td>
-      <td style="font-size:.73rem;max-width:100px;color:var(--mid)">${r.obs||''}</td>
-    </tr>`;
+  var registros = getRegistros();
+  var vazio = document.getElementById('historico-vazio');
+  var tabela = document.getElementById('historico-tabela');
+  var tbody = document.getElementById('historico-body');
+  var total = document.getElementById('total-registros');
+  total.textContent = registros.length + (registros.length !== 1 ? ' registros' : ' registro');
+  if (registros.length === 0) { vazio.style.display = 'block'; tabela.style.display = 'none'; return; }
+  vazio.style.display = 'none'; tabela.style.display = 'block';
+  if (registros[0].peso) document.getElementById('peso-display').textContent = registros[0].peso;
+  tbody.innerHTML = registros.map(function(r) {
+    var bfTxt = '-';
+    if (r.pescoco && r.cintura) bfTxt = calcNavyBF(r.pescoco, r.cintura, ALTURA_CM) + '%';
+    return '<tr>' +
+      '<td style="white-space:nowrap;font-family:\'DM Mono\',monospace;font-size:.7rem">' + (r.data || '-') + '</td>' +
+      '<td><strong>' + (r.peso ? r.peso + ' kg' : '-') + '</strong></td>' +
+      '<td>' + (r.agua ? r.agua + 'L' : '-') + '</td>' +
+      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
+      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:#ea580c">' + (r.kcal_gasta ? r.kcal_gasta + ' kcal' : '-') + '</td>' +
+      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:#ea580c">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
+      '<td style="font-size:.7rem">' + (r.treinos || '-') + '</td>' +
+      '<td>' + (r.sono ? r.sono + '/5' : '-') + '</td>' +
+      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:#0284c7">' + bfTxt + '</td>' +
+      '<td style="font-size:.73rem;max-width:100px;color:#6b7280">' + (r.obs || '') + '</td>' +
+      '</tr>';
   }).join('');
   calcProjecao(registros);
-  // update bf display
-  const comBF = registros.find(r => r.pescoco && r.cintura);
-  if (comBF) { const bf=calcNavyBF(comBF.pescoco,comBF.cintura,ALTURA_CM); document.getElementById('bf-display').textContent=bf+'%'; document.getElementById('bf-sub').textContent=comBF.data; }
+  var comBF = registros.find(function(r) { return r.pescoco && r.cintura; });
+  if (comBF) {
+    var bf = calcNavyBF(comBF.pescoco, comBF.cintura, ALTURA_CM);
+    document.getElementById('bf-display').textContent = bf + '%';
+    document.getElementById('bf-sub').textContent = comBF.data;
+  }
 }
 
-// ── CHARTS ──
-let _pesoChart, _bfChart;
+// CHARTS (historico)
+var _pesoChart, _bfChart;
 function renderCharts() {
-  const registros = getRegistros();
-  const comPeso = registros.filter(r=>r.peso&&r.data).reverse();
-  const comBF   = registros.filter(r=>r.pescoco&&r.cintura&&r.data).reverse();
-
-  // Peso chart
-  const pesoCard = document.getElementById('chart-peso-card');
+  var registros = getRegistros();
+  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse();
+  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura && r.data; }).reverse();
+  var pesoCard = document.getElementById('chart-peso-card');
   if (comPeso.length >= 2) {
-    pesoCard.style.display='block';
-    const labels=comPeso.map(r=>r.data), pesos=comPeso.map(r=>parseFloat(r.peso));
-    const inicio=pesos[0], atual=pesos[pesos.length-1], variac=(atual-inicio).toFixed(1);
-    document.getElementById('stat-inicio').textContent=inicio+' kg';
-    document.getElementById('stat-atual').textContent=atual+' kg';
-    const ve=document.getElementById('stat-var'); ve.textContent=(variac>0?'+':'')+variac+' kg'; ve.style.color=variac<=0?'var(--moss)':'var(--burn)';
+    pesoCard.style.display = 'block';
+    var labels = comPeso.map(function(r) { return r.data; });
+    var pesos = comPeso.map(function(r) { return parseFloat(r.peso); });
+    document.getElementById('stat-inicio').textContent = pesos[0] + ' kg';
+    document.getElementById('stat-atual').textContent = pesos[pesos.length-1] + ' kg';
+    var ve = document.getElementById('stat-var');
+    var variac = (pesos[pesos.length-1] - pesos[0]).toFixed(1);
+    ve.textContent = (variac > 0 ? '+' : '') + variac + ' kg';
+    ve.style.color = variac <= 0 ? '#16a34a' : '#ea580c';
     if (_pesoChart) _pesoChart.destroy();
-    _pesoChart = new Chart(document.getElementById('pesoChart').getContext('2d'),{type:'line',data:{labels,datasets:[{label:'Peso (kg)',data:pesos,borderColor:'#006b8f',backgroundColor:'rgba(0,107,143,0.08)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'Meta (92 kg)',data:Array(labels.length).fill(92),borderColor:'#3a6b3e',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b6b6b'}}},scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',maxTicksLimit:8},grid:{color:'#e8e4dc'}},y:{min:Math.min(...pesos)-1,max:Math.max(...pesos)+1,ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',callback:v=>v+' kg'},grid:{color:'#e8e4dc'}}}}});
-  } else pesoCard.style.display='none';
-
-  // BF chart
-  const bfCard = document.getElementById('chart-bf-card');
+    _pesoChart = new Chart(document.getElementById('pesoChart').getContext('2d'), {
+      type: 'line',
+      data: { labels: labels, datasets: [
+        { label: 'Peso (kg)', data: pesos, borderColor: '#0284c7', backgroundColor: 'rgba(2,132,199,0.08)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+        { label: 'Meta (92 kg)', data: Array(labels.length).fill(92), borderColor: '#16a34a', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
+      ]},
+      options: { responsive: true, plugins: { legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280' }}}, scales: { x: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', maxTicksLimit: 8 }, grid: { color: '#f1f5f9' }}, y: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', callback: function(v) { return v + ' kg'; }}, grid: { color: '#f1f5f9' }}}}
+    });
+  } else if (pesoCard) pesoCard.style.display = 'none';
+  var bfCard = document.getElementById('chart-bf-card');
   if (comBF.length >= 2) {
-    bfCard.style.display='block';
-    const labels=comBF.map(r=>r.data), bfs=comBF.map(r=>calcNavyBF(r.pescoco,r.cintura,ALTURA_CM));
-    document.getElementById('bf-stat-inicio').textContent=bfs[0]+'%';
-    document.getElementById('bf-stat-atual').textContent=bfs[bfs.length-1]+'%';
+    bfCard.style.display = 'block';
+    var bflabels = comBF.map(function(r) { return r.data; });
+    var bfs = comBF.map(function(r) { return calcNavyBF(r.pescoco, r.cintura, ALTURA_CM); });
+    document.getElementById('bf-stat-inicio').textContent = bfs[0] + '%';
+    document.getElementById('bf-stat-atual').textContent = bfs[bfs.length-1] + '%';
     if (_bfChart) _bfChart.destroy();
-    _bfChart = new Chart(document.getElementById('bfChart').getContext('2d'),{type:'line',data:{labels,datasets:[{label:'% Gordura',data:bfs,borderColor:'#e05a2b',backgroundColor:'rgba(224,90,43,0.07)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'Meta (<14%)',data:Array(labels.length).fill(14),borderColor:'#3a6b3e',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]},options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b6b6b'}}},scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',maxTicksLimit:8},grid:{color:'#e8e4dc'}},y:{min:Math.min(...bfs)-1,max:Math.max(...bfs)+1,ticks:{font:{family:'DM Mono',size:10},color:'#6b6b6b',callback:v=>v+'%'},grid:{color:'#e8e4dc'}}}}});
-  } else bfCard.style.display='none';
+    _bfChart = new Chart(document.getElementById('bfChart').getContext('2d'), {
+      type: 'line',
+      data: { labels: bflabels, datasets: [
+        { label: '% Gordura', data: bfs, borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,0.07)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
+        { label: 'Meta (<14%)', data: Array(bflabels.length).fill(14), borderColor: '#16a34a', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
+      ]},
+      options: { responsive: true, plugins: { legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280' }}}, scales: { x: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', maxTicksLimit: 8 }, grid: { color: '#f1f5f9' }}, y: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', callback: function(v) { return v + '%'; }}, grid: { color: '#f1f5f9' }}}}
+    });
+  } else if (bfCard) bfCard.style.display = 'none';
 }
 
-// ── LISTA COMPRAS ──
+// LISTA COMPRAS
 function toggleItem(el) {
   el.classList.toggle('checked');
   el.querySelector('input').checked = el.classList.contains('checked');
 }
 function marcarTodos(checked) {
-  document.querySelectorAll('.lista-item').forEach(el => {
+  document.querySelectorAll('.lista-item').forEach(function(el) {
     if (checked) el.classList.add('checked'); else el.classList.remove('checked');
     el.querySelector('input').checked = checked;
   });
 }
-
 function enviarWhatsApp() {
-  const itens = [];
-  document.querySelectorAll('.lista-item.checked span').forEach(el => {
-    itens.push('✅ ' + el.textContent.trim());
-  });
-  if (itens.length === 0) {
-    alert('Marque pelo menos um item antes de enviar!');
-    return;
-  }
-  var texto = 'Lista de Compras - Performance Luiz' + '\n\n' + itens.join('\n');
-  const url = 'https://wa.me/?text=' + encodeURIComponent(texto);
-  window.open(url, '_blank');
+  var itens = [];
+  document.querySelectorAll('.lista-item.checked span').forEach(function(el) { itens.push('- ' + el.textContent.trim()); });
+  if (itens.length === 0) { alert('Marque pelo menos um item antes de enviar!'); return; }
+  var texto = 'Lista de Compras - Performance Luiz' + '%0A%0A' + itens.join('%0A');
+  window.open('https://wa.me/?text=' + texto, '_blank');
 }
 
-// ── BACKUP ──
+// BACKUP
 function exportarBackup() {
-  const registros=getRegistros();
-  if (registros.length===0){alert('Nenhum registro para exportar.');return;}
-  const blob=new Blob([JSON.stringify({versao:'1.0',exportado_em:new Date().toISOString(),atleta:'Luiz — PCDF Performance',registros},null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`checkin_backup_${new Date().toISOString().split('T')[0]}.json`; a.click(); URL.revokeObjectURL(a.href);
+  var registros = getRegistros();
+  if (registros.length === 0) { alert('Nenhum registro para exportar.'); return; }
+  var payload = JSON.stringify({ versao: '1.0', exportado_em: new Date().toISOString(), registros: registros }, null, 2);
+  var blob = new Blob([payload], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'checkin_backup_' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 function importarBackup(event) {
-  const file=event.target.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=function(e){
+  var file = event.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
     try {
-      const data=JSON.parse(e.target.result);
-      if (!data.registros||!Array.isArray(data.registros)){alert('❌ Arquivo inválido.');return;}
-      const existentes=getRegistros(), tsSet=new Set(existentes.map(r=>r.ts));
-      const novos=data.registros.filter(r=>!tsSet.has(r.ts));
-      const merged=[...existentes,...novos].sort((a,b)=>b.ts-a.ts);
-      saveRegistros(merged); renderHistorico(); renderCharts();
+      var data = JSON.parse(e.target.result);
+      if (!data.registros || !Array.isArray(data.registros)) { alert('Arquivo invalido.'); return; }
+      var existentes = getRegistros();
+      var tsSet = new Set(existentes.map(function(r) { return r.ts; }));
+      var novos = data.registros.filter(function(r) { return !tsSet.has(r.ts); });
+      var merged = existentes.concat(novos).sort(function(a,b) { return b.ts - a.ts; });
+      saveRegistros(merged); renderHistorico();
       alert(novos.length + ' novo(s) registro(s) importado(s).');
-    } catch {alert('❌ Erro ao ler arquivo.');}
+    } catch(e) { alert('Erro ao ler arquivo.'); }
   };
-  reader.readAsText(file); event.target.value='';
+  reader.readAsText(file); event.target.value = '';
 }
-function limparHistorico(){if(confirm('Apagar todos os registros?')){localStorage.removeItem('luiz_registros');renderHistorico();renderCharts();}}
-
-// ── CORE DONE ──
-const CORE_IDS = ['prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'];
-
-function getCoreStatus() {
-  try { return JSON.parse(localStorage.getItem('core_done') || '{}'); } catch { return {}; }
+function limparHistorico() {
+  if (confirm('Apagar todos os registros?')) { localStorage.removeItem('luiz_registros'); renderHistorico(); renderCharts(); }
 }
+
+// CORE DONE
+var CORE_IDS = ['prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'];
+function getCoreStatus() { try { return JSON.parse(localStorage.getItem('core_done') || '{}'); } catch(e) { return {}; } }
 function saveCoreStatus(s) {
   localStorage.setItem('core_done', JSON.stringify(s));
   if (window.fbSaveCoreDone) window.fbSaveCoreDone(s);
 }
-
 function toggleCoreDone(id) {
-  const hoje = new Date().toISOString().split('T')[0];
-  const status = getCoreStatus();
-  const key = hoje + '_' + id;
+  var hoje = new Date().toISOString().split('T')[0];
+  var status = getCoreStatus();
+  var key = hoje + '_' + id;
   status[key] = !status[key];
   saveCoreStatus(status);
   renderCoreDone();
 }
-
 function renderCoreDone() {
-  const hoje = new Date().toISOString().split('T')[0];
-  const status = getCoreStatus();
-  CORE_IDS.forEach(id => {
-    const key = hoje + '_' + id;
-    const done = !!status[key];
-    const btn = document.getElementById('done-btn-' + id);
-    const lbl = document.getElementById('done-lbl-' + id);
-    const row = document.getElementById('done-row-' + id);
+  var hoje = new Date().toISOString().split('T')[0];
+  var status = getCoreStatus();
+  CORE_IDS.forEach(function(id) {
+    var key = hoje + '_' + id;
+    var done = !!status[key];
+    var btn = document.getElementById('done-btn-' + id);
+    var lbl = document.getElementById('done-lbl-' + id);
+    var row = document.getElementById('done-row-' + id);
     if (!btn) return;
-    if (done) {
-      btn.textContent = '✓ Feito!';
-      btn.classList.add('done');
-      lbl.textContent = 'concluído hoje ✅';
-      lbl.classList.add('done');
-      row.classList.add('done');
-    } else {
-      btn.textContent = '✓ Marcar como feito';
-      btn.classList.remove('done');
-      lbl.textContent = 'não realizado hoje';
-      lbl.classList.remove('done');
-      row.classList.remove('done');
-    }
+    if (done) { btn.textContent = 'Feito!'; btn.classList.add('done'); lbl.textContent = 'concluido hoje'; lbl.classList.add('done'); row.classList.add('done'); }
+    else { btn.textContent = 'Marcar como feito'; btn.classList.remove('done'); lbl.textContent = 'nao realizado hoje'; lbl.classList.remove('done'); row.classList.remove('done'); }
   });
 }
 renderCoreDone();
 
-// ── INIT ──
-renderHistorico();
-renderCharts();
-calcProjecao(getRegistros());
-
-// ── GRÁFICOS AVANÇADOS ──
-let _grafCharts = {};
-
-function destroyGrafChart(id) {
-  if (_grafCharts[id]) { _grafCharts[id].destroy(); delete _grafCharts[id]; }
-}
+// GRAFICOS AVANCADOS
+var _grafCharts = {};
+function destroyGrafChart(id) { if (_grafCharts[id]) { _grafCharts[id].destroy(); delete _grafCharts[id]; } }
 
 function makeLineChart(canvasId, labels, datasets, yLabel, metaLine) {
   destroyGrafChart(canvasId);
-  const canvas = document.getElementById(canvasId);
+  var canvas = document.getElementById(canvasId);
   if (!canvas) return;
   if (!labels || labels.length < 2) {
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle = '#9ca3af';
-    ctx.font = '13px DM Sans, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Minimo 2 registros para exibir o grafico', canvas.width/2, 60);
+    var ctx0 = canvas.getContext('2d');
+    ctx0.clearRect(0,0,canvas.width,canvas.height);
+    ctx0.fillStyle = '#9ca3af'; ctx0.font = '13px sans-serif'; ctx0.textAlign = 'center';
+    ctx0.fillText('Minimo 2 registros para exibir', canvas.width/2, 60);
     return;
   }
-  const colors = ['#0284c7','#ea580c','#16a34a','#d97706','#8b5cf6','#ec4899'];
-  const dsets = datasets.map(function(d,i) {
-    return {
-      label: d.label,
-      data: d.data,
-      borderColor: d.color || colors[i % colors.length],
-      backgroundColor: (d.color || colors[i % colors.length]) + '18',
-      borderWidth: 2.5,
-      pointRadius: 4,
-      pointHoverRadius: 6,
-      tension: 0.35,
-      fill: datasets.length === 1,
-      borderDash: d.dash || []
-    };
+  var colors = ['#0284c7','#ea580c','#16a34a','#d97706','#8b5cf6','#ec4899'];
+  var dsets = datasets.map(function(d, i) {
+    return { label: d.label, data: d.data, borderColor: d.color || colors[i % colors.length], backgroundColor: (d.color || colors[i % colors.length]) + '18', borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.35, fill: datasets.length === 1, borderDash: d.dash || [] };
   });
   if (metaLine) {
-    dsets.push({
-      label: metaLine.label,
-      data: Array(labels.length).fill(metaLine.value),
-      borderColor: metaLine.color || '#16a34a',
-      borderWidth: 1.5,
-      borderDash: [6,4],
-      pointRadius: 0,
-      fill: false
-    });
+    dsets.push({ label: metaLine.label, data: Array(labels.length).fill(metaLine.value), borderColor: metaLine.color || '#16a34a', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false });
   }
   _grafCharts[canvasId] = new Chart(canvas.getContext('2d'), {
-    type: 'line',
-    data: { labels: labels, datasets: dsets },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280', boxWidth: 12 } },
-        tooltip: { backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#94a3b8', padding: 10 }
-      },
-      scales: {
-        x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: '#f1f5f9' } },
-        y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: function(v) { return v + (yLabel ? ' ' + yLabel : ''); } }, grid: { color: '#f1f5f9' } }
-      }
-    }
+    type: 'line', data: { labels: labels, datasets: dsets },
+    options: { responsive: true, interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280', boxWidth: 12 }}, tooltip: { backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#94a3b8', padding: 10 }},
+      scales: { x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: '#f1f5f9' }},
+        y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: function(v) { return v + (yLabel ? ' ' + yLabel : ''); }}, grid: { color: '#f1f5f9' }}}}
   });
 }
 
 function renderGraficos() {
   var registros = getRegistros().filter(function(r) { return r.data; }).reverse();
-
-  // PESO
   var comPeso = registros.filter(function(r) { return r.peso; });
-  makeLineChart('g-peso', comPeso.map(function(r){return r.data;}),
-    [{label:'Peso',data:comPeso.map(function(r){return parseFloat(r.peso);}),color:'#0284c7'}],
-    'kg', {label:'Meta (92 kg)',value:92,color:'#16a34a'});
-
-  // % GORDURA
-  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura; });
-  makeLineChart('g-bf', comBF.map(function(r){return r.data;}),
-    [{label:'% Gordura',data:comBF.map(function(r){return calcNavyBF(r.pescoco,r.cintura,ALTURA_CM);}),color:'#ea580c'}],
-    '%', {label:'Meta (14%)',value:14,color:'#16a34a'});
-
-  // AGUA
+  makeLineChart('g-peso', comPeso.map(function(r){return r.data;}), [{label:'Peso',data:comPeso.map(function(r){return parseFloat(r.peso);}),color:'#0284c7'}], 'kg', {label:'Meta (92kg)',value:92,color:'#16a34a'});
+  var comBF2 = registros.filter(function(r) { return r.pescoco && r.cintura; });
+  makeLineChart('g-bf', comBF2.map(function(r){return r.data;}), [{label:'% Gordura',data:comBF2.map(function(r){return calcNavyBF(r.pescoco,r.cintura,ALTURA_CM);}),color:'#ea580c'}], '%', {label:'Meta (14%)',value:14,color:'#16a34a'});
   var comAgua = registros.filter(function(r) { return r.agua; });
-  makeLineChart('g-agua', comAgua.map(function(r){return r.data;}),
-    [{label:'Agua (L)',data:comAgua.map(function(r){return parseFloat(r.agua);}),color:'#0ea5e9'}],
-    'L', {label:'Meta (3.5L)',value:3.5,color:'#16a34a'});
-
-  // SONO
+  makeLineChart('g-agua', comAgua.map(function(r){return r.data;}), [{label:'Agua',data:comAgua.map(function(r){return parseFloat(r.agua);}),color:'#0ea5e9'}], 'L', {label:'Meta (3.5L)',value:3.5,color:'#16a34a'});
   var comSono = registros.filter(function(r) { return r.sono; });
-  makeLineChart('g-sono', comSono.map(function(r){return r.data;}),
-    [{label:'Sono',data:comSono.map(function(r){return parseInt(r.sono);}),color:'#8b5cf6'}],
-    '');
-
-  // KCAL
+  makeLineChart('g-sono', comSono.map(function(r){return r.data;}), [{label:'Sono',data:comSono.map(function(r){return parseInt(r.sono);}),color:'#8b5cf6'}], '');
   var comKcal = registros.filter(function(r) { return r.kcal || r.kcal_gasta; });
-  makeLineChart('g-kcal', comKcal.map(function(r){return r.data;}),
-    [
-      {label:'Ingeridas',data:comKcal.map(function(r){return r.kcal?parseFloat(r.kcal):null;}),color:'#0284c7'},
-      {label:'Gastas',data:comKcal.map(function(r){return r.kcal_gasta?parseFloat(r.kcal_gasta):null;}),color:'#ea580c'}
-    ], 'kcal');
-
-  // FC
+  makeLineChart('g-kcal', comKcal.map(function(r){return r.data;}), [{label:'Ingeridas',data:comKcal.map(function(r){return r.kcal?parseFloat(r.kcal):null;}),color:'#0284c7'},{label:'Gastas',data:comKcal.map(function(r){return r.kcal_gasta?parseFloat(r.kcal_gasta):null;}),color:'#ea580c'}], 'kcal');
   var comFC = registros.filter(function(r) { return r.fc_media; });
-  makeLineChart('g-fc', comFC.map(function(r){return r.data;}),
-    [{label:'FC Media',data:comFC.map(function(r){return parseFloat(r.fc_media);}),color:'#ef4444'}],
-    'bpm');
-
-  // MODALIDADES por mes
-  var modalidades = ['natacao','musculacao','core','cardio'];
-  var mLabels = ['Natacao','Musculacao','Core','Cardio'];
-  var cores = ['#0284c7','#ea580c','#16a34a','#d97706'];
+  makeLineChart('g-fc', comFC.map(function(r){return r.data;}), [{label:'FC Media',data:comFC.map(function(r){return parseFloat(r.fc_media);}),color:'#ef4444'}], 'bpm');
+  var mods = ['natacao','musculacao','core','cardio'];
+  var mCores = ['#0284c7','#ea580c','#16a34a','#d97706'];
   var semanas = {};
   registros.forEach(function(r) {
     if (!r.treinos) return;
     var mes = r.data.substring(0,7);
     if (!semanas[mes]) semanas[mes] = {natacao:0,musculacao:0,core:0,cardio:0};
-    if (r.treinos.toLowerCase().indexOf('nata') >= 0) semanas[mes].natacao++;
-    if (r.treinos.toLowerCase().indexOf('muscula') >= 0) semanas[mes].musculacao++;
-    if (r.treinos.toLowerCase().indexOf('core') >= 0) semanas[mes].core++;
-    if (r.treinos.toLowerCase().indexOf('cardio') >= 0) semanas[mes].cardio++;
+    mods.forEach(function(m) { if (r.treinos.toLowerCase().indexOf(m) >= 0) semanas[mes][m]++; });
   });
   var semLabels = Object.keys(semanas).sort();
   if (semLabels.length >= 1) {
-    makeLineChart('g-modalidade', semLabels,
-      modalidades.map(function(m,i) {
-        return {label:mLabels[i],data:semLabels.map(function(s){return semanas[s][m]||0;}),color:cores[i]};
-      }), 'x/mes');
+    makeLineChart('g-modalidade', semLabels, mods.map(function(m,i){return {label:m,data:semLabels.map(function(s){return semanas[s][m]||0;}),color:mCores[i]};}), 'x');
   }
-
-  // CARGAS
-  var exercicios = [
-    {id:'pullup',canvas:'g-pullup',color:'#0284c7'},
-    {id:'supino',canvas:'g-supino',color:'#ea580c'},
-    {id:'remada',canvas:'g-remada',color:'#16a34a'},
-    {id:'pulldown',canvas:'g-pulldown',color:'#8b5cf6'},
-    {id:'press',canvas:'g-press',color:'#d97706'},
-    {id:'hipthrust',canvas:'g-hipthrust',color:'#ec4899'}
-  ];
-  exercicios.forEach(function(ex) {
+  var exs = [{id:'pullup',canvas:'g-pullup',color:'#0284c7'},{id:'supino',canvas:'g-supino',color:'#ea580c'},{id:'remada',canvas:'g-remada',color:'#16a34a'},{id:'pulldown',canvas:'g-pulldown',color:'#8b5cf6'},{id:'press',canvas:'g-press',color:'#d97706'},{id:'hipthrust',canvas:'g-hipthrust',color:'#ec4899'}];
+  exs.forEach(function(ex) {
     try {
       var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]').reverse();
-      var labels = hist.map(function(h){return h.data;});
-      var maxCargas = hist.map(function(h){return Math.max.apply(null,h.series.map(function(s){return s.carga;}));});
-      makeLineChart(ex.canvas, labels, [{label:'Carga maxima',data:maxCargas,color:ex.color}], 'kg');
+      makeLineChart(ex.canvas, hist.map(function(h){return h.data;}), [{label:'Carga max',data:hist.map(function(h){return Math.max.apply(null,h.series.map(function(s){return s.carga;}));}),color:ex.color}], 'kg');
     } catch(e) {}
   });
-
-  // VOLUME
   ['supino','pullup'].forEach(function(ex, i) {
     try {
-      var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]').reverse();
-      var labels = hist.map(function(h){return h.data;});
-      var vols = hist.map(function(h){return h.series.reduce(function(acc,s){return acc+s.carga*s.reps;},0);});
-      makeLineChart('g-vol-' + ex, labels, [{label:'Volume',data:vols,color:i===0?'#0284c7':'#ea580c'}], 'kg');
+      var hist2 = JSON.parse(localStorage.getItem('carga_' + ex) || '[]').reverse();
+      makeLineChart('g-vol-' + ex, hist2.map(function(h){return h.data;}), [{label:'Volume',data:hist2.map(function(h){return h.series.reduce(function(acc,s){return acc+s.carga*s.reps;},0);}),color:i===0?'#0284c7':'#ea580c'}], 'kg');
     } catch(e) {}
   });
 }
+
+// INIT
+renderHistorico();
+renderCharts();
+calcProjecao(getRegistros());
 
 </script>
 </body>
