@@ -1829,10 +1829,7 @@ function enviarWhatsApp() {
     alert('Marque pelo menos um item antes de enviar!');
     return;
   }
-  const texto = '🛒 *Lista de Compras — Performance Luiz*
-
-' + itens.join('
-');
+  var texto = 'Lista de Compras - Performance Luiz' + '\n\n' + itens.join('\n');
   const url = 'https://wa.me/?text=' + encodeURIComponent(texto);
   window.open(url, '_blank');
 }
