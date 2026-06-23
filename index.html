@@ -1911,6 +1911,162 @@ renderHistorico();
 renderCharts();
 calcProjecao(getRegistros());
 
+// ── GRÁFICOS AVANÇADOS ──
+let _grafCharts = {};
+
+function destroyGrafChart(id) {
+  if (_grafCharts[id]) { _grafCharts[id].destroy(); delete _grafCharts[id]; }
+}
+
+function makeLineChart(canvasId, labels, datasets, yLabel, metaLine) {
+  destroyGrafChart(canvasId);
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  if (!labels || labels.length < 2) {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '13px DM Sans, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Minimo 2 registros para exibir o grafico', canvas.width/2, 60);
+    return;
+  }
+  const colors = ['#0284c7','#ea580c','#16a34a','#d97706','#8b5cf6','#ec4899'];
+  const dsets = datasets.map(function(d,i) {
+    return {
+      label: d.label,
+      data: d.data,
+      borderColor: d.color || colors[i % colors.length],
+      backgroundColor: (d.color || colors[i % colors.length]) + '18',
+      borderWidth: 2.5,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      tension: 0.35,
+      fill: datasets.length === 1,
+      borderDash: d.dash || []
+    };
+  });
+  if (metaLine) {
+    dsets.push({
+      label: metaLine.label,
+      data: Array(labels.length).fill(metaLine.value),
+      borderColor: metaLine.color || '#16a34a',
+      borderWidth: 1.5,
+      borderDash: [6,4],
+      pointRadius: 0,
+      fill: false
+    });
+  }
+  _grafCharts[canvasId] = new Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: { labels: labels, datasets: dsets },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280', boxWidth: 12 } },
+        tooltip: { backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#94a3b8', padding: 10 }
+      },
+      scales: {
+        x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: '#f1f5f9' } },
+        y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: function(v) { return v + (yLabel ? ' ' + yLabel : ''); } }, grid: { color: '#f1f5f9' } }
+      }
+    }
+  });
+}
+
+function renderGraficos() {
+  var registros = getRegistros().filter(function(r) { return r.data; }).reverse();
+
+  // PESO
+  var comPeso = registros.filter(function(r) { return r.peso; });
+  makeLineChart('g-peso', comPeso.map(function(r){return r.data;}),
+    [{label:'Peso',data:comPeso.map(function(r){return parseFloat(r.peso);}),color:'#0284c7'}],
+    'kg', {label:'Meta (92 kg)',value:92,color:'#16a34a'});
+
+  // % GORDURA
+  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura; });
+  makeLineChart('g-bf', comBF.map(function(r){return r.data;}),
+    [{label:'% Gordura',data:comBF.map(function(r){return calcNavyBF(r.pescoco,r.cintura,ALTURA_CM);}),color:'#ea580c'}],
+    '%', {label:'Meta (14%)',value:14,color:'#16a34a'});
+
+  // AGUA
+  var comAgua = registros.filter(function(r) { return r.agua; });
+  makeLineChart('g-agua', comAgua.map(function(r){return r.data;}),
+    [{label:'Agua (L)',data:comAgua.map(function(r){return parseFloat(r.agua);}),color:'#0ea5e9'}],
+    'L', {label:'Meta (3.5L)',value:3.5,color:'#16a34a'});
+
+  // SONO
+  var comSono = registros.filter(function(r) { return r.sono; });
+  makeLineChart('g-sono', comSono.map(function(r){return r.data;}),
+    [{label:'Sono',data:comSono.map(function(r){return parseInt(r.sono);}),color:'#8b5cf6'}],
+    '');
+
+  // KCAL
+  var comKcal = registros.filter(function(r) { return r.kcal || r.kcal_gasta; });
+  makeLineChart('g-kcal', comKcal.map(function(r){return r.data;}),
+    [
+      {label:'Ingeridas',data:comKcal.map(function(r){return r.kcal?parseFloat(r.kcal):null;}),color:'#0284c7'},
+      {label:'Gastas',data:comKcal.map(function(r){return r.kcal_gasta?parseFloat(r.kcal_gasta):null;}),color:'#ea580c'}
+    ], 'kcal');
+
+  // FC
+  var comFC = registros.filter(function(r) { return r.fc_media; });
+  makeLineChart('g-fc', comFC.map(function(r){return r.data;}),
+    [{label:'FC Media',data:comFC.map(function(r){return parseFloat(r.fc_media);}),color:'#ef4444'}],
+    'bpm');
+
+  // MODALIDADES por mes
+  var modalidades = ['natacao','musculacao','core','cardio'];
+  var mLabels = ['Natacao','Musculacao','Core','Cardio'];
+  var cores = ['#0284c7','#ea580c','#16a34a','#d97706'];
+  var semanas = {};
+  registros.forEach(function(r) {
+    if (!r.treinos) return;
+    var mes = r.data.substring(0,7);
+    if (!semanas[mes]) semanas[mes] = {natacao:0,musculacao:0,core:0,cardio:0};
+    if (r.treinos.toLowerCase().indexOf('nata') >= 0) semanas[mes].natacao++;
+    if (r.treinos.toLowerCase().indexOf('muscula') >= 0) semanas[mes].musculacao++;
+    if (r.treinos.toLowerCase().indexOf('core') >= 0) semanas[mes].core++;
+    if (r.treinos.toLowerCase().indexOf('cardio') >= 0) semanas[mes].cardio++;
+  });
+  var semLabels = Object.keys(semanas).sort();
+  if (semLabels.length >= 1) {
+    makeLineChart('g-modalidade', semLabels,
+      modalidades.map(function(m,i) {
+        return {label:mLabels[i],data:semLabels.map(function(s){return semanas[s][m]||0;}),color:cores[i]};
+      }), 'x/mes');
+  }
+
+  // CARGAS
+  var exercicios = [
+    {id:'pullup',canvas:'g-pullup',color:'#0284c7'},
+    {id:'supino',canvas:'g-supino',color:'#ea580c'},
+    {id:'remada',canvas:'g-remada',color:'#16a34a'},
+    {id:'pulldown',canvas:'g-pulldown',color:'#8b5cf6'},
+    {id:'press',canvas:'g-press',color:'#d97706'},
+    {id:'hipthrust',canvas:'g-hipthrust',color:'#ec4899'}
+  ];
+  exercicios.forEach(function(ex) {
+    try {
+      var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]').reverse();
+      var labels = hist.map(function(h){return h.data;});
+      var maxCargas = hist.map(function(h){return Math.max.apply(null,h.series.map(function(s){return s.carga;}));});
+      makeLineChart(ex.canvas, labels, [{label:'Carga maxima',data:maxCargas,color:ex.color}], 'kg');
+    } catch(e) {}
+  });
+
+  // VOLUME
+  ['supino','pullup'].forEach(function(ex, i) {
+    try {
+      var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]').reverse();
+      var labels = hist.map(function(h){return h.data;});
+      var vols = hist.map(function(h){return h.series.reduce(function(acc,s){return acc+s.carga*s.reps;},0);});
+      makeLineChart('g-vol-' + ex, labels, [{label:'Volume',data:vols,color:i===0?'#0284c7':'#ea580c'}], 'kg');
+    } catch(e) {}
+  });
+}
+
 </script>
 </body>
 </html>
