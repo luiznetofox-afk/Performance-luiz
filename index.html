@@ -2732,7 +2732,20 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/Performance-luiz/service-worker.js')
       .then(function(reg) {
         console.log('Nexus SW registrado:', reg.scope);
-        // Escuta mensagens do SW
+        // Verifica atualizações a cada vez que abre o app
+        reg.update();
+        // Quando nova versao disponivel, ativa imediatamente
+        reg.addEventListener('updatefound', function() {
+          var newWorker = reg.installing;
+          newWorker.addEventListener('statechange', function() {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        });
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+          window.location.reload();
+        });
         navigator.serviceWorker.addEventListener('message', function(event) {
           if (event.data && event.data.type === 'SYNC_COMPLETE') {
             if (window.renderHistorico) renderHistorico();
