@@ -1823,20 +1823,24 @@ function devePedirMedidas() {
 }
 
 // CHAT
-var STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','medidas_check','pescoco','cintura','quadril','confirmar'];
+var STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','confirmar'];
 
 function initChat() {
-  chatState = { step:-1, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null, pescoco:null, cintura:null, quadril:null, pedirMedidas:false };
+  chatState = { step:-1, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null };
   document.getElementById('chat-messages').innerHTML = '';
   document.getElementById('chat-buttons').style.display = 'none';
   document.getElementById('chat-input-wrap').style.display = 'flex';
   botMsg('Boa noite! Vamos fazer o check-in.');
   setTimeout(function() {
-    var hoje = new Date().toISOString().split('T')[0];
-    var ontem = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    var hoje = new Date();
+    var ontem = new Date(Date.now() - 86400000);
+    var anteontem = new Date(Date.now() - 172800000);
+    var fmt = function(d) { return d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}); };
+    var iso = function(d) { return d.toISOString().split('T')[0]; };
     showButtons([
-      {label:'Hoje (' + new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) + ')', value:'hoje'},
-      {label:'Ontem (' + new Date(Date.now()-86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) + ')', value:ontem},
+      {label:'Hoje (' + fmt(hoje) + ')', value:iso(hoje)},
+      {label:'Ontem (' + fmt(ontem) + ')', value:iso(ontem)},
+      {label:'Anteontem (' + fmt(anteontem) + ')', value:iso(anteontem)},
       {label:'Outra data', value:'outra'}
     ]);
   }, 600);
@@ -1885,7 +1889,7 @@ function enviarResposta() {
 }
 
 function activeSteps() {
-  return chatState.pedirMedidas ? STEPS : STEPS.filter(function(s) { return ['medidas_check','pescoco','cintura','quadril'].indexOf(s) < 0; });
+  return STEPS;
 }
 
 function askStep() {
@@ -1898,10 +1902,6 @@ function askStep() {
   else if (step === 'treinos') { botMsg('Quais <strong>treinos</strong> voce fez? (marque todos)'); showButtons([{label:'Natacao',value:'natacao'},{label:'Musculacao',value:'musculacao'},{label:'Core',value:'core'},{label:'Cardio',value:'cardio'},{label:'Descanso',value:'descanso'},{label:'Concluido',value:'__done__'}]); }
   else if (step === 'sono') { botMsg('Como foi o <strong>sono</strong> de ontem?'); showButtons([{label:'Pessimo (1)',value:'1'},{label:'Ruim (2)',value:'2'},{label:'Ok (3)',value:'3'},{label:'Bom (4)',value:'4'},{label:'Excelente (5)',value:'5'}]); }
   else if (step === 'obs') { botMsg('Alguma <strong>observacao</strong>? (ou "nada")'); showInput('Energia, alimentacao, dores...'); }
-  else if (step === 'medidas_check') { botMsg('Semana de <strong>medidas corporais</strong>! Tem fita metrica?'); showButtons([{label:'Sim, vou medir',value:'sim'},{label:'Nao, pular',value:'nao'}]); }
-  else if (step === 'pescoco') { botMsg('Meça o <strong>pescoco</strong> na parte mais estreita (cm):'); showInput('Ex: 15.5'); }
-  else if (step === 'cintura') { botMsg('Meça a <strong>cintura</strong> na altura do umbigo (cm):'); showInput('Ex: 94'); }
-  else if (step === 'quadril') { botMsg('Meça o <strong>quadril</strong> na parte mais larga (cm):'); showInput('Ex: 106'); }
   else if (step === 'confirmar') mostrarResumo();
 }
 
@@ -1918,7 +1918,6 @@ function processAnswer(val) {
     } else {
       chatState.data = val;
     }
-    chatState.pedirMedidas = devePedirMedidas();
     chatState.step = 0;
     var dataFmt = new Date(chatState.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
     botMsg('Registro para <strong>' + dataFmt + '</strong>. Vamos la!');
@@ -1974,30 +1973,11 @@ function processAnswer(val) {
     chatState.sono = val; chatState.step++; setTimeout(askStep, 350);
   } else if (step === 'obs') {
     chatState.obs = val.toLowerCase() === 'nada' ? '' : val; chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'medidas_check') {
-    if (val === 'nao') { chatState.pedirMedidas = false; chatState.step += 4; } else chatState.step++;
-    setTimeout(askStep, 350);
-  } else if (step === 'pescoco') {
-    if (isNaN(n) || n < 20 || n > 60) { botMsg('Invalido. Ex: 15.5'); return; }
-    chatState.pescoco = n; chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'cintura') {
-    if (isNaN(n) || n < 40 || n > 200) { botMsg('Invalido. Ex: 94'); return; }
-    chatState.cintura = n; chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'quadril') {
-    if (isNaN(n) || n < 40 || n > 200) { botMsg('Invalido. Ex: 106'); return; }
-    chatState.quadril = n; chatState.step++; setTimeout(askStep, 350);
   }
 }
 
 function mostrarResumo() {
-  var bfTxt = '';
-  if (chatState.pescoco && chatState.cintura) {
-    var bf = calcNavyBF(chatState.pescoco, chatState.cintura, ALTURA_CM);
-    var mm = (chatState.peso * (1 - bf/100)).toFixed(1);
-    var mg = (chatState.peso * bf/100).toFixed(1);
-    bfTxt = '<br>% Gordura: <strong>' + bf + '%</strong> - Magra: ' + mm + 'kg / Gorda: ' + mg + 'kg';
-    document.getElementById('bf-display').textContent = bf + '%';
-  }
+
   var stars = '';
   for (var s = 0; s < parseInt(chatState.sono || 0); s++) stars += '*';
   var aguaOk = chatState.agua >= 3.5;
@@ -2009,8 +1989,7 @@ function mostrarResumo() {
     (chatState.kcal_gasta ? 'Kcal gastas: <strong>' + chatState.kcal_gasta + ' kcal</strong><br>' : '') +
     (chatState.fc_media ? 'FC media: <strong>' + chatState.fc_media + ' bpm</strong><br>' : '') +
     'Sono: ' + stars + '<br>' +
-    (chatState.obs ? 'Obs: ' + chatState.obs + '<br>' : '') +
-    bfTxt;
+    (chatState.obs ? 'Obs: ' + chatState.obs + '<br>' : '');
   botMsg(html);
   setTimeout(function() {
     var wrap = document.getElementById('chat-buttons');
@@ -2022,7 +2001,7 @@ function mostrarResumo() {
 }
 
 function confirmarSalvar() {
-  var reg = { data:chatState.data, peso:chatState.peso, kcal:chatState.kcal||null, agua:chatState.agua, kcal_gasta:chatState.kcal_gasta||null, fc_media:chatState.fc_media||null, treinos:chatState.treinos.join(', '), sono:chatState.sono, obs:chatState.obs||'', pescoco:chatState.pescoco||null, cintura:chatState.cintura||null, quadril:chatState.quadril||null, ts:Date.now() };
+  var reg = { data:chatState.data, peso:chatState.peso, kcal:chatState.kcal||null, agua:chatState.agua, kcal_gasta:chatState.kcal_gasta||null, fc_media:chatState.fc_media||null, treinos:chatState.treinos.join(', '), sono:chatState.sono, obs:chatState.obs||'', ts:Date.now() };
   var registros = getRegistros(); registros.unshift(reg); saveRegistros(registros);
   document.getElementById('chat-buttons').style.display = 'none';
   document.getElementById('peso-display').textContent = chatState.peso;
