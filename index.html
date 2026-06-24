@@ -1769,7 +1769,7 @@ function renderCargaHist(ex) {
   var pr = 0;
   hist.forEach(function(h) { h.series.forEach(function(s) { if (s.carga > pr) pr = s.carga; }); });
   var vol = ultimo.series.reduce(function(acc, s) { return acc + s.carga * s.reps; }, 0);
-  el.innerHTML = '<span style="color:#0284c7">Ultima sessao (' + ultimo.data + '):</span> ' + seriesTxt + '<br><span style="color:#6b7280">Volume: ' + vol.toFixed(0) + ' kg | PR: ' + pr + ' kg</span>';
+  el.textContent = 'Ultima sessao (' + ultimo.data + '): ' + seriesTxt + ' | Vol: ' + vol.toFixed(0) + 'kg | PR: ' + pr + 'kg';
 }
 
 ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni'].forEach(function(ex) { renderCargaHist(ex); });
@@ -2051,15 +2051,15 @@ function renderHistorico() {
     var bfTxt = '-';
     if (r.pescoco && r.cintura) bfTxt = calcNavyBF(r.pescoco, r.cintura, ALTURA_CM) + '%';
     return '<tr>' +
-      '<td style="white-space:nowrap;font-family:\'DM Mono\',monospace;font-size:.7rem">' + (r.data || '-') + '</td>' +
+      '<td style="white-space:nowrap;font-size:.7rem">' + (r.data || '-') + '</td>' +
       '<td><strong>' + (r.peso ? r.peso + ' kg' : '-') + '</strong></td>' +
       '<td>' + (r.agua ? r.agua + 'L' : '-') + '</td>' +
-      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
-      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:#ea580c">' + (r.kcal_gasta ? r.kcal_gasta + ' kcal' : '-') + '</td>' +
-      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:#ea580c">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
+      '<td style="font-size:.7rem">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
+      '<td style="font-size:.7rem;color:#ea580c">' + (r.kcal_gasta ? r.kcal_gasta + ' kcal' : '-') + '</td>' +
+      '<td style="font-size:.7rem;color:#ea580c">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
       '<td style="font-size:.7rem">' + (r.treinos || '-') + '</td>' +
       '<td>' + (r.sono ? r.sono + '/5' : '-') + '</td>' +
-      '<td style="font-family:\'DM Mono\',monospace;font-size:.7rem;color:#0284c7">' + bfTxt + '</td>' +
+      '<td style="font-size:.7rem;color:#0284c7">' + bfTxt + '</td>' +
       '<td style="font-size:.73rem;max-width:100px;color:#6b7280">' + (r.obs || '') + '</td>' +
       '</tr>';
   }).join('');
@@ -2484,12 +2484,12 @@ function renderPRBoard() {
       });
       total++;
     });
-    var badge = pr > 0 ? '<span style="background:#fef3c7;color:#b45309;font-family:'DM Mono',monospace;font-size:.6rem;padding:2px 6px;border-radius:10px;font-weight:700">PR</span>' : '';
+    var badge = pr > 0 ? '<span style="background:#fef3c7;color:#b45309;font-size:.6rem;padding:2px 6px;border-radius:10px;font-weight:700">PR</span>' : '';
     html += '<div class="card" style="padding:.85rem">' +
       '<div style="font-size:.75rem;font-weight:600;color:#374151;margin-bottom:.3rem">' + ex.nome + '</div>' +
       (pr > 0 ?
-        '<div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
-        '<div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#6b7280">' + prData + ' · ' + total + ' sessao(oes)</div>' :
+        '<div style="font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
+        '<div style="font-size:.62rem;color:#6b7280">' + prData + ' · ' + total + ' sessao(oes)</div>' :
         '<div style="font-size:.8rem;color:#9ca3af">Sem registros</div>'
       ) + '</div>';
   });
@@ -2553,10 +2553,10 @@ function renderMedidas() {
   campos.forEach(function(c) { html += '<th>' + c.nome + '</th>'; });
   html += '</tr></thead><tbody>';
   medidas.slice(0, 10).forEach(function(m) {
-    html += '<tr><td style="font-family:'DM Mono',monospace;font-size:.7rem;white-space:nowrap">' + m.data + '</td>';
+    html += '<tr><td style="font-size:.7rem;white-space:nowrap">' + m.data + '</td>';
     campos.forEach(function(c) {
       var val = m[c.id];
-      html += '<td style="font-family:'DM Mono',monospace;font-size:.72rem">' + (val ? val + ' cm' : '-') + '</td>';
+      html += '<td style="font-size:.72rem">' + (val ? val + ' cm' : '-') + '</td>';
     });
     html += '</tr>';
   });
