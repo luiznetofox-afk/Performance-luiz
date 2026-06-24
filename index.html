@@ -329,46 +329,44 @@
 </head>
 <body>
 
-<header>
-  <div style="display:flex;align-items:center;gap:.75rem">
-    <svg width="38" height="38" viewBox="0 0 512 512" style="flex-shrink:0">
-      <rect width="512" height="512" rx="90" fill="#050604"/>
-      <ellipse cx="256" cy="215" rx="45" ry="45" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45"/>
-      <ellipse cx="256" cy="215" rx="45" ry="17" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45" transform="rotate(60 256 215)"/>
-      <ellipse cx="256" cy="215" rx="87" ry="87" fill="none" stroke="#bfa820" stroke-width="8" opacity="0.42"/>
-      <ellipse cx="256" cy="215" rx="87" ry="33" fill="none" stroke="#96b830" stroke-width="8" opacity="0.42" transform="rotate(-40 256 215)"/>
-      <ellipse cx="256" cy="215" rx="132" ry="132" fill="none" stroke="#6db87a" stroke-width="8" opacity="0.40"/>
-      <ellipse cx="256" cy="215" rx="132" ry="50" fill="none" stroke="#2db870" stroke-width="8" opacity="0.40" transform="rotate(25 256 215)"/>
-      <ellipse cx="256" cy="215" rx="171" ry="171" fill="none" stroke="#10b981" stroke-width="8" opacity="0.38"/>
-      <ellipse cx="256" cy="215" rx="171" ry="65" fill="none" stroke="#10b981" stroke-width="8" opacity="0.38" transform="rotate(-55 256 215)"/>
-      <circle cx="256" cy="215" r="18" fill="#d4a017"/>
-      <circle cx="256" cy="170" r="10" fill="#f0c040"/>
-      <circle cx="256" cy="260" r="10" fill="#f0c040"/>
-      <circle cx="343" cy="215" r="9" fill="#bfa820"/>
-      <circle cx="169" cy="215" r="9" fill="#bfa820"/>
-      <circle cx="388" cy="215" r="8" fill="#6db87a"/>
-      <circle cx="124" cy="215" r="8" fill="#6db87a"/>
-      <circle cx="427" cy="215" r="8" fill="#10b981"/>
-      <circle cx="85" cy="215" r="8" fill="#10b981"/>
-    </svg>
-    <div>
-      <div class="logo">NEXUS</div>
-      <div style="font-family:'DM Mono',monospace;font-size:.53rem;color:#64748b;letter-spacing:.1em">TREINO · DIETA · EVOLUCAO</div>
-    </div>
+<header style="height:auto;padding:1rem 1.25rem;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem">
+  <svg width="48" height="48" viewBox="0 0 512 512">
+    <rect width="512" height="512" rx="90" fill="#050604"/>
+    <ellipse cx="256" cy="215" rx="45" ry="45" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45"/>
+    <ellipse cx="256" cy="215" rx="45" ry="17" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45" transform="rotate(60 256 215)"/>
+    <ellipse cx="256" cy="215" rx="87" ry="87" fill="none" stroke="#bfa820" stroke-width="8" opacity="0.42"/>
+    <ellipse cx="256" cy="215" rx="87" ry="33" fill="none" stroke="#96b830" stroke-width="8" opacity="0.42" transform="rotate(-40 256 215)"/>
+    <ellipse cx="256" cy="215" rx="132" ry="132" fill="none" stroke="#6db87a" stroke-width="8" opacity="0.40"/>
+    <ellipse cx="256" cy="215" rx="132" ry="50" fill="none" stroke="#2db870" stroke-width="8" opacity="0.40" transform="rotate(25 256 215)"/>
+    <ellipse cx="256" cy="215" rx="171" ry="171" fill="none" stroke="#10b981" stroke-width="8" opacity="0.38"/>
+    <ellipse cx="256" cy="215" rx="171" ry="65" fill="none" stroke="#10b981" stroke-width="8" opacity="0.38" transform="rotate(-55 256 215)"/>
+    <circle cx="256" cy="215" r="18" fill="#d4a017"/>
+    <circle cx="256" cy="170" r="10" fill="#f0c040"/>
+    <circle cx="256" cy="260" r="10" fill="#f0c040"/>
+    <circle cx="343" cy="215" r="9" fill="#bfa820"/>
+    <circle cx="169" cy="215" r="9" fill="#bfa820"/>
+    <circle cx="388" cy="215" r="8" fill="#6db87a"/>
+    <circle cx="124" cy="215" r="8" fill="#6db87a"/>
+    <circle cx="427" cy="215" r="8" fill="#10b981"/>
+    <circle cx="85" cy="215" r="8" fill="#10b981"/>
+  </svg>
+  <div>
+    <div class="logo" style="font-size:1.9rem;letter-spacing:.2em;color:#fff;-webkit-text-fill-color:#fff">NEXUS</div>
+    <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#fff;letter-spacing:.12em;font-weight:600">TREINO · DIETA · EVOLUÇÃO</div>
+    <div style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#fff;letter-spacing:.04em;font-style:italic;margin-top:.15rem">Conecte treino, dieta e evolução.</div>
   </div>
-  <div class="header-meta">
-    96,9 kg · 1,82m · 42 anos<br>
-    <span class="deadline-chip">🎯 29/07/2026</span><br>
-    <span id="sync-status" style="font-size:.58rem;color:#64748b">Conectando à nuvem...</span>
+  <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:#94a3b8;text-align:center;line-height:1.6">
+    <span class="deadline-chip">🎯 29/07/2026</span> &nbsp;
+    <span id="sync-status">Conectando à nuvem...</span>
   </div>
 </header>
 
 <nav>
   <div class="tab active" onclick="showTab('visao',this)">Visão Geral</div>
   <div class="tab" onclick="showTab('dieta',this)">Dieta</div>
-  <div class="tab" onclick="showTab('musculacao',this)">Musculação</div>
+  <div class="tab" onclick="showTab('musculacao',this)">Treino</div>
   <div class="tab" onclick="showTab('core',this)">Core</div>
-  <div class="tab" onclick="showTab('semana',this)">Semana</div>
+  <div class="tab" onclick="showTab('semana',this)">Programação</div>
   <div class="tab" onclick="showTab('compras',this)">Lista de Compras</div>
   <div class="tab" onclick="showTab('registro',this)">Check-in</div>
   <div class="tab" onclick="showTab('historico',this)">Histórico</div>
@@ -396,6 +394,29 @@
       <strong id="countdown-msg">Calculando...</strong>
       Prazo: 29 de julho de 2026 · Déficit: 500–600 kcal/dia<br>
       Meta de perda: ~3–5 kg de gordura · Cirurgia LCA: ~45 dias
+    </div>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:.75rem">
+    <div class="card">
+      <div class="card-title">Altura</div>
+      <div class="card-value">1,82</div>
+      <div class="card-sub">metros</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Idade</div>
+      <div class="card-value">42</div>
+      <div class="card-sub">anos</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Massa Magra</div>
+      <div class="card-value">78,9</div>
+      <div class="card-sub">kg estimado</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Meta Peso</div>
+      <div class="card-value">92</div>
+      <div class="card-sub">kg · &lt;14% gordura</div>
     </div>
   </div>
 
