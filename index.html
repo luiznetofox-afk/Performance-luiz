@@ -49,6 +49,23 @@
     }
   };
 
+  window.fbSaveAgua = async function(hoje, valor) {
+    try {
+      await set(ref(db, 'agua_rt/' + hoje), valor);
+    } catch(e) { console.error('Erro ao salvar agua:', e); }
+  };
+
+  window.fbLoadAgua = async function() {
+    try {
+      var hoje = new Date().toISOString().split('T')[0];
+      var snap = await get(ref(db, 'agua_rt/' + hoje));
+      if (snap.exists()) {
+        localStorage.setItem('agua_rt_' + hoje, snap.val());
+        if (window.renderAgua) renderAgua();
+      }
+    } catch(e) { console.error('Erro ao carregar agua:', e); }
+  };
+
   // ── SAVE CARGAS TO FIREBASE ──
   window.fbSaveCarga = async function(ex, data) {
     try {
@@ -112,6 +129,9 @@
         document.getElementById('data-cirurgia').value = snapCir.val();
       }
 
+      // Agua em tempo real
+      await window.fbLoadAgua();
+
       setSyncStatus('✅ Dados carregados da nuvem', '#3a6b3e');
       // Re-render with cloud data
       if (window.renderHistorico) { renderHistorico(); renderCharts(); calcProjecao(getRegistros()); }
@@ -124,6 +144,15 @@
       setSyncStatus('⚠️ Sem conexão — usando dados locais', '#e05a2b');
     }
   }
+
+  // ── REALTIME LISTENER AGUA ──
+  var hojeRt = new Date().toISOString().split('T')[0];
+  onValue(ref(db, 'agua_rt/' + hojeRt), (snapshot) => {
+    if (snapshot.exists()) {
+      localStorage.setItem('agua_rt_' + hojeRt, snapshot.val());
+      if (window.renderAgua) renderAgua();
+    }
+  });
 
   // ── REALTIME LISTENER (sync across devices) ──
   onValue(ref(db, 'registros'), (snapshot) => {
@@ -2263,6 +2292,7 @@ function getAguaHoje() {
 function setAguaHoje(val) {
   var hoje = new Date().toISOString().split('T')[0];
   localStorage.setItem('agua_rt_' + hoje, val.toFixed(1));
+  if (window.fbSaveAgua) window.fbSaveAgua(hoje, val.toFixed(1));
   renderAgua();
 }
 function addAgua(litros) {
