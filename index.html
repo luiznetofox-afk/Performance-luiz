@@ -90,10 +90,18 @@
         });
       }
 
-      // Core done
+      // Core done - so carrega se for do dia de hoje
       const snapCore = await get(ref(db, 'core_done'));
       if (snapCore.exists()) {
-        localStorage.setItem('core_done', JSON.stringify(snapCore.val()));
+        var coreData = snapCore.val();
+        var hojeStr = new Date().toISOString().split('T')[0];
+        var hasHoje = Object.keys(coreData).some(function(k) { return k.startsWith(hojeStr); });
+        if (hasHoje) {
+          localStorage.setItem('core_done', JSON.stringify(coreData));
+        } else {
+          // Dados sao de outro dia, resetar
+          localStorage.setItem('core_done', JSON.stringify({}));
+        }
       }
 
       // Data cirurgia
@@ -323,10 +331,29 @@
 
 <header>
   <div style="display:flex;align-items:center;gap:.75rem">
-    <div style="width:38px;height:38px;background:linear-gradient(135deg,#0284c7,#38bdf8);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0">🏊</div>
+    <svg width="38" height="38" viewBox="0 0 512 512" style="flex-shrink:0">
+      <rect width="512" height="512" rx="90" fill="#050604"/>
+      <ellipse cx="256" cy="215" rx="45" ry="45" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45"/>
+      <ellipse cx="256" cy="215" rx="45" ry="17" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45" transform="rotate(60 256 215)"/>
+      <ellipse cx="256" cy="215" rx="87" ry="87" fill="none" stroke="#bfa820" stroke-width="8" opacity="0.42"/>
+      <ellipse cx="256" cy="215" rx="87" ry="33" fill="none" stroke="#96b830" stroke-width="8" opacity="0.42" transform="rotate(-40 256 215)"/>
+      <ellipse cx="256" cy="215" rx="132" ry="132" fill="none" stroke="#6db87a" stroke-width="8" opacity="0.40"/>
+      <ellipse cx="256" cy="215" rx="132" ry="50" fill="none" stroke="#2db870" stroke-width="8" opacity="0.40" transform="rotate(25 256 215)"/>
+      <ellipse cx="256" cy="215" rx="171" ry="171" fill="none" stroke="#10b981" stroke-width="8" opacity="0.38"/>
+      <ellipse cx="256" cy="215" rx="171" ry="65" fill="none" stroke="#10b981" stroke-width="8" opacity="0.38" transform="rotate(-55 256 215)"/>
+      <circle cx="256" cy="215" r="18" fill="#d4a017"/>
+      <circle cx="256" cy="170" r="10" fill="#f0c040"/>
+      <circle cx="256" cy="260" r="10" fill="#f0c040"/>
+      <circle cx="343" cy="215" r="9" fill="#bfa820"/>
+      <circle cx="169" cy="215" r="9" fill="#bfa820"/>
+      <circle cx="388" cy="215" r="8" fill="#6db87a"/>
+      <circle cx="124" cy="215" r="8" fill="#6db87a"/>
+      <circle cx="427" cy="215" r="8" fill="#10b981"/>
+      <circle cx="85" cy="215" r="8" fill="#10b981"/>
+    </svg>
     <div>
       <div class="logo">NEXUS</div>
-      <div style="font-family:'DM Mono',monospace;font-size:.53rem;color:#64748b;letter-spacing:.1em">TREINO · DIETA · EVOLUÇÃO</div>
+      <div style="font-family:'DM Mono',monospace;font-size:.53rem;color:#64748b;letter-spacing:.1em">TREINO · DIETA · EVOLUCAO</div>
     </div>
   </div>
   <div class="header-meta">
@@ -452,38 +479,62 @@
 
   <div class="meal-block pre">
     <div class="meal-name">☀️ Café da Manhã / Pré-Treino — 07h00</div>
-    <div class="meal-items">• 4 ovos inteiros mexidos ou estrelados<br>• 80g de aveia ou 3 fatias de pão integral<br>• 1 banana grande + 1 fruta<br>• Café preto s/ açúcar</div>
+    <div class="meal-items">
+      • 4 ovos inteiros mexidos ou estrelados <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~280 kcal</span><br>
+      • 80g de aveia <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~300 kcal</span> ou 3 fatias de pão integral <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~210 kcal</span><br>
+      • 1 banana grande <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~90 kcal</span> + 1 fruta média <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~60 kcal</span><br>
+      • Café preto s/ açúcar <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~5 kcal</span>
+    </div>
     <div class="meal-macros">P: ~30g · C: ~70g · G: ~16g · ~545 kcal</div>
   </div>
   <div class="meal-block post">
     <div class="meal-name">💪 Pós-Treino — até 60 min após</div>
-    <div class="meal-items">• 40g de Whey Protein (shake com água ou leite desnatado)<br>• 1 banana ou 40g de maltodextrina<br>• <em>Opcional: 5g de creatina monohidratada</em></div>
+    <div class="meal-items">
+      • 40g de Whey Protein (shake) <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#16a34a">~150 kcal</span><br>
+      • 1 banana <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#16a34a">~90 kcal</span> ou 40g de maltodextrina <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#16a34a">~155 kcal</span><br>
+      • <em>Opcional: 5g de creatina monohidratada</em> <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#16a34a">~0 kcal</span>
+    </div>
     <div class="meal-macros">P: ~40g · C: ~30g · G: ~3g · ~310 kcal</div>
   </div>
   <div class="meal-block">
     <div class="meal-name">🍽️ Almoço — 13h00</div>
-    <div class="meal-items">• 200g de carne vermelha magra ou frango<br>• 80g de arroz integral (cru) ou 200g de batata-doce<br>• Feijão ou lentilha (4 col. sopa)<br>• Legumes à vontade (brócolis, abobrinha, cenoura)</div>
+    <div class="meal-items">
+      • 200g de carne vermelha magra <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~260 kcal</span> ou frango <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~220 kcal</span><br>
+      • 80g de arroz integral cru <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~280 kcal</span> ou 200g de batata-doce <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~172 kcal</span><br>
+      • Feijão ou lentilha (4 col. sopa) <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~120 kcal</span><br>
+      • Legumes à vontade (brócolis, abobrinha, cenoura) <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~30 kcal</span>
+    </div>
     <div class="meal-macros">P: ~55g · C: ~75g · G: ~12g · ~635 kcal</div>
   </div>
   <div class="meal-block eve">
     <div class="meal-name">🌙 Lanche Tarde — 16h30</div>
-    <div class="meal-items">• 3 ovos cozidos<br>• 30g de castanhas (mix ou castanha-do-pará)</div>
-    <div class="meal-macros">P: ~22g · C: ~4g · G: ~18g · ~265 kcal</div>
+    <div class="meal-items">
+      • 3 ovos cozidos <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~210 kcal</span><br>
+      • 30g de castanhas (mix ou castanha-do-pará) <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~195 kcal</span>
+    </div>
+    <div class="meal-macros">P: ~22g · C: ~4g · G: ~18g · ~265 kcal (sem castanha: ~70 kcal)</div>
   </div>
   <div class="meal-block">
     <div class="meal-name">🌙 Jantar — 20h00</div>
-    <div class="meal-items">• 200g de peixe (tilápia, salmão, atum fresco) ou frango<br>• Legumes refogados ou grelhados à vontade<br>• Salada com azeite de oliva (1 col. sopa)<br>• <em>Sem carboidratos simples à noite</em></div>
+    <div class="meal-items">
+      • 200g de tilápia <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~180 kcal</span> ou salmão <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~280 kcal</span> ou frango <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~220 kcal</span><br>
+      • Legumes refogados à vontade <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~40 kcal</span><br>
+      • Salada verde à vontade <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~15 kcal</span><br>
+      • Azeite de oliva (1 col. sopa) <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#0284c7">~90 kcal</span>
+    </div>
     <div class="meal-macros">P: ~42g · C: ~15g · G: ~12g · ~335 kcal</div>
   </div>
   <div class="meal-block eve">
     <div class="meal-name">🌃 Ceia (opcional) — 22h00</div>
-    <div class="meal-items">• 30g de caseína + uma das opções abaixo:<br>
-      &nbsp;&nbsp;— 200g de iogurte grego natural (s/ açúcar)<br>
-      &nbsp;&nbsp;— 200g de Skyr / iogurte islandês (mais proteico)<br>
-      &nbsp;&nbsp;— 200ml de leite integral ou desnatado<br>
-      &nbsp;&nbsp;— 200ml de bebida de soja (opção sem lactose)<br>
-    • <em>Proteína de absorção lenta — protege a musculatura durante o sono</em></div>
-    <div class="meal-macros">P: ~30g · C: ~10g · G: ~5g · ~200 kcal</div>
+    <div class="meal-items">
+      • 30g de caseína <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~110 kcal</span> + uma das opções abaixo:<br>
+      &nbsp;&nbsp;— 200g de iogurte grego natural <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~120 kcal</span><br>
+      &nbsp;&nbsp;— 200g de Skyr / iogurte islandês <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~130 kcal</span><br>
+      &nbsp;&nbsp;— 200ml de leite integral <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~122 kcal</span> ou desnatado <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~70 kcal</span><br>
+      &nbsp;&nbsp;— 200ml de bebida de soja <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:#d97706">~80 kcal</span><br>
+      • <em>Proteína de absorção lenta — protege a musculatura durante o sono</em>
+    </div>
+    <div class="meal-macros">P: ~30g · C: ~10g · G: ~5g · ~200-240 kcal</div>
   </div>
   <hr class="divider">
   <div class="card">
@@ -1582,13 +1633,20 @@ function devePedirMedidas() {
 var STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','medidas_check','pescoco','cintura','quadril','confirmar'];
 
 function initChat() {
-  chatState = { step:0, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null, pescoco:null, cintura:null, quadril:null, pedirMedidas:devePedirMedidas() };
+  chatState = { step:-1, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null, pescoco:null, cintura:null, quadril:null, pedirMedidas:false };
   document.getElementById('chat-messages').innerHTML = '';
   document.getElementById('chat-buttons').style.display = 'none';
   document.getElementById('chat-input-wrap').style.display = 'flex';
-  var hoje = new Date().toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-  botMsg('Boa noite! Check-in de hoje: <strong>' + hoje + '</strong>.');
-  setTimeout(askStep, 700);
+  botMsg('Boa noite! Vamos fazer o check-in.');
+  setTimeout(function() {
+    var hoje = new Date().toISOString().split('T')[0];
+    var ontem = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    showButtons([
+      {label:'Hoje (' + new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) + ')', value:'hoje'},
+      {label:'Ontem (' + new Date(Date.now()-86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}) + ')', value:ontem},
+      {label:'Outra data', value:'outra'}
+    ]);
+  }, 600);
 }
 
 function botMsg(txt) {
@@ -1655,6 +1713,42 @@ function askStep() {
 }
 
 function processAnswer(val) {
+  // Selecao de data (step -1)
+  if (chatState.step === -1) {
+    if (val === 'hoje') {
+      chatState.data = new Date().toISOString().split('T')[0];
+    } else if (val === 'outra') {
+      botMsg('Digite a data no formato <strong>DD/MM/AAAA</strong>:');
+      showInput('Ex: 20/06/2026');
+      chatState.step = -2;
+      return;
+    } else {
+      chatState.data = val;
+    }
+    chatState.pedirMedidas = devePedirMedidas();
+    chatState.step = 0;
+    var dataFmt = new Date(chatState.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+    botMsg('Registro para <strong>' + dataFmt + '</strong>. Vamos la!');
+    setTimeout(askStep, 400);
+    return;
+  }
+
+  // Data manual (step -2)
+  if (chatState.step === -2) {
+    var parts = val.split('/');
+    if (parts.length === 3 && parts[0].length <= 2 && parts[1].length <= 2 && parts[2].length === 4) {
+      chatState.data = parts[2] + '-' + parts[1].padStart(2,'0') + '-' + parts[0].padStart(2,'0');
+      chatState.pedirMedidas = devePedirMedidas();
+      chatState.step = 0;
+      var dataFmt2 = new Date(chatState.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
+      botMsg('Registro para <strong>' + dataFmt2 + '</strong>. Vamos la!');
+      setTimeout(askStep, 400);
+    } else {
+      botMsg('Formato invalido. Use DD/MM/AAAA. Ex: 20/06/2026');
+    }
+    return;
+  }
+
   var step = activeSteps()[chatState.step];
   var n = parseFloat(val.replace(',','.'));
   if (step === 'peso') {
