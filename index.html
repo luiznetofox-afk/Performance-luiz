@@ -283,9 +283,9 @@
 
   /* LOG TABLE */
   .log-table{width:100%;border-collapse:collapse;font-size:.78rem}
-  .log-table th{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;text-align:left;padding:.55rem .6rem;border-bottom:2px solid #e2e8f0;background:#f8fafc}
-  .log-table td{padding:.5rem .6rem;border-bottom:1px solid #f1f5f9;vertical-align:top;color:#374151}
-  .log-table tr:hover td{background:#f0f9ff}
+  .log-table th{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#374151;font-weight:700;text-align:left;padding:.55rem .6rem;border-bottom:2px solid #e2e8f0;background:#f1f5f9}
+  .log-table td{padding:.5rem .6rem;border-bottom:1px solid #e2e8f0;vertical-align:top;color:#1e293b}
+  .log-table tr:hover td{background:#f0f9ff;color:#0f172a}
 
   /* COUNTDOWN */
   .countdown-block{background:linear-gradient(135deg,#0f172a,#1e3a5f);color:#fff;border-radius:14px;padding:1.4rem;display:flex;align-items:center;gap:1.5rem;margin-bottom:1.25rem;box-shadow:0 4px 20px rgba(15,23,42,.3)}
@@ -2026,18 +2026,19 @@ function renderHistorico() {
   if (registros.length === 0) { vazio.style.display = 'block'; tabela.style.display = 'none'; return; }
   vazio.style.display = 'none'; tabela.style.display = 'block';
   if (registros[0].peso) document.getElementById('peso-display').textContent = registros[0].peso;
-  tbody.innerHTML = registros.map(function(r) {
+  var sorted = registros.slice().sort(function(a,b) { return a.data > b.data ? 1 : -1; }).reverse();
+  tbody.innerHTML = sorted.map(function(r) {
     var bfTxt = '-';
     if (r.pescoco && r.cintura) bfTxt = calcNavyBF(r.pescoco, r.cintura, ALTURA_CM) + '%';
     return '<tr>' +
-      '<td style="white-space:nowrap;font-size:.7rem">' + (r.data || '-') + '</td>' +
-      '<td><strong>' + (r.peso ? r.peso + ' kg' : '-') + '</strong></td>' +
-      '<td>' + (r.agua ? r.agua + 'L' : '-') + '</td>' +
-      '<td style="font-size:.7rem">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
+      '<td style="white-space:nowrap;font-size:.7rem;color:#1e293b">' + (r.data || '-') + '</td>' +
+      '<td style="color:#1e293b"><strong>' + (r.peso ? r.peso + ' kg' : '-') + '</strong></td>' +
+      '<td style="color:#1e293b">' + (r.agua ? r.agua + 'L' : '-') + '</td>' +
+      '<td style="font-size:.7rem;color:#1e293b">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
       '<td style="font-size:.7rem;color:#ea580c">' + (r.kcal_gasta ? r.kcal_gasta + ' kcal' : '-') + '</td>' +
-      '<td style="font-size:.7rem;color:#ea580c">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
-      '<td style="font-size:.7rem">' + (r.treinos || '-') + '</td>' +
-      '<td>' + (r.sono ? r.sono + '/5' : '-') + '</td>' +
+      '<td style="font-size:.7rem;color:#dc2626">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
+      '<td style="font-size:.7rem;color:#1e293b">' + (r.treinos || '-') + '</td>' +
+      '<td style="color:#1e293b">' + (r.sono ? r.sono + '/5' : '-') + '</td>' +
       '<td style="font-size:.7rem;color:#0284c7">' + bfTxt + '</td>' +
       '<td style="font-size:.73rem;max-width:100px;color:#6b7280">' + (r.obs || '') + '</td>' +
       '</tr>';
@@ -2055,8 +2056,8 @@ function renderHistorico() {
 var _pesoChart, _bfChart;
 function renderCharts() {
   var registros = getRegistros();
-  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse();
-  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura && r.data; }).reverse();
+  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
+  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura && r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
   var pesoCard = document.getElementById('chart-peso-card');
   if (comPeso.length >= 2) {
     pesoCard.style.display = 'block';
@@ -2212,7 +2213,7 @@ function makeLineChart(canvasId, labels, datasets, yLabel, metaLine) {
 }
 
 function renderGraficos() {
-  var registros = getRegistros().filter(function(r) { return r.data; }).reverse();
+  var registros = getRegistros().filter(function(r) { return r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
   var comPeso = registros.filter(function(r) { return r.peso; });
   makeLineChart('g-peso', comPeso.map(function(r){return r.data;}), [{label:'Peso',data:comPeso.map(function(r){return parseFloat(r.peso);}),color:'#0284c7'}], 'kg', {label:'Meta (92kg)',value:92,color:'#16a34a'});
   var comBF2 = registros.filter(function(r) { return r.pescoco && r.cintura; });
@@ -2318,7 +2319,7 @@ renderStreak();
 function renderComparativo() {
   var el = document.getElementById('comparativo-semanal');
   if (!el) return;
-  var registros = getRegistros().filter(function(r) { return r.data; }).reverse();
+  var registros = getRegistros().filter(function(r) { return r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
   if (registros.length < 2) { el.textContent = 'Sem dados suficientes ainda.'; return; }
 
   var hoje = new Date();
