@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
   import { getDatabase, ref, set, get, onValue, push } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js";
@@ -209,6 +210,12 @@
   .card-sub{font-size:.75rem;color:var(--mid);margin-top:.2rem}
   .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
   .wk-time{font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px;font-weight:700}
+  .timer-overlay{position:fixed;bottom:1.5rem;right:1.5rem;background:#0f172a;color:#fff;border-radius:12px;padding:1rem 1.25rem;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:999;min-width:160px;text-align:center;border:1px solid #2d3748}
+  .timer-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#0284c7;line-height:1}
+  .timer-label{font-family:'DM Mono',monospace;font-size:.62rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
+  .heatmap-grid{display:flex;gap:3px}
+  .heatmap-col{display:flex;flex-direction:column;gap:3px}
+  .heatmap-cell{width:12px;height:12px;border-radius:2px;cursor:pointer}
   @media(max-width:600px){.grid-4{grid-template-columns:1fr 1fr}}
 
   /* SECTION HEADER */
@@ -320,6 +327,12 @@
   .reab-head{padding:.65rem 1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
   .reab-body{padding:.8rem 1rem;font-size:.82rem;line-height:1.9;background:#fff;color:#374151}
 
+  .timer-overlay{position:fixed;bottom:1.5rem;right:1.5rem;background:#0f172a;color:#fff;border-radius:12px;padding:1rem 1.25rem;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:999;min-width:160px;text-align:center;border:1px solid #2d3748}
+  .timer-num{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#0284c7;line-height:1}
+  .timer-label{font-family:'DM Mono',monospace;font-size:.62rem;color:#64748b;text-transform:uppercase;letter-spacing:.08em}
+  .heatmap-grid{display:flex;gap:3px}
+  .heatmap-col{display:flex;flex-direction:column;gap:3px}
+  .heatmap-cell{width:12px;height:12px;border-radius:2px;cursor:pointer}
   @media(max-width:600px){
     .week-grid{gap:3px}
     .week-day{padding:.3rem;min-height:72px}
@@ -370,6 +383,8 @@
   <div class="tab" onclick="showTab('registro',this)">Check-in</div>
   <div class="tab" onclick="showTab('historico',this)">Histórico</div>
   <div class="tab" onclick="showTab('graficos',this)">📊 Gráficos</div>
+  <div class="tab" onclick="showTab('prboard',this)">🏆 PRs</div>
+  <div class="tab" onclick="showTab('medidas',this)">📏 Medidas</div>
   <div class="tab" onclick="showTab('reab',this)">Reabilitação LCA</div>
 </nav>
 
@@ -501,6 +516,63 @@
       <div class="macro-pill pill-kcal"><span class="val">2658</span><span class="lbl">kcal</span></div>
     </div>
     <div class="evidence">📚 ISSN 2025: 2,3–3,1 g/kg de massa magra maximiza preservação muscular em déficit. Para 78,9 kg MM: 207g/dia (2,62 g/kg).</div>
+  </div>
+
+  <!-- AGUA EM TEMPO REAL -->
+  <div class="card" style="margin-bottom:1rem">
+    <div class="card-title">💧 Controle de Água — Hoje</div>
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin:.5rem 0">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#0284c7;line-height:1" id="agua-hoje-display">0,0 L</div>
+      <div style="flex:1">
+        <div style="background:#e2e8f0;border-radius:99px;height:10px;margin-bottom:.4rem">
+          <div id="agua-progress" style="background:linear-gradient(90deg,#0284c7,#38bdf8);height:10px;border-radius:99px;width:0%;transition:width .4s"></div>
+        </div>
+        <div style="font-size:.75rem;color:#6b7280">Meta: 3,5L · <span id="agua-faltam">Faltam 3,5L</span></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      <button class="btn btn-sm" onclick="addAgua(0.2)">+200ml</button>
+      <button class="btn btn-sm" onclick="addAgua(0.35)">+350ml</button>
+      <button class="btn btn-sm" onclick="addAgua(0.5)">+500ml</button>
+      <button class="btn btn-sm" onclick="addAgua(1)">+1L</button>
+      <button class="btn btn-sm" style="background:#e2e8f0;color:#374151" onclick="resetAgua()">Zerar</button>
+    </div>
+  </div>
+
+  <!-- STREAK + COMPARATIVO -->
+  <div class="grid-4" style="margin-bottom:1rem">
+    <div class="card" style="border-left:4px solid #f97316">
+      <div class="card-title">🔥 Sequência</div>
+      <div class="card-value" id="streak-display" style="color:#f97316">0</div>
+      <div class="card-sub">dias consecutivos</div>
+    </div>
+    <div class="card" style="border-left:4px solid #8b5cf6">
+      <div class="card-title">📅 Check-ins</div>
+      <div class="card-value" id="total-checkins" style="color:#8b5cf6">0</div>
+      <div class="card-sub">total registrados</div>
+    </div>
+    <div class="card" style="border-left:4px solid #0284c7;grid-column:span 2">
+      <div class="card-title">📊 Esta semana vs semana anterior</div>
+      <div id="comparativo-semanal" style="font-size:.8rem;line-height:1.8;margin-top:.25rem;color:#374151">
+        Sem dados suficientes ainda.
+      </div>
+    </div>
+  </div>
+
+  <!-- MAPA DE CALOR -->
+  <div class="card" style="margin-bottom:1rem">
+    <div class="card-title">🗓️ Mapa de Treinos — Últimos 90 dias</div>
+    <div id="heatmap-container" style="margin-top:.5rem;overflow-x:auto"></div>
+    <div style="display:flex;gap:.75rem;margin-top:.5rem;font-size:.7rem;color:#6b7280;align-items:center">
+      <span>Menos</span>
+      <div style="display:flex;gap:2px">
+        <div style="width:12px;height:12px;background:#e2e8f0;border-radius:2px"></div>
+        <div style="width:12px;height:12px;background:#bfdbfe;border-radius:2px"></div>
+        <div style="width:12px;height:12px;background:#60a5fa;border-radius:2px"></div>
+        <div style="width:12px;height:12px;background:#0284c7;border-radius:2px"></div>
+      </div>
+      <span>Mais</span>
+    </div>
   </div>
 
   <div class="alert alert-warn">⚠️ <strong>Este painel é uma ferramenta de acompanhamento, não substitui avaliação médica ou nutricional profissional.</strong></div>
@@ -1296,6 +1368,7 @@
     <div style="font-size:.81rem;color:var(--mid)" id="total-registros">0 registros</div>
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
       <button class="btn btn-sm btn-moss" onclick="exportarBackup()">⬇️ Exportar backup</button>
+      <button class="btn btn-sm" style="background:#8b5cf6" onclick="exportarPDF()">📄 Exportar PDF</button>
       <button class="btn btn-sm btn-gold" onclick="document.getElementById('import-file').click()">⬆️ Importar</button>
       <button class="btn btn-sm btn-danger" onclick="limparHistorico()">🗑️ Limpar</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(event)">
@@ -1431,6 +1504,77 @@
   </div>
 </div>
 
+<!-- ══ PR BOARD ══ -->
+<div id="prboard" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 30%" alt="PRs" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">RECORDES PESSOAIS</div>
+      <div class="hero-sub" style="color:#d4a017">PR BOARD · EVOLUÇÃO DE FORÇA</div>
+    </div>
+  </div>
+  <div class="section-content">
+    <div class="sec-header"><div class="sec-title">PR Board</div><span class="sec-badge badge-gold">RECORDES</span></div>
+    <div class="alert alert-info">🏆 Seus recordes pessoais são calculados automaticamente a partir do log de cargas. Quanto mais sessões registrar, mais preciso fica.</div>
+    <div id="pr-board-content"></div>
+  </div>
+</div>
+
+<!-- ══ MEDIDAS CORPORAIS ══ -->
+<div id="medidas" class="section">
+  <div class="hero-wrap">
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 35%" alt="Medidas" loading="lazy">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <div class="hero-title">MEDIDAS CORPORAIS</div>
+      <div class="hero-sub" style="color:#86efac">CIRCUNFERÊNCIAS · EVOLUÇÃO</div>
+    </div>
+  </div>
+  <div class="section-content">
+    <div class="sec-header"><div class="sec-title">Medidas Corporais</div><span class="sec-badge badge-moss">EM CM</span></div>
+    <div class="alert alert-info">📏 Registre as medidas com fita métrica. Tente medir sempre no mesmo horário e condições para maior consistência.</div>
+
+    <div class="card">
+      <div class="card-title">Novo Registro de Medidas</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.75rem 0">
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Pescoço (cm)</label>
+          <input type="number" id="med-pescoco" placeholder="Ex: 15.5" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Peitoral (cm)</label>
+          <input type="number" id="med-peitoral" placeholder="Ex: 102" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Braço (cm)</label>
+          <input type="number" id="med-braco" placeholder="Ex: 38" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Cintura (cm)</label>
+          <input type="number" id="med-cintura" placeholder="Ex: 96" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Quadril (cm)</label>
+          <input type="number" id="med-quadril" placeholder="Ex: 106" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Coxa (cm)</label>
+          <input type="number" id="med-coxa" placeholder="Ex: 62" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Panturrilha (cm)</label>
+          <input type="number" id="med-panturrilha" placeholder="Ex: 40" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
+        </div>
+      </div>
+      <button class="btn" onclick="salvarMedidas()">Salvar Medidas</button>
+    </div>
+
+    <div id="medidas-historico"></div>
+    <div id="medidas-graficos"></div>
+  </div>
+</div>
+
 <!-- ══ REABILITAÇÃO LCA ══ -->
 <div id="reab" class="section">
   <div class="hero-wrap">
@@ -1542,6 +1686,9 @@ function showTab(id, el) {
   if (id === 'registro') initChat();
   if (id === 'historico') { renderHistorico(); renderCharts(); }
   if (id === 'graficos') { if (window.renderGraficos) renderGraficos(); }
+  if (id === 'prboard') renderPRBoard();
+  if (id === 'medidas') renderMedidas();
+  if (id === 'visao') { renderAgua(); renderStreak(); renderComparativo(); renderHeatmap(); }
 }
 
 // COUNTDOWN
@@ -2127,12 +2274,448 @@ function renderGraficos() {
   });
 }
 
+// ── AGUA EM TEMPO REAL ──
+function getAguaHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var key = 'agua_rt_' + hoje;
+  return parseFloat(localStorage.getItem(key) || '0');
+}
+function setAguaHoje(val) {
+  var hoje = new Date().toISOString().split('T')[0];
+  localStorage.setItem('agua_rt_' + hoje, val.toFixed(1));
+  renderAgua();
+}
+function addAgua(litros) {
+  var atual = getAguaHoje();
+  setAguaHoje(Math.min(atual + litros, 15));
+}
+function resetAgua() {
+  if (confirm('Zerar o controle de agua de hoje?')) setAguaHoje(0);
+}
+function renderAgua() {
+  var val = getAguaHoje();
+  var meta = 3.5;
+  var pct = Math.min(val / meta * 100, 100);
+  var display = document.getElementById('agua-hoje-display');
+  var progress = document.getElementById('agua-progress');
+  var faltam = document.getElementById('agua-faltam');
+  if (display) display.textContent = val.toFixed(1).replace('.', ',') + ' L';
+  if (progress) progress.style.width = pct + '%';
+  if (faltam) {
+    var restam = Math.max(meta - val, 0);
+    faltam.textContent = restam > 0 ? 'Faltam ' + restam.toFixed(1).replace('.', ',') + 'L' : 'Meta atingida!';
+    faltam.style.color = restam === 0 ? '#16a34a' : '#6b7280';
+  }
+}
+renderAgua();
+
+// ── STREAK ──
+function calcStreak() {
+  var registros = getRegistros();
+  if (registros.length === 0) return 0;
+  var sorted = registros.map(function(r) { return r.data; }).filter(Boolean).sort().reverse();
+  var unique = [...new Set(sorted)];
+  var streak = 0;
+  var hoje = new Date();
+  for (var i = 0; i < unique.length; i++) {
+    var esperado = new Date(hoje);
+    esperado.setDate(esperado.getDate() - i);
+    var esperadoStr = esperado.toISOString().split('T')[0];
+    if (unique[i] === esperadoStr) streak++;
+    else break;
+  }
+  return streak;
+}
+function renderStreak() {
+  var streak = calcStreak();
+  var el = document.getElementById('streak-display');
+  var total = document.getElementById('total-checkins');
+  if (el) el.textContent = streak;
+  if (total) total.textContent = getRegistros().length;
+}
+renderStreak();
+
+// ── COMPARATIVO SEMANAL ──
+function renderComparativo() {
+  var el = document.getElementById('comparativo-semanal');
+  if (!el) return;
+  var registros = getRegistros().filter(function(r) { return r.data; }).reverse();
+  if (registros.length < 2) { el.textContent = 'Sem dados suficientes ainda.'; return; }
+
+  var hoje = new Date();
+  var inicioSemana = new Date(hoje);
+  inicioSemana.setDate(hoje.getDate() - hoje.getDay());
+  var inicioSemAnt = new Date(inicioSemana);
+  inicioSemAnt.setDate(inicioSemAnt.getDate() - 7);
+
+  function getRegs(ini, fim) {
+    return registros.filter(function(r) {
+      var d = new Date(r.data + 'T12:00:00');
+      return d >= ini && d < fim;
+    });
+  }
+
+  var semAtual = getRegs(inicioSemana, hoje);
+  var semAnt = getRegs(inicioSemAnt, inicioSemana);
+
+  if (semAtual.length === 0 && semAnt.length === 0) { el.textContent = 'Sem dados desta semana ainda.'; return; }
+
+  var pesoAtual = semAtual.length > 0 && semAtual[semAtual.length-1].peso ? parseFloat(semAtual[semAtual.length-1].peso) : null;
+  var pesoAnt = semAnt.length > 0 && semAnt[semAnt.length-1].peso ? parseFloat(semAnt[semAnt.length-1].peso) : null;
+
+  var treinsAtual = semAtual.reduce(function(acc, r) { return acc + (r.treinos ? r.treinos.split(',').length : 0); }, 0);
+  var treinsAnt = semAnt.reduce(function(acc, r) { return acc + (r.treinos ? r.treinos.split(',').length : 0); }, 0);
+
+  var html = '';
+  if (pesoAtual && pesoAnt) {
+    var diffPeso = (pesoAtual - pesoAnt).toFixed(1);
+    var cor = diffPeso <= 0 ? '#16a34a' : '#ea580c';
+    html += 'Peso: <strong style="color:' + cor + '">' + (diffPeso > 0 ? '+' : '') + diffPeso + ' kg</strong> vs semana anterior<br>';
+  }
+  html += 'Treinos: <strong>' + treinsAtual + '</strong> esta semana vs <strong>' + treinsAnt + '</strong> semana anterior<br>';
+  html += 'Check-ins: <strong>' + semAtual.length + '</strong> esta semana vs <strong>' + semAnt.length + '</strong> semana anterior';
+  el.innerHTML = html;
+}
+renderComparativo();
+
+// ── MAPA DE CALOR ──
+function renderHeatmap() {
+  var container = document.getElementById('heatmap-container');
+  if (!container) return;
+  var registros = getRegistros();
+  var treinosMap = {};
+  registros.forEach(function(r) {
+    if (r.data && r.treinos) treinosMap[r.data] = r.treinos.split(',').length;
+  });
+  var hoje = new Date();
+  var html = '<div class="heatmap-grid">';
+  for (var w = 12; w >= 0; w--) {
+    html += '<div class="heatmap-col">';
+    for (var d = 6; d >= 0; d--) {
+      var date = new Date(hoje);
+      date.setDate(hoje.getDate() - (w * 7 + d));
+      var dateStr = date.toISOString().split('T')[0];
+      var count = treinosMap[dateStr] || 0;
+      var color = count === 0 ? '#e2e8f0' : count === 1 ? '#bfdbfe' : count <= 3 ? '#60a5fa' : '#0284c7';
+      var title = dateStr + ': ' + (count > 0 ? count + ' treino(s)' : 'sem treino');
+      html += '<div class="heatmap-cell" style="background:' + color + '" title="' + title + '"></div>';
+    }
+    html += '</div>';
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+renderHeatmap();
+
+// ── TIMER DE DESCANSO ──
+var timerInterval = null;
+var timerSeconds = 0;
+
+function startTimer(segundos, exName) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerSeconds = segundos;
+  var overlay = document.getElementById('timer-overlay');
+  var display = document.getElementById('timer-display');
+  var label = document.getElementById('timer-ex-name');
+  if (!overlay) return;
+  overlay.style.display = 'block';
+  if (label) label.textContent = exName || '';
+  timerInterval = setInterval(function() {
+    timerSeconds--;
+    var min = Math.floor(timerSeconds / 60);
+    var sec = timerSeconds % 60;
+    if (display) display.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+    if (display) display.style.color = timerSeconds <= 10 ? '#ea580c' : '#0284c7';
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      overlay.style.display = 'none';
+    }
+  }, 1000);
+  var min = Math.floor(timerSeconds / 60);
+  var sec = timerSeconds % 60;
+  if (display) display.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+function cancelTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  var overlay = document.getElementById('timer-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// Attach timer to logCarga
+var _origLogCarga = logCarga;
+logCarga = function(ex, numSeries) {
+  _origLogCarga(ex, numSeries);
+  // Get rest time based on exercise type
+  var restTimes = {
+    'pullup': 180, 'supino': 210, 'remada': 180, 'press': 180,
+    'pulldown': 120, 'rosca': 90, 'triceps': 90,
+    'glute4': 60, 'hipthrust': 90, 'abdutor': 60, 'calf': 60, 'remada-uni': 90
+  };
+  var rest = restTimes[ex] || 120;
+  startTimer(rest, ex.replace('-', ' '));
+};
+
+// ── PR BOARD ──
+function renderPRBoard() {
+  var el = document.getElementById('pr-board-content');
+  if (!el) return;
+  var exercicios = [
+    {id:'pullup', nome:'Barra Fixa'},
+    {id:'supino', nome:'Supino Reto'},
+    {id:'remada', nome:'Remada Curvada'},
+    {id:'pulldown', nome:'Puxada Frontal'},
+    {id:'press', nome:'Desenvolvimento Militar'},
+    {id:'triceps', nome:'Triceps Corda'},
+    {id:'rosca', nome:'Rosca Direta'},
+    {id:'hipthrust', nome:'Hip Thrust'},
+    {id:'abdutor', nome:'Cadeira Abdutora'},
+    {id:'calf', nome:'Panturrilha'},
+    {id:'remada-uni', nome:'Remada Unilateral'},
+    {id:'glute4', nome:'Extensao de Quadril'}
+  ];
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">';
+  exercicios.forEach(function(ex) {
+    var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
+    var pr = 0; var prData = '-'; var total = 0;
+    hist.forEach(function(h) {
+      h.series.forEach(function(s) {
+        if (s.carga > pr) { pr = s.carga; prData = h.data; }
+      });
+      total++;
+    });
+    var badge = pr > 0 ? '<span style="background:#fef3c7;color:#b45309;font-family:'DM Mono',monospace;font-size:.6rem;padding:2px 6px;border-radius:10px;font-weight:700">PR</span>' : '';
+    html += '<div class="card" style="padding:.85rem">' +
+      '<div style="font-size:.75rem;font-weight:600;color:#374151;margin-bottom:.3rem">' + ex.nome + '</div>' +
+      (pr > 0 ?
+        '<div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
+        '<div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#6b7280">' + prData + ' · ' + total + ' sessao(oes)</div>' :
+        '<div style="font-size:.8rem;color:#9ca3af">Sem registros</div>'
+      ) + '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── MEDIDAS CORPORAIS ──
+function getMedidas() {
+  try { return JSON.parse(localStorage.getItem('nexus_medidas') || '[]'); } catch(e) { return []; }
+}
+function saveMedidas(m) {
+  localStorage.setItem('nexus_medidas', JSON.stringify(m));
+  if (window.fbSaveRegistros) {
+    // Save to Firebase too
+    try {
+      var db2 = window._nexusDB;
+      if (db2) {
+        var ref2 = window._nexusRef;
+        // handled by firebase module
+      }
+    } catch(e) {}
+  }
+}
+function salvarMedidas() {
+  var campos = ['pescoco','peitoral','braco','cintura','quadril','coxa','panturrilha'];
+  var reg = { data: new Date().toISOString().split('T')[0], ts: Date.now() };
+  var temAlgum = false;
+  campos.forEach(function(c) {
+    var el = document.getElementById('med-' + c);
+    if (el && el.value) { reg[c] = parseFloat(el.value); temAlgum = true; }
+  });
+  if (!temAlgum) { alert('Preencha pelo menos uma medida.'); return; }
+  var medidas = getMedidas();
+  medidas.unshift(reg);
+  saveMedidas(medidas);
+  renderMedidas();
+  campos.forEach(function(c) {
+    var el = document.getElementById('med-' + c);
+    if (el) el.value = '';
+  });
+  alert('Medidas salvas!');
+}
+function renderMedidas() {
+  var el = document.getElementById('medidas-historico');
+  if (!el) return;
+  var medidas = getMedidas();
+  if (medidas.length === 0) { el.innerHTML = '<div class="alert alert-info">Nenhuma medida registrada ainda.</div>'; return; }
+
+  var campos = [
+    {id:'pescoco', nome:'Pescoço'},
+    {id:'peitoral', nome:'Peitoral'},
+    {id:'braco', nome:'Braço'},
+    {id:'cintura', nome:'Cintura'},
+    {id:'quadril', nome:'Quadril'},
+    {id:'coxa', nome:'Coxa'},
+    {id:'panturrilha', nome:'Panturrilha'}
+  ];
+
+  var html = '<div class="card"><div class="card-title">Histórico de Medidas</div><div style="overflow-x:auto"><table class="log-table"><thead><tr><th>Data</th>';
+  campos.forEach(function(c) { html += '<th>' + c.nome + '</th>'; });
+  html += '</tr></thead><tbody>';
+  medidas.slice(0, 10).forEach(function(m) {
+    html += '<tr><td style="font-family:'DM Mono',monospace;font-size:.7rem;white-space:nowrap">' + m.data + '</td>';
+    campos.forEach(function(c) {
+      var val = m[c.id];
+      html += '<td style="font-family:'DM Mono',monospace;font-size:.72rem">' + (val ? val + ' cm' : '-') + '</td>';
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+
+  // Mini charts per medida
+  html += '<div class="card" style="margin-top:.75rem"><div class="card-title">Evolução por Medida</div>';
+  html += '<canvas id="medidas-chart" style="max-height:220px"></canvas></div>';
+  el.innerHTML = html;
+
+  // Draw chart
+  setTimeout(function() {
+    var sorted = medidas.slice().reverse();
+    if (sorted.length < 2) return;
+    var labels = sorted.map(function(m) { return m.data; });
+    var datasets = campos.map(function(c, i) {
+      var colors = ['#0284c7','#ea580c','#8b5cf6','#16a34a','#d97706','#ec4899','#6b7280'];
+      return {
+        label: c.nome,
+        data: sorted.map(function(m) { return m[c.id] || null; }),
+        borderColor: colors[i],
+        borderWidth: 2,
+        pointRadius: 3,
+        tension: 0.3,
+        fill: false
+      };
+    });
+    if (window._medidasChart) window._medidasChart.destroy();
+    var canvas = document.getElementById('medidas-chart');
+    if (canvas) {
+      window._medidasChart = new Chart(canvas.getContext('2d'), {
+        type: 'line',
+        data: { labels: labels, datasets: datasets },
+        options: { responsive: true, plugins: { legend: { labels: { font: { family: 'DM Sans', size: 10 }, color: '#6b7280' }}}, scales: { x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af' }}, y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: function(v) { return v + ' cm'; }}}}}
+      });
+    }
+  }, 100);
+}
+
+// ── EXPORTAR PDF ──
+function exportarPDF() {
+  var jsPDF = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!jsPDF) { alert('Biblioteca PDF nao carregada. Tente novamente.'); return; }
+  var doc = new jsPDF('p', 'mm', 'a4');
+  var registros = getRegistros();
+  var medidas = getMedidas();
+  var y = 15;
+
+  // Header
+  doc.setFillColor(15, 23, 42);
+  doc.rect(0, 0, 210, 25, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('NEXUS', 105, 12, { align: 'center' });
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.text('Treino · Dieta · Evolucao', 105, 18, { align: 'center' });
+  doc.text('Gerado em: ' + new Date().toLocaleDateString('pt-BR'), 105, 23, { align: 'center' });
+
+  y = 35;
+  doc.setTextColor(0, 0, 0);
+
+  // Dados pessoais
+  doc.setFontSize(13); doc.setFont('helvetica', 'bold');
+  doc.setTextColor(2, 132, 199);
+  doc.text('DADOS PESSOAIS', 15, y); y += 7;
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(0,0,0);
+  doc.text('Altura: 1,82m   |   Idade: 42 anos   |   Massa Magra: 78,9 kg', 15, y); y += 5;
+  doc.text('Gordura inicial: 18,6%   |   Meta: <14%   |   Peso meta: 92 kg', 15, y); y += 12;
+
+  // Evolucao peso
+  if (registros.length > 0) {
+    doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(2, 132, 199);
+    doc.text('EVOLUCAO DO PESO', 15, y); y += 7;
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(0,0,0);
+    var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse().slice(-10);
+    comPeso.forEach(function(r) {
+      doc.text(r.data + '   →   ' + r.peso + ' kg', 20, y); y += 5;
+    });
+    y += 5;
+  }
+
+  // Medidas corporais
+  if (medidas.length > 0) {
+    if (y > 230) { doc.addPage(); y = 15; }
+    doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(2, 132, 199);
+    doc.text('MEDIDAS CORPORAIS (cm)', 15, y); y += 7;
+    doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(0,0,0);
+    var campos2 = ['pescoco','peitoral','braco','cintura','quadril','coxa','panturrilha'];
+    var nomes2 = ['Pescoco','Peitoral','Braco','Cintura','Quadril','Coxa','Panturrilha'];
+    // Header da tabela
+    doc.setFont('helvetica', 'bold');
+    doc.text('Data', 15, y);
+    nomes2.forEach(function(n, i) { doc.text(n, 40 + i * 22, y); });
+    y += 5;
+    doc.setFont('helvetica', 'normal');
+    medidas.slice(0, 8).forEach(function(m) {
+      doc.text(m.data || '-', 15, y);
+      campos2.forEach(function(c, i) { doc.text(m[c] ? m[c].toString() : '-', 40 + i * 22, y); });
+      y += 5;
+    });
+    y += 5;
+  }
+
+  // PRs
+  if (y > 220) { doc.addPage(); y = 15; }
+  doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(212, 160, 23);
+  doc.text('RECORDES PESSOAIS (PR)', 15, y); y += 7;
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(0,0,0);
+  var exList = [
+    {id:'pullup',nome:'Barra Fixa'},{id:'supino',nome:'Supino'},{id:'remada',nome:'Remada Curvada'},
+    {id:'press',nome:'Desenvolvimento Militar'},{id:'hipthrust',nome:'Hip Thrust'},{id:'pulldown',nome:'Puxada Frontal'}
+  ];
+  exList.forEach(function(ex) {
+    var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
+    var pr = 0; var prData = '-';
+    hist.forEach(function(h) { h.series.forEach(function(s) { if (s.carga > pr) { pr = s.carga; prData = h.data; }}); });
+    if (pr > 0) { doc.text(ex.nome + ': ' + pr + ' kg  (' + prData + ')', 20, y); y += 5; }
+  });
+  y += 5;
+
+  // Resumo treinos
+  if (y > 220) { doc.addPage(); y = 15; }
+  doc.setFontSize(13); doc.setFont('helvetica', 'bold'); doc.setTextColor(22, 163, 74);
+  doc.text('RESUMO DE TREINOS', 15, y); y += 7;
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(0,0,0);
+  var totalCheckins = registros.length;
+  var totalNatacao = registros.filter(function(r) { return r.treinos && r.treinos.toLowerCase().indexOf('nata') >= 0; }).length;
+  var totalMusc = registros.filter(function(r) { return r.treinos && r.treinos.toLowerCase().indexOf('muscula') >= 0; }).length;
+  var totalCore = registros.filter(function(r) { return r.treinos && r.treinos.toLowerCase().indexOf('core') >= 0; }).length;
+  doc.text('Total de check-ins: ' + totalCheckins, 20, y); y += 5;
+  doc.text('Sessoes de natacao: ' + totalNatacao, 20, y); y += 5;
+  doc.text('Sessoes de musculacao: ' + totalMusc, 20, y); y += 5;
+  doc.text('Sessoes de core: ' + totalCore, 20, y); y += 5;
+  doc.text('Streak atual: ' + calcStreak() + ' dias consecutivos', 20, y); y += 10;
+
+  // Footer
+  doc.setFontSize(7); doc.setTextColor(150,150,150);
+  doc.text('Nexus App — Conecte treino, dieta e evolucao.', 105, 285, { align: 'center' });
+
+  doc.save('nexus_relatorio_' + new Date().toISOString().split('T')[0] + '.pdf');
+}
+
+// ── OVERRIDE SHOWTAB FOR NEW TABS ──
 // INIT
 renderHistorico();
 renderCharts();
 calcProjecao(getRegistros());
 
 </script>
+<!-- TIMER OVERLAY -->
+<div class="timer-overlay" id="timer-overlay" style="display:none">
+  <div class="timer-label">Descanso</div>
+  <div class="timer-num" id="timer-display">0:00</div>
+  <div class="timer-label" id="timer-ex-name"></div>
+  <button class="btn btn-sm" style="margin-top:.5rem;width:100%" onclick="cancelTimer()">Cancelar</button>
+</div>
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
