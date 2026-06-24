@@ -143,7 +143,7 @@
   carregarDados();
 </script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Bebas+Neue&family=Dancing+Script:wght@600;700&display=swap');
   :root {
     --ink:#111827;--paper:#f8fafc;--pool:#0284c7;--pool-light:#e0f2fe;
     --burn:#ea580c;--burn-light:#fff7ed;--moss:#16a34a;--moss-light:#f0fdf4;
@@ -329,7 +329,10 @@
 </head>
 <body>
 
-<header style="height:auto;padding:1rem 1.25rem;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem">
+<header style="height:auto;padding:1rem 1.25rem;position:relative;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.4rem">
+  <!-- Sync status — canto direito -->
+  <span id="sync-status" style="position:absolute;top:.6rem;right:1rem;font-family:'DM Mono',monospace;font-size:.58rem;color:#64748b"></span>
+
   <svg width="48" height="48" viewBox="0 0 512 512">
     <rect width="512" height="512" rx="90" fill="#050604"/>
     <ellipse cx="256" cy="215" rx="45" ry="45" fill="none" stroke="#d4a017" stroke-width="8" opacity="0.45"/>
@@ -353,11 +356,7 @@
   <div>
     <div class="logo" style="font-size:1.9rem;letter-spacing:.2em;color:#fff;-webkit-text-fill-color:#fff">NEXUS</div>
     <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#fff;letter-spacing:.12em;font-weight:600">TREINO · DIETA · EVOLUÇÃO</div>
-    <div style="font-family:'DM Sans',sans-serif;font-size:.56rem;color:#fff;letter-spacing:.04em;font-style:italic;margin-top:.15rem">Conecte treino, dieta e evolução.</div>
-  </div>
-  <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:#94a3b8;text-align:center;line-height:1.6">
-    <span class="deadline-chip">🎯 29/07/2026</span> &nbsp;
-    <span id="sync-status">Conectando à nuvem...</span>
+    <div style="font-family:'Dancing Script','Pacifico','Georgia',cursive;font-size:1rem;color:#fff;margin-top:.25rem;font-style:italic;font-weight:600">Conecte treino, dieta e evolução.</div>
   </div>
 </header>
 
@@ -392,8 +391,8 @@
     </div>
     <div class="countdown-label">
       <strong id="countdown-msg">Calculando...</strong>
-      Prazo: 29 de julho de 2026 · Déficit: 500–600 kcal/dia<br>
-      Meta de perda: ~3–5 kg de gordura · Cirurgia LCA: ~45 dias
+      Prazo: 29 de julho de 2026<br>
+      Cirurgia LCA: ~45 dias · Meta: &lt;14% gordura
     </div>
   </div>
 
@@ -440,6 +439,30 @@
       <div class="card-title">Dias até Cirurgia</div>
       <div class="card-value" id="dias-cirurgia">—</div>
       <div class="card-sub">LCA · <span id="data-cirurgia-display">definir data</span></div>
+    </div>
+  </div>
+
+  <!-- Card Meta Prazo -->
+  <div class="grid-4" style="margin-bottom:.75rem">
+    <div class="card" style="border-left:4px solid #ea580c">
+      <div class="card-title">Meta Final</div>
+      <div class="card-value" style="font-size:1.6rem;color:#ea580c">29/07/2026</div>
+      <div class="card-sub">prazo de resultado</div>
+    </div>
+    <div class="card" style="border-left:4px solid #0284c7">
+      <div class="card-title">Dias Restantes</div>
+      <div class="card-value" id="dias-restantes-card" style="font-size:1.6rem;color:#0284c7">—</div>
+      <div class="card-sub">para o prazo</div>
+    </div>
+    <div class="card" style="border-left:4px solid #16a34a">
+      <div class="card-title">Déficit Diário</div>
+      <div class="card-value" style="font-size:1.6rem;color:#16a34a">580</div>
+      <div class="card-sub">kcal abaixo do gasto</div>
+    </div>
+    <div class="card" style="border-left:4px solid #8b5cf6">
+      <div class="card-title">Meta de Perda</div>
+      <div class="card-value" style="font-size:1.6rem;color:#8b5cf6">3–5</div>
+      <div class="card-sub">kg de gordura</div>
     </div>
   </div>
 
@@ -1527,6 +1550,8 @@ function updateCountdown() {
   var now = new Date();
   var diff = Math.ceil((deadline - now) / 86400000);
   document.getElementById('dias-restantes').textContent = Math.abs(diff);
+  var cardEl = document.getElementById('dias-restantes-card');
+  if (cardEl) cardEl.textContent = Math.abs(diff);
   var msg = diff > 0 ? diff + ' dias para o prazo.' : diff === 0 ? 'E hoje!' : 'Prazo encerrado ha ' + Math.abs(diff) + ' dias.';
   document.getElementById('countdown-msg').textContent = msg;
 }
