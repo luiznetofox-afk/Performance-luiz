@@ -1806,6 +1806,21 @@
     </div>
 
     <!-- MUSCULAÇÃO -->
+    <!-- NATACAO CHARTS -->
+    <div style="border-top:2px solid #e2e8f0;margin:1.5rem 0 1rem;padding-top:.5rem">
+      <div class="sec-title" style="font-size:1.3rem">Natação — Evolução</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏊 Volume Semanal (metros nadados)</div>
+      <canvas id="g-natacao-metros" style="max-height:180px"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⏱️ Duração das Sessões (minutos)</div>
+      <canvas id="g-natacao-duracao" style="max-height:180px"></canvas>
+    </div>
+
     <div style="border-top:2px solid #e2e8f0;margin:1.5rem 0 1rem;padding-top:.5rem">
       <div class="sec-title" style="font-size:1.3rem">Evolução de Cargas — Musculação</div>
     </div>
@@ -3187,9 +3202,15 @@ function abrirDiaCalendario(dataStr) {
         '<div style="font-family:DM Mono,monospace;font-size:.62rem;color:#9ca3af">' + periodoLabel + '</div>' +
         '</div>' +
         '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
-        '<input type="number" id="' + kcalId + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-        '<input type="number" id="' + fcId + '" placeholder="FC média" value="' + (tData.fc || '') + '" style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '<input type="number" id="' + kcalId + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" style="flex:1;min-width:80px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '<input type="number" id="' + fcId + '" placeholder="FC média (bpm)" value="' + (tData.fc || '') + '" style="flex:1;min-width:80px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
         '</div>' +
+        (t.tipo === 'natacao' ?
+          '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
+          '<input type="number" id="metros-' + t.tipo + '-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros || '') + '" style="flex:1;min-width:80px;background:#e0f2fe;border:1px solid #bae6fd;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+          '<input type="number" id="duracao-' + t.tipo + '-' + dataStr + '" placeholder="Duração (min)" value="' + (tData.duracao || '') + '" style="flex:1;min-width:80px;background:#e0f2fe;border:1px solid #bae6fd;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+          '</div>'
+          : '') +
         '<button class="btn btn-sm" style="' + (feito ? 'background:#16a34a' : '') + ';width:100%" onclick="toggleTreinoParcial(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ',' + String.fromCharCode(39) + t.tipo + String.fromCharCode(39) + ')">' +
         (feito ? '✓ Feito! Toque para desmarcar' : 'Marcar como feito') + '</button>' +
         '</div>';
@@ -3215,11 +3236,15 @@ function toggleTreinoParcial(dataStr, tipo) {
 
   var kcalEl = document.getElementById('parcial-kcal-' + tipo + '-' + dataStr);
   var fcEl = document.getElementById('parcial-fc-' + tipo + '-' + dataStr);
+  var metrosEl = document.getElementById('metros-' + tipo + '-' + dataStr);
+  var duracaoEl = document.getElementById('duracao-' + tipo + '-' + dataStr);
 
   var jaFeitoAntes = parcial[dataStr][tipo].feito;
   parcial[dataStr][tipo].feito = !jaFeitoAntes;
   if (kcalEl && kcalEl.value) parcial[dataStr][tipo].kcal = parseFloat(kcalEl.value);
   if (fcEl && fcEl.value) parcial[dataStr][tipo].fc = parseFloat(fcEl.value);
+  if (metrosEl && metrosEl.value) parcial[dataStr][tipo].metros = parseFloat(metrosEl.value);
+  if (duracaoEl && duracaoEl.value) parcial[dataStr][tipo].duracao = parseFloat(duracaoEl.value);
 
   saveCheckinParcial(parcial);
   renderCalendario();
