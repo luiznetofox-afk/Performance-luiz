@@ -49,6 +49,12 @@
     }
   };
 
+  window.fbSaveParcial = async function(data) {
+    try {
+      await set(ref(db, 'checkin_parcial'), data);
+    } catch(e) { console.error('Erro ao salvar parcial:', e); }
+  };
+
   window.fbSaveAgua = async function(hoje, valor) {
     try {
       await set(ref(db, 'agua_rt/' + hoje), valor);
@@ -137,6 +143,13 @@
       if (snapCir.exists()) {
         localStorage.setItem('data_cirurgia', snapCir.val());
         document.getElementById('data-cirurgia').value = snapCir.val();
+      }
+
+      // Checkin parcial (calendario)
+      const snapParcial = await get(ref(db, 'checkin_parcial'));
+      if (snapParcial.exists()) {
+        localStorage.setItem('checkin_parcial', JSON.stringify(snapParcial.val()));
+        if (window.renderCalendario) renderCalendario();
       }
 
       // Agua em tempo real
@@ -1551,77 +1564,43 @@
   </div>
 </div>
 
-<!-- ══ SEMANA ══ -->
+<!-- ══ SEMANA / CALENDARIO ══ -->
 <div id="semana" class="section">
   <div class="hero-wrap">
-    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 60%" alt="SEMANA DE TREINO" loading="lazy">
+    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 60%" alt="Programação" loading="lazy">
     <div class="hero-overlay"></div>
     <div class="hero-text">
-      <div class="hero-title">SEMANA DE TREINO</div>
-      <div class="hero-sub" style="color:#38bdf8">MICROCICLO · PERIODIZAÇÃO</div>
+      <div class="hero-title">PROGRAMAÇÃO</div>
+      <div class="hero-sub" style="color:#38bdf8">CALENDÁRIO · CHECK-IN POR TREINO</div>
     </div>
   </div>
   <div class="section-content">
-  <div class="sec-header"><div class="sec-title" style="color:#fff">Planejamento Semanal</div><span class="sec-badge badge-gold">MICROCICLO</span></div>
-  <div class="week-grid">
-    <div class="week-day">
-      <div class="week-day-name">SEG</div>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">🌅 MANHÃ</span>
-      <span class="week-tag wt-gym">MUSC C</span>
-      <span class="week-tag wt-core">CORE</span>
-      <span class="week-tag wt-cardio">CARDIO</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
-      <span class="week-tag wt-pool">NATAÇÃO</span>
+    <div class="sec-header"><div class="sec-title">Calendário de Treinos</div><span class="sec-badge badge-pool">MICROCICLO</span></div>
+
+    <!-- Navegacao mes -->
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem">
+      <button class="btn btn-sm" onclick="mudarMesCalendario(-1)" style="background:#f1f5f9;color:#374151">← Anterior</button>
+      <div id="calendario-mes-titulo" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:#0f172a"></div>
+      <button class="btn btn-sm" onclick="mudarMesCalendario(1)" style="background:#f1f5f9;color:#374151">Próximo →</button>
     </div>
-    <div class="week-day">
-      <div class="week-day-name">TER</div>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">☀️ ALMOÇO</span>
-      <span class="week-tag wt-pool">NATAÇÃO ⭐</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
-      <span class="week-tag wt-gym">MUSC A</span>
-      <span class="week-tag wt-core">CORE</span>
+
+    <!-- Legenda -->
+    <div class="alert alert-info" style="font-size:.72rem">
+      🟦 Natação &nbsp; 🟧 Musculação &nbsp; 🟩 Core &nbsp; 🟨 Cardio &nbsp; ⬜ Descanso &nbsp; · Toque em um dia para ver os treinos e fazer o check-in parcial.
     </div>
-    <div class="week-day">
-      <div class="week-day-name">QUA</div>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">☀️ ALMOÇO</span>
-      <span class="week-tag wt-pool">NATAÇÃO</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
-      <span class="week-tag wt-core">CORE</span>
+
+    <!-- Grade do calendario -->
+    <div class="card">
+      <div id="calendario-grid"></div>
     </div>
-    <div class="week-day">
-      <div class="week-day-name">QUI</div>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">☀️ ALMOÇO</span>
-      <span class="week-tag wt-cardio">CARDIO</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">🌙 NOITE</span>
-      <span class="week-tag wt-gym">MUSC B</span>
-      <span class="week-tag wt-core">CORE</span>
-    </div>
-    <div class="week-day">
-      <div class="week-day-name">SEX</div>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin-bottom:2px">🌅 MANHÃ</span>
-      <span class="week-tag wt-gym">MUSC D</span>
-      <span class="week-tag wt-core">CORE</span>
-      <span style="font-family:'DM Mono',monospace;font-size:.52rem;color:#0284c7;display:block;margin:3px 0 2px">☀️ ALMOÇO</span>
-      <span class="week-tag wt-pool">NATAÇÃO ⭐</span>
-    </div>
-    <div class="week-day">
-      <div class="week-day-name">SAB</div>
-      <span class="week-tag wt-cardio">CARDIO</span>
-    </div>
-    <div class="week-day">
-      <div class="week-day-name">DOM</div>
-      <span class="week-tag wt-rest">DESCANSO</span>
-    </div>
-  </div>
-  <div class="alert alert-warn">⚠️ <strong>Treino duplo (musculação + natação):</strong> priorize natação antes, ou 4–6h de intervalo. Detectado automaticamente no check-in.</div>
-  <div class="card">
-    <div class="card-title">Cardio — Protocolo</div>
-    <div style="font-size:.82rem;line-height:1.8">• <strong>Tipo:</strong> esteira com inclinação, bike ou elíptico · <strong>Intensidade:</strong> Zona 2 (60–70% FCmax) · <strong>FC máx estimada:</strong> 178 bpm → Zona 2: 107–125 bpm · <strong>Duração:</strong> 30–40 min</div>
-  </div>
+
+    <!-- Detalhe do dia selecionado -->
+    <div id="dia-detalhe-container"></div>
+
   </div>
 </div>
 
-<!-- ══ LISTA DE COMPRAS ══ -->
+<!-- ══ LISTA DE COMPRAS ══ --><!-- ══ LISTA DE COMPRAS ══ -->
 <div id="compras" class="section">
   <div class="hero-wrap">
     <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 50%" alt="LISTA DE COMPRAS" loading="lazy">
@@ -2053,6 +2032,7 @@ function showTab(id, el) {
   if (id === 'graficos') { if (window.renderGraficos) renderGraficos(); }
   if (id === 'prboard') renderPRBoard();
   if (id === 'medidas') renderMedidas();
+  if (id === 'semana') { renderCalendario(); fecharDiaCalendario(); }
   if (id === 'visao') { renderAgua(); renderStreak(); renderComparativo(); renderHeatmap(); }
 }
 
@@ -2262,9 +2242,17 @@ function askStep() {
   if (step === 'peso') { botMsg('Qual foi o seu <strong>peso</strong> hoje? (kg)'); showInput('Ex: 95.8'); }
   else if (step === 'kcal') { botMsg('Quantas <strong>calorias</strong> voce consumiu? (ou "pular")'); showInput('Ex: 2650'); }
   else if (step === 'agua') { botMsg('Quantos <strong>litros de agua</strong> voce bebeu?'); showInput('Ex: 3.5'); }
-  else if (step === 'kcal_gasta') { botMsg('Quantas <strong>calorias voce gastou</strong> nos treinos? (Mi Fitness, ou "pular")'); showInput('Ex: 650'); }
+  else if (step === 'kcal_gasta') {
+    var sugestao = chatState.kcal_gasta_sugerido ? ' Do calendario, somei <strong>' + chatState.kcal_gasta_sugerido + ' kcal</strong> dos treinos marcados.' : '';
+    botMsg('Quantas <strong>calorias voce gastou no total hoje</strong> (rotina completa, incluindo trabalho e caminhadas)?' + sugestao + ' (Mi Fitness, ou "pular")');
+    showInput(chatState.kcal_gasta_sugerido ? 'Ex: ' + chatState.kcal_gasta_sugerido : 'Ex: 650');
+  }
   else if (step === 'fc_media') { botMsg('Qual foi a <strong>FC media</strong> durante o treino? (Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
-  else if (step === 'treinos') { botMsg('Quais <strong>treinos</strong> voce fez? (marque todos)'); showButtons([{label:'Natacao',value:'natacao'},{label:'Musculacao',value:'musculacao'},{label:'Core',value:'core'},{label:'Cardio',value:'cardio'},{label:'Descanso',value:'descanso'},{label:'Concluido',value:'__done__'}]); }
+  else if (step === 'treinos') {
+    var jaMarcados = chatState.treinos.length > 0 ? ' Ja marquei: ' + chatState.treinos.join(', ') + '.' : '';
+    botMsg('Quais <strong>treinos</strong> voce fez?' + jaMarcados + ' (confirme ou adicione mais)');
+    showButtons([{label:'Natacao',value:'natacao'},{label:'Musculacao',value:'musculacao'},{label:'Core',value:'core'},{label:'Cardio',value:'cardio'},{label:'Descanso',value:'descanso'},{label:'Concluido',value:'__done__'}]);
+  }
   else if (step === 'sono') { botMsg('Como foi o <strong>sono</strong> de ontem?'); showButtons([{label:'Pessimo (1)',value:'1'},{label:'Ruim (2)',value:'2'},{label:'Ok (3)',value:'3'},{label:'Bom (4)',value:'4'},{label:'Excelente (5)',value:'5'}]); }
   else if (step === 'obs') { botMsg('Alguma <strong>observacao</strong>? (ou "nada")'); showInput('Energia, alimentacao, dores...'); }
   else if (step === 'confirmar') mostrarResumo();
@@ -2284,8 +2272,20 @@ function processAnswer(val) {
       chatState.data = val;
     }
     chatState.step = 0;
+
+    // Pre-preencher treinos do calendario se for o dia de hoje
+    var hojeCheck = new Date().toISOString().split('T')[0];
+    if (chatState.data === hojeCheck) {
+      var feitos = getTreinosFeitosHoje();
+      var mapTipo = {natacao:'natacao', musculacao:'musculacao', core:'core', cardio:'cardio'};
+      feitos.forEach(function(t) { if (chatState.treinos.indexOf(t) < 0) chatState.treinos.push(t); });
+      var kcalCalendario = getKcalTreinosHoje();
+      if (kcalCalendario > 0) chatState.kcal_gasta_sugerido = kcalCalendario;
+    }
+
     var dataFmt = new Date(chatState.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-    botMsg('Registro para <strong>' + dataFmt + '</strong>. Vamos la!');
+    var msgExtra = chatState.treinos.length > 0 ? ' Ja identifiquei ' + chatState.treinos.length + ' treino(s) marcados no calendario hoje!' : '';
+    botMsg('Registro para <strong>' + dataFmt + '</strong>.' + msgExtra + ' Vamos la!');
     setTimeout(askStep, 400);
     return;
   }
@@ -3035,11 +3035,227 @@ function exportarPDF() {
   doc.save('nexus_relatorio_' + new Date().toISOString().split('T')[0] + '.pdf');
 }
 
+
+// ══════════════════════════════════════════
+// CALENDARIO / PROGRAMACAO
+// ══════════════════════════════════════════
+var calMesAtual = new Date().getMonth();
+var calAnoAtual = new Date().getFullYear();
+var diaDetalheAberto = null;
+
+// Programacao semanal: dia da semana (0=Dom...6=Sab) -> treinos planejados
+var PROGRAMACAO_SEMANAL = {
+  1: [ // Segunda
+    {tipo:'musculacao', nome:'Musc C', periodo:'manha'},
+    {tipo:'core', nome:'Core', periodo:'manha'},
+    {tipo:'cardio', nome:'Cardio', periodo:'manha'},
+    {tipo:'natacao', nome:'Natação', periodo:'noite'}
+  ],
+  2: [ // Terca
+    {tipo:'natacao', nome:'Natação ⭐', periodo:'almoco'},
+    {tipo:'musculacao', nome:'Musc A', periodo:'noite'},
+    {tipo:'core', nome:'Core', periodo:'noite'}
+  ],
+  3: [ // Quarta
+    {tipo:'natacao', nome:'Natação', periodo:'almoco'},
+    {tipo:'core', nome:'Core', periodo:'noite'}
+  ],
+  4: [ // Quinta
+    {tipo:'cardio', nome:'Cardio', periodo:'almoco'},
+    {tipo:'musculacao', nome:'Musc B', periodo:'noite'},
+    {tipo:'core', nome:'Core', periodo:'noite'}
+  ],
+  5: [ // Sexta
+    {tipo:'musculacao', nome:'Musc D', periodo:'manha'},
+    {tipo:'core', nome:'Core', periodo:'manha'},
+    {tipo:'natacao', nome:'Natação ⭐', periodo:'almoco'}
+  ],
+  6: [ // Sabado
+    {tipo:'cardio', nome:'Cardio', periodo:'manha'}
+  ],
+  0: [] // Domingo - descanso
+};
+
+var TIPO_CORES = {
+  natacao: '#0284c7',
+  musculacao: '#ea580c',
+  core: '#16a34a',
+  cardio: '#d97706'
+};
+var TIPO_EMOJI = {
+  natacao: '🏊',
+  musculacao: '💪',
+  core: '🔥',
+  cardio: '🚴'
+};
+
+function getCheckinParcial() {
+  try { return JSON.parse(localStorage.getItem('checkin_parcial') || '{}'); } catch(e) { return {}; }
+}
+function saveCheckinParcial(data) {
+  localStorage.setItem('checkin_parcial', JSON.stringify(data));
+  if (window.fbSaveParcial) window.fbSaveParcial(data);
+}
+
+function renderCalendario() {
+  var titulo = document.getElementById('calendario-mes-titulo');
+  if (!titulo) return;
+  var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  titulo.textContent = meses[calMesAtual] + ' ' + calAnoAtual;
+
+  var primeiroDia = new Date(calAnoAtual, calMesAtual, 1);
+  var ultimoDia = new Date(calAnoAtual, calMesAtual + 1, 0);
+  var diaSemanaInicio = primeiroDia.getDay();
+  var totalDias = ultimoDia.getDate();
+
+  var hojeStr = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+
+  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">';
+  ['D','S','T','Q','Q','S','S'].forEach(function(d) {
+    html += '<div style="font-family:DM Mono,monospace;font-size:.6rem;color:#9ca3af;font-weight:700;padding:.3rem 0">' + d + '</div>';
+  });
+
+  for (var i = 0; i < diaSemanaInicio; i++) html += '<div></div>';
+
+  for (var dia = 1; dia <= totalDias; dia++) {
+    var dataObj = new Date(calAnoAtual, calMesAtual, dia);
+    var dataStr = dataObj.toISOString().split('T')[0];
+    var diaSemana = dataObj.getDay();
+    var treinos = PROGRAMACAO_SEMANAL[diaSemana] || [];
+    var isHoje = dataStr === hojeStr;
+
+    var dotsHtml = '';
+    treinos.forEach(function(t) {
+      var feito = parcial[dataStr] && parcial[dataStr][t.tipo] && parcial[dataStr][t.tipo].feito;
+      var cor = TIPO_CORES[t.tipo];
+      var opacidade = feito ? '1' : '0.35';
+      dotsHtml += '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + cor + ';opacity:' + opacidade + ';margin:0 1px"></span>';
+    });
+
+    var bgCell = isHoje ? '#dbeafe' : '#fff';
+    var borderCell = isHoje ? '2px solid #0284c7' : '1px solid #f1f5f9';
+
+    html += '<div onclick="abrirDiaCalendario(\\'' + dataStr + '\\')" style="cursor:pointer;background:' + bgCell + ';border:' + borderCell + ';border-radius:6px;padding:.3rem .2rem;min-height:42px">' +
+      '<div style="font-size:.7rem;font-weight:' + (isHoje?'700':'500') + ';color:' + (isHoje?'#0284c7':'#374151') + '">' + dia + '</div>' +
+      '<div style="margin-top:2px">' + dotsHtml + '</div>' +
+      '</div>';
+  }
+  html += '</div>';
+
+  var grid = document.getElementById('calendario-grid');
+  if (grid) grid.innerHTML = html;
+}
+
+function mudarMesCalendario(delta) {
+  calMesAtual += delta;
+  if (calMesAtual > 11) { calMesAtual = 0; calAnoAtual++; }
+  if (calMesAtual < 0) { calMesAtual = 11; calAnoAtual--; }
+  renderCalendario();
+}
+
+function abrirDiaCalendario(dataStr) {
+  diaDetalheAberto = dataStr;
+  var dataObj = new Date(dataStr + 'T12:00:00');
+  var diaSemana = dataObj.getDay();
+  var treinos = PROGRAMACAO_SEMANAL[diaSemana] || [];
+  var parcial = getCheckinParcial();
+  var diaData = parcial[dataStr] || {};
+
+  var diasNomes = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var dataFmt = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric'});
+
+  var html = '<div class="card" style="margin-top:1rem">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">' +
+    '<div class="card-title">' + diasNomes[diaSemana] + ' - ' + dataFmt + '</div>' +
+    '<button onclick="fecharDiaCalendario()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af">✕</button>' +
+    '</div>';
+
+  if (treinos.length === 0) {
+    html += '<div style="text-align:center;padding:1.5rem;color:#9ca3af">Dia de descanso 😴</div>';
+  } else {
+    treinos.forEach(function(t, idx) {
+      var tData = diaData[t.tipo] || {};
+      var feito = tData.feito || false;
+      var kcalId = 'parcial-kcal-' + t.tipo + '-' + dataStr;
+      var fcId = 'parcial-fc-' + t.tipo + '-' + dataStr;
+      var periodoLabel = t.periodo === 'manha' ? '🌅 Manhã' : t.periodo === 'almoco' ? '☀️ Almoço' : '🌙 Noite';
+
+      html += '<div style="border:1.5px solid ' + (feito ? '#16a34a' : '#e2e8f0') + ';border-radius:10px;padding:.85rem;margin-bottom:.6rem;background:' + (feito ? '#f0fdf4' : '#fff') + '">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">' +
+        '<div style="font-weight:700;font-size:.85rem;color:#0f172a">' + TIPO_EMOJI[t.tipo] + ' ' + t.nome + '</div>' +
+        '<div style="font-family:DM Mono,monospace;font-size:.62rem;color:#9ca3af">' + periodoLabel + '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
+        '<input type="number" id="' + kcalId + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '<input type="number" id="' + fcId + '" placeholder="FC média" value="' + (tData.fc || '') + '" style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '</div>' +
+        '<button class="btn btn-sm" style="' + (feito ? 'background:#16a34a' : '') + ';width:100%" onclick="toggleTreinoParcial(\\'' + dataStr + '\\',\\'' + t.tipo + '\\')">' +
+        (feito ? '✓ Feito! Toque para desmarcar' : 'Marcar como feito') + '</button>' +
+        '</div>';
+    });
+  }
+
+  html += '</div>';
+
+  var container = document.getElementById('dia-detalhe-container');
+  if (container) container.innerHTML = html;
+}
+
+function fecharDiaCalendario() {
+  diaDetalheAberto = null;
+  var container = document.getElementById('dia-detalhe-container');
+  if (container) container.innerHTML = '';
+}
+
+function toggleTreinoParcial(dataStr, tipo) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+
+  var kcalEl = document.getElementById('parcial-kcal-' + tipo + '-' + dataStr);
+  var fcEl = document.getElementById('parcial-fc-' + tipo + '-' + dataStr);
+
+  var jaFeitoAntes = parcial[dataStr][tipo].feito;
+  parcial[dataStr][tipo].feito = !jaFeitoAntes;
+  if (kcalEl && kcalEl.value) parcial[dataStr][tipo].kcal = parseFloat(kcalEl.value);
+  if (fcEl && fcEl.value) parcial[dataStr][tipo].fc = parseFloat(fcEl.value);
+
+  saveCheckinParcial(parcial);
+  renderCalendario();
+  abrirDiaCalendario(dataStr);
+}
+
+// Retorna os treinos ja marcados como feitos hoje (para pre-preencher o check-in)
+function getTreinosFeitosHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+  var diaData = parcial[hoje] || {};
+  var feitos = [];
+  Object.keys(diaData).forEach(function(tipo) {
+    if (diaData[tipo].feito) feitos.push(tipo);
+  });
+  return feitos;
+}
+
+// Retorna kcal total dos treinos parciais de hoje (soma)
+function getKcalTreinosHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+  var diaData = parcial[hoje] || {};
+  var total = 0;
+  Object.keys(diaData).forEach(function(tipo) {
+    if (diaData[tipo].feito && diaData[tipo].kcal) total += diaData[tipo].kcal;
+  });
+  return total;
+}
+
 // ── OVERRIDE SHOWTAB FOR NEW TABS ──
 // INIT
 renderHistorico();
 renderCharts();
 calcProjecao(getRegistros());
+renderCalendario();
 
 </script>
 <!-- TIMER OVERLAY -->
