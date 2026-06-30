@@ -3136,7 +3136,7 @@ function renderCalendario() {
     var bgCell = isHoje ? '#dbeafe' : '#fff';
     var borderCell = isHoje ? '2px solid #0284c7' : '1px solid #f1f5f9';
 
-    html += '<div onclick="abrirDiaCalendario(\\'' + dataStr + '\\')" style="cursor:pointer;background:' + bgCell + ';border:' + borderCell + ';border-radius:6px;padding:.3rem .2rem;min-height:42px">' +
+    html += '<div onclick="abrirDiaCalendario(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ')" style="cursor:pointer;background:' + bgCell + ';border:' + borderCell + ';border-radius:6px;padding:.3rem .2rem;min-height:42px">' +
       '<div style="font-size:.7rem;font-weight:' + (isHoje?'700':'500') + ';color:' + (isHoje?'#0284c7':'#374151') + '">' + dia + '</div>' +
       '<div style="margin-top:2px">' + dotsHtml + '</div>' +
       '</div>';
@@ -3190,7 +3190,7 @@ function abrirDiaCalendario(dataStr) {
         '<input type="number" id="' + kcalId + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
         '<input type="number" id="' + fcId + '" placeholder="FC média" value="' + (tData.fc || '') + '" style="flex:1;min-width:90px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
         '</div>' +
-        '<button class="btn btn-sm" style="' + (feito ? 'background:#16a34a' : '') + ';width:100%" onclick="toggleTreinoParcial(\\'' + dataStr + '\\',\\'' + t.tipo + '\\')">' +
+        '<button class="btn btn-sm" style="' + (feito ? 'background:#16a34a' : '') + ';width:100%" onclick="toggleTreinoParcial(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ',' + String.fromCharCode(39) + t.tipo + String.fromCharCode(39) + ')">' +
         (feito ? '✓ Feito! Toque para desmarcar' : 'Marcar como feito') + '</button>' +
         '</div>';
     });
