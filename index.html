@@ -715,14 +715,464 @@
     </div>
   </div>
   <div class="section-content">
-  <div class="sec-header"><div class="sec-title" style="color:#fff">Musculação para Natação</div><span class="sec-badge badge-burn">4x / SEMANA</span></div>
+    <div class="sec-header"><div class="sec-title" style="color:#fff">Musculação para Natação</div><span class="sec-badge badge-burn">4x / SEMANA</span></div>
   <div class="alert alert-info">📚 Força máxima (80–95% 1RM, 3–5 séries × 3–6 reps, 2–5 min descanso) é o protocolo com maior evidência para melhora de performance na natação (Jin et al., Frontiers Physiology, 2024).</div>
-  <div class="alert alert-success">📋 <strong>Log de cargas:</strong> registre o peso usado em cada exercício para acompanhar sua progressão ao longo das semanas.</div>
+  <div class="alert alert-success">📋 <strong>Log de cargas:</strong> registre o peso usado em cada série para acompanhar sua progressão. Cada série tem seu próprio cronômetro de descanso.</div>
 
   <div class="day-header">DIA A — PUXADA (Costas + Bíceps)</div>
   <div class="ex-block">
     <div class="ex-head"><span class="ex-head-name">Barra Fixa (Pull-up)</span><span class="ex-head-tag">OURO PARA NATAÇÃO</span></div>
     <div class="ex-body"><strong>Séries/Reps:</strong> 4–5 × 4–6 · <strong>Pegada:</strong> larga/neutra alternada · <strong>Amplitude:</strong> extensão total embaixo, queixo acima da barra · <strong>Descanso:</strong> 3 min · Retrai escápulas antes de puxar (shoulder packing)</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('pullup',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-pullup" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'pullup - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-pullup" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'pullup - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-pullup" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'pullup - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-pullup" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'pullup - Serie 4')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S5</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-pullup" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-pullup" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'pullup - Serie 5')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-pullup"></div>
+  </div>
+    <div class="ex-tip">🎯 Mimetiza diretamente a fase de tração do nado livre e borboleta.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Remada Curvada com Barra</span><span class="ex-head-tag">CADEIA POSTERIOR</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 5–6 · <strong>Amplitude:</strong> barra toca o abdômen, quase extensão total dos cotovelos · <strong>Execução:</strong> tronco a 45°, escápulas contraídas no topo · <strong>Descanso:</strong> 3 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('remada',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'remada - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'remada - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'remada - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'remada - Serie 4')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-remada"></div>
+  </div>
+    <div class="ex-tip">🎯 Fortalece romboides e trapézio médio — estabilidade escapular e prevenção de lesão no ombro.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Puxada Frontal (Lat Pulldown)</span><span class="ex-head-tag">ESPECÍFICO NATAÇÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 8–10 · <strong>Amplitude:</strong> pegada larga, puxar até o peito superior · <strong>Execução:</strong> peitoral para fora, cotovelos apontando para baixo · <strong>Descanso:</strong> 2 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('pulldown',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pulldown" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-pulldown" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(120,'pulldown - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-pulldown" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-pulldown" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(120,'pulldown - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-pulldown" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-pulldown" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(120,'pulldown - Serie 3')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-pulldown"></div>
+  </div>
+    <div class="ex-tip">🎯 Simula diretamente a fase de tração na natação.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Rosca Direta (Bíceps)</span><span class="ex-head-tag">ISOLAMENTO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 10–12 · Controlado, sem balançar o tronco · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('rosca',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-rosca" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-rosca" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'rosca - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-rosca" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-rosca" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'rosca - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-rosca" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-rosca" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'rosca - Serie 3')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-rosca"></div>
+  </div>
+    <div class="ex-tip">🎯 Bíceps ativo na fase de tração inicial do freestyle.</div>
+  </div>
+
+  <div class="day-header">DIA B — EMPURRÃO (Peito + Tríceps + Ombro)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Supino Reto com Barra</span><span class="ex-head-tag">OURO PARA NATAÇÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4–5 × 4–6 (85–90% 1RM) · <strong>Amplitude:</strong> barra toca o peito, extensão completa no topo · <strong>Execução:</strong> pés no chão, escápulas retraídas, arco lombar natural · <strong>Descanso:</strong> 3–4 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('supino',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-supino" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(210,'supino - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-supino" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(210,'supino - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-supino" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(210,'supino - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-supino" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(210,'supino - Serie 4')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S5</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-supino" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-supino" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(210,'supino - Serie 5')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-supino"></div>
+  </div>
+    <div class="ex-tip">📚 1RM no supino explica 50–60% da performance nos 50–100m nado livre (Keiner et al.).</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Desenvolvimento Militar (Press)</span><span class="ex-head-tag">OMBROS</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 5–6 · <strong>Amplitude:</strong> barra nas clavículas, extensão total acima da cabeça · Core contraído, sem hiperextender a lombar · <strong>Descanso:</strong> 3 min</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('press',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-press" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'press - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-press" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'press - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-press" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'press - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-press" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(180,'press - Serie 4')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-press"></div>
+  </div>
+    <div class="ex-tip">🎯 Deltoide anterior e médio — entrada e recuperação do braço na água.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Tríceps Corda (Pulley)</span><span class="ex-head-tag">ISOLAMENTO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 10–12 · Extensão completa dos cotovelos · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('triceps',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-triceps" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-triceps" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'triceps - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-triceps" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-triceps" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'triceps - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-triceps" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-triceps" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'triceps - Serie 3')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-triceps"></div>
+  </div>
+    <div class="ex-tip">🎯 Tríceps muito ativo na segunda metade do pull no freestyle.</div>
+  </div>
+
+  <div class="day-header">DIA C — MEMBROS INFERIORES (Adaptado — LCA pré-cirúrgico)</div>
+  <div class="alert alert-warn">⚠️ <strong>Protocolo adaptado para LCA rompido.</strong> Sem carga compressiva, sem cisalhamento, sem impacto. Reavalie após cirurgia e reabilitação.</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Extensão de Quadril em Quatro Apoios</span><span class="ex-head-tag">GLÚTEO / SEM JOELHO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 15–20 cada lado (caneleira progressiva) · Coluna neutra, elevar perna estendida para trás contraindo glúteo · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('glute4',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-glute4" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'glute4 - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-glute4" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'glute4 - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-glute4" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'glute4 - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-glute4" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-glute4" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'glute4 - Serie 4')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-glute4"></div>
+  </div>
+    <div class="ex-tip">🎯 Glúteo máximo sem stress no joelho — cadeia posterior para saídas e chute.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Hip Thrust no Banco</span><span class="ex-head-tag">GLÚTEO + POSTERIOR</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 10–12 (barra ou haltere sobre o quadril) · Ombros no banco, pés no chão, joelhos a ~90° · Elevar quadril até extensão, contrair 2 seg, descer com controle · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('hipthrust',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-hipthrust" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'hipthrust - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-hipthrust" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'hipthrust - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-hipthrust" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'hipthrust - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-hipthrust" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-hipthrust" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(90,'hipthrust - Serie 4')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-hipthrust"></div>
+  </div>
+    <div class="ex-tip">🎯 Aprovado para pré-cirúrgico de LCA — sem cisalhamento tibial.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Cadeira Abdutora</span><span class="ex-head-tag">ESTABILIDADE</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 15 (carga moderada) · Abrir as pernas com controle · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('abdutor',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-abdutor" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-abdutor" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'abdutor - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-abdutor" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-abdutor" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'abdutor - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-abdutor" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-abdutor" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'abdutor - Serie 3')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-abdutor"></div>
+  </div>
+    <div class="ex-tip">🎯 Abdutores de quadril — estabilidade lateral para o chute.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Elevação Pélvica Unilateral</span><span class="ex-head-tag">ESTABILIDADE PÉLVICA</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 12 cada lado · Deitado, uma perna estendida no ar, elevar quadril com a perna de apoio · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('elev-pelvica',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-elev-pelvica" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-elev-pelvica" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-pelvica - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-elev-pelvica" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-elev-pelvica" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-pelvica - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-elev-pelvica" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-elev-pelvica" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-pelvica - Serie 3')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-elev-pelvica"></div>
+  </div>
+    <div class="ex-tip">🎯 Corrige desequilíbrios entre os lados — importante para compensar inatividade pós-cirúrgica.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Panturrilha em Pé (Calf Raise)</span><span class="ex-head-tag">PROPULSÃO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 20 (peso corporal ou halteres) · Subir na ponta dos pés com extensão total, descer lento · Pode usar degrau para maior amplitude · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+      <button class="btn btn-sm" onclick="logCarga('calf',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-calf" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'calf - Serie 1')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-calf" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'calf - Serie 2')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-calf" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'calf - Serie 3')">⏱ Descanso</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-calf" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-calf" min="1">
+        <button class="serie-timer-btn" onclick="startTimer(60,'calf - Serie 4')">⏱ Descanso</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-calf"></div>
+  </div>
+    <div class="ex-tip">🎯 Sem nenhum stress no LCA — propulsão do chute.</div>
+  </div>
+
+  <div class="day-header">DIA D — FULL BODY FUNCIONAL (Potência + Integração)</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Slam + Arremesso Rotacional (Medicine Ball)</span><span class="ex-head-tag">EXPLOSÃO / SEM JOELHO</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 6 cada (medicine ball 6–8 kg) · <strong>Slam:</strong> elevar acima da cabeça, arremessar no chão com força máxima · <strong>Rotacional:</strong> rotar tronco e arremessar lateralmente na parede · <strong>Descanso:</strong> 2 min · Apenas tronco e membros superiores — sem salto</div>
+    <div class="ex-tip">🎯 Substitui o Power Clean — potência de tronco e braços sem stress no LCA.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Remada Unilateral com Haltere</span><span class="ex-head-tag">ASSIMETRIA</span></div>
+    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 8 cada lado · Apoio no banco, cotovelo sobe verticalmente, escápula retraída no topo · <strong>Descanso:</strong> 90 seg</div>
     <div class="ex-log-row">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
       <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
