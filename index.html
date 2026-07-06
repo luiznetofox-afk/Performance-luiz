@@ -168,6 +168,16 @@
     }
   }
 
+  // ── REALTIME LISTENER AGENDA/PARCIAL ──
+  onValue(ref(db, 'checkin_parcial'), (snapshot) => {
+    if (snapshot.exists()) {
+      localStorage.setItem('checkin_parcial', JSON.stringify(snapshot.val()));
+      setTimeout(function() {
+        if (window.renderCalendario) window.renderCalendario();
+      }, 300);
+    }
+  });
+
   // ── REALTIME LISTENER AGUA ──
   var hojeRt = new Date().toISOString().split('T')[0];
   onValue(ref(db, 'agua_rt/' + hojeRt), (snapshot) => {
