@@ -49,6 +49,12 @@
     }
   };
 
+  window.fbSaveMedidas = async function(data) {
+    try {
+      await set(ref(db, 'medidas_corporais'), data);
+    } catch(e) { console.error('Erro ao salvar medidas:', e); }
+  };
+
   window.fbSaveParcial = async function(data) {
     try {
       await set(ref(db, 'checkin_parcial'), data);
@@ -145,6 +151,12 @@
         document.getElementById('data-cirurgia').value = snapCir.val();
       }
 
+      // Medidas corporais
+      const snapMedidas = await get(ref(db, 'medidas_corporais'));
+      if (snapMedidas.exists()) {
+        localStorage.setItem('nexus_medidas', JSON.stringify(snapMedidas.val()));
+      }
+
       // Checkin parcial (calendario)
       const snapParcial = await get(ref(db, 'checkin_parcial'));
       if (snapParcial.exists()) {
@@ -174,6 +186,61 @@
       localStorage.setItem('checkin_parcial', JSON.stringify(snapshot.val()));
       setTimeout(function() {
         if (window.renderCalendario) window.renderCalendario();
+      }, 300);
+    }
+  });
+
+  // ── REALTIME LISTENER CARGAS ──
+  onValue(ref(db, 'cargas'), (snapshot) => {
+    if (snapshot.exists()) {
+      var cargas = snapshot.val();
+      Object.keys(cargas).forEach(function(ex) {
+        localStorage.setItem('carga_' + ex, JSON.stringify(cargas[ex]));
+      });
+      setTimeout(function() {
+        ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'].forEach(function(ex) {
+          if (window.renderCargaHist) renderCargaHist(ex);
+        });
+        if (window.renderPRBoard && document.getElementById('prboard') && document.getElementById('prboard').classList.contains('active')) renderPRBoard();
+      }, 300);
+    }
+  });
+
+  // ── REALTIME LISTENER CORE DONE ──
+  onValue(ref(db, 'core_done'), (snapshot) => {
+    if (snapshot.exists()) {
+      var coreData = snapshot.val();
+      var hojeStr = new Date().toISOString().split('T')[0];
+      var hasHoje = Object.keys(coreData).some(function(k) { return k.startsWith(hojeStr); });
+      if (hasHoje) {
+        localStorage.setItem('core_done', JSON.stringify(coreData));
+      } else {
+        localStorage.setItem('core_done', JSON.stringify({}));
+      }
+      setTimeout(function() {
+        if (window.renderCoreDone) renderCoreDone();
+      }, 300);
+    }
+  });
+
+  // ── REALTIME LISTENER MEDIDAS ──
+  onValue(ref(db, 'medidas_corporais'), (snapshot) => {
+    if (snapshot.exists()) {
+      localStorage.setItem('nexus_medidas', JSON.stringify(snapshot.val()));
+      setTimeout(function() {
+        if (document.getElementById('medidas') && document.getElementById('medidas').classList.contains('active')) {
+          if (window.renderMedidas) renderMedidas();
+        }
+      }, 300);
+    }
+  });
+
+  // ── REALTIME LISTENER DATA CIRURGIA ──
+  onValue(ref(db, 'config/data_cirurgia'), (snapshot) => {
+    if (snapshot.exists()) {
+      localStorage.setItem('data_cirurgia', snapshot.val());
+      setTimeout(function() {
+        if (window.atualizarCirurgia) atualizarCirurgia();
       }, 300);
     }
   });
@@ -2862,16 +2929,7 @@ function getMedidas() {
 }
 function saveMedidas(m) {
   localStorage.setItem('nexus_medidas', JSON.stringify(m));
-  if (window.fbSaveRegistros) {
-    // Save to Firebase too
-    try {
-      var db2 = window._nexusDB;
-      if (db2) {
-        var ref2 = window._nexusRef;
-        // handled by firebase module
-      }
-    } catch(e) {}
-  }
+  if (window.fbSaveMedidas) window.fbSaveMedidas(m);
 }
 function salvarMedidas() {
   var campos = ['pescoco','peitoral','braco','cintura','quadril','coxa','panturrilha'];
