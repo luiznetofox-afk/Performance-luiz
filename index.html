@@ -575,10 +575,28 @@
     </div>
   </div>
 
+  <!-- CARD PESO RAPIDO -->
+  <div class="card" style="margin-bottom:1rem">
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+      <div style="flex:1">
+        <div class="card-title">⚖️ Peso Atual</div>
+        <div style="display:flex;align-items:baseline;gap:.4rem;margin:.2rem 0">
+          <div class="card-value" id="peso-display" style="font-size:2.2rem">96,9</div>
+          <div style="color:#6b7280;font-size:.85rem">kg</div>
+          <div style="color:#9ca3af;font-size:.7rem;margin-left:.5rem" id="peso-data-sub">último registro</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <input type="number" id="peso-novo-input" placeholder="kg" step="0.1" style="width:80px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.9rem;outline:none">
+        <button class="btn" onclick="salvarPesoRapido()" style="white-space:nowrap">Salvar</button>
+      </div>
+    </div>
+  </div>
+
   <div class="grid-4" style="margin-bottom:1rem">
     <div class="card">
       <div class="card-title">Peso Atual</div>
-      <div class="card-value" id="peso-display">96,9</div>
+      <div class="card-value" id="peso-display-grid">96,9</div>
       <div class="card-sub">kg</div>
     </div>
     <div class="card">
@@ -4130,6 +4148,67 @@ function getKcalTreinosHoje() {
 
 // ── OVERRIDE SHOWTAB FOR NEW TABS ──
 
+
+// ── PESO RÁPIDO ──
+function salvarPesoRapido() {
+  var input = document.getElementById('peso-novo-input');
+  if (!input || !input.value) { alert('Digite o peso antes de salvar.'); return; }
+  var peso = parseFloat(input.value.replace(',','.'));
+  if (isNaN(peso) || peso < 30 || peso > 300) { alert('Peso inválido.'); return; }
+  
+  var hoje = new Date().toISOString().split('T')[0];
+  var registros = getRegistros();
+  
+  // Check if today already has a registro - update it
+  var idx = registros.findIndex(function(r) { return r.data === hoje; });
+  if (idx >= 0) {
+    registros[idx].peso = peso;
+  } else {
+    // Create minimal registro just with peso
+    registros.unshift({
+      data: hoje,
+      peso: peso,
+      kcal: null,
+      agua: null,
+      kcal_gasta: null,
+      fc_media: null,
+      treinos: '',
+      sono: null,
+      obs: '',
+      ts: Date.now()
+    });
+  }
+  
+  saveRegistros(registros);
+  
+  // Update displays
+  var display = document.getElementById('peso-display');
+  var displayGrid = document.getElementById('peso-display-grid');
+  if (display) display.textContent = peso.toString().replace('.',',');
+  if (displayGrid) displayGrid.textContent = peso.toString().replace('.',',');
+  
+  var sub = document.getElementById('peso-data-sub');
+  if (sub) sub.textContent = hoje;
+  
+  input.value = '';
+  calcProjecao(getRegistros());
+  renderStreak();
+  renderComparativo();
+}
+
+// Load last peso on init
+function initPesoDisplay() {
+  var registros = getRegistros();
+  var comPeso = registros.find(function(r) { return r.peso; });
+  if (comPeso) {
+    var display = document.getElementById('peso-display');
+    var displayGrid = document.getElementById('peso-display-grid');
+    var sub = document.getElementById('peso-data-sub');
+    if (display) display.textContent = comPeso.peso.toString().replace('.',',');
+    if (displayGrid) displayGrid.textContent = comPeso.peso.toString().replace('.',',');
+    if (sub) sub.textContent = comPeso.data;
+  }
+}
 
 // ── FECHAR O DIA ──
 function fecharDia(dataStr) {
