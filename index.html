@@ -522,7 +522,6 @@
   <div class="tab" onclick="showTab('core',this)">Core</div>
   <div class="tab" onclick="showTab('semana',this)">Programação</div>
   <div class="tab" onclick="showTab('compras',this)">Lista de Compras</div>
-  <div class="tab" onclick="showTab('registro',this)">Check-in</div>
   <div class="tab" onclick="showTab('historico',this)">Histórico</div>
   <div class="tab" onclick="showTab('graficos',this)">📊 Gráficos</div>
   <div class="tab" onclick="showTab('prboard',this)">🏆 PRs</div>
@@ -2476,7 +2475,7 @@
 </div>
 
 <!-- ══ CHECK-IN ══ -->
-<div id="registro" class="section">
+<div id="registro" class="section" style="display:none">
   <div class="hero-wrap">
     <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 20%" alt="CHECK-IN DIÁRIO" loading="lazy">
     <div class="hero-overlay"></div>
@@ -4047,7 +4046,31 @@ function abrirDiaCalendario(dataStr) {
     });
   }
 
-  html += '</div>';
+  // Botao Fechar o Dia
+  html += '<div style="margin-top:1rem;border-top:1.5px solid #e2e8f0;padding-top:1rem">';
+  
+  // Check if day already has a check-in
+  var regExistente = getRegistros().find(function(r) { return r.data === dataStr; });
+  
+  if (regExistente) {
+    html += '<div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:.85rem;font-size:.82rem">' +
+      '<div style="font-weight:700;color:#15803d;margin-bottom:.3rem">✅ Dia fechado</div>' +
+      '<div style="color:#374151">Kcal total: <strong>' + (regExistente.kcal_gasta || '—') + ' kcal</strong>' +
+      (regExistente.agua ? ' · Água: <strong>' + regExistente.agua + 'L</strong>' : '') + '</div>' +
+      '<button onclick="reabrirFechamentoDia(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ')" style="margin-top:.5rem;background:none;border:1px solid #16a34a;border-radius:6px;padding:.3rem .75rem;font-size:.72rem;color:#15803d;cursor:pointer">Editar</button>' +
+      '</div>';
+  } else {
+    html += '<div id="fechar-dia-form-' + dataStr + '">' +
+      '<div style="font-weight:700;font-size:.85rem;color:#0f172a;margin-bottom:.5rem">Fechar o dia</div>' +
+      '<div style="font-size:.78rem;color:#6b7280;margin-bottom:.75rem">Informe o total de kcal gasta no dia (relógio) para salvar o registro.</div>' +
+      '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">' +
+      '<input type="number" id="fechar-kcal-' + dataStr + '" placeholder="Total kcal gasta no dia" style="flex:1;min-width:140px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.85rem">' +
+      '<button class="btn" onclick="fecharDia(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ')" style="white-space:nowrap">Fechar o dia ✓</button>' +
+      '</div>' +
+      '</div>';
+  }
+  
+  html += '</div></div>';
 
   var container = document.getElementById('dia-detalhe-container');
   if (container) container.innerHTML = html;
@@ -4106,6 +4129,79 @@ function getKcalTreinosHoje() {
 }
 
 // ── OVERRIDE SHOWTAB FOR NEW TABS ──
+
+
+// ── FECHAR O DIA ──
+function fecharDia(dataStr) {
+  var kcalEl = document.getElementById('fechar-kcal-' + dataStr);
+  var kcalTotal = kcalEl && kcalEl.value ? parseFloat(kcalEl.value) : null;
+
+  // Get treinos from calendar
+  var parcial = getCheckinParcial();
+  var diaData = parcial[dataStr] || {};
+  var treinoFeitos = [];
+  var kcalTreinos = 0;
+  Object.keys(diaData).forEach(function(tipo) {
+    if (diaData[tipo].feito) {
+      treinoFeitos.push(tipo);
+      if (diaData[tipo].kcal) kcalTreinos += diaData[tipo].kcal;
+    }
+  });
+
+  // Get agua from realtime control
+  var agua = parseFloat(localStorage.getItem('agua_rt_' + dataStr) || '0') || null;
+
+  // Get last known weight
+  var registros = getRegistros();
+  var ultimoPeso = null;
+  for (var i = 0; i < registros.length; i++) {
+    if (registros[i].peso) { ultimoPeso = registros[i].peso; break; }
+  }
+
+  // Build registro
+  var reg = {
+    data: dataStr,
+    peso: ultimoPeso,
+    kcal: null,
+    agua: agua,
+    kcal_gasta: kcalTotal,
+    kcal_treinos: kcalTreinos > 0 ? kcalTreinos : null,
+    fc_media: null,
+    treinos: treinoFeitos.join(', '),
+    sono: null,
+    obs: '',
+    ts: new Date(dataStr + 'T23:59:00').getTime()
+  };
+
+  // Check if already exists — update or insert
+  var existing = getRegistros();
+  var idx = existing.findIndex(function(r) { return r.data === dataStr; });
+  if (idx >= 0) {
+    existing[idx] = reg;
+  } else {
+    existing.unshift(reg);
+  }
+  saveRegistros(existing);
+
+  // Re-render
+  renderCalendario();
+  abrirDiaCalendario(dataStr);
+  renderStreak();
+  renderComparativo();
+
+  var msg = 'Dia ' + dataStr + ' fechado!';
+  if (treinoFeitos.length > 0) msg += ' Treinos: ' + treinoFeitos.join(', ') + '.';
+  if (kcalTotal) msg += ' Kcal total: ' + kcalTotal + '.';
+  alert(msg);
+}
+
+function reabrirFechamentoDia(dataStr) {
+  // Remove existing registro for this day
+  var existing = getRegistros();
+  existing = existing.filter(function(r) { return r.data !== dataStr; });
+  saveRegistros(existing);
+  abrirDiaCalendario(dataStr);
+}
 
 // ── PRÉ-POPULACAO HISTÓRICO DA PLANILHA ──
 (function() {
