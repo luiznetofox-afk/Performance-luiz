@@ -69,11 +69,12 @@
 
   window.fbLoadAgua = async function() {
     try {
-      var hoje = new Date().toISOString().split('T')[0];
-      var snap = await get(ref(db, 'agua_rt/' + hoje));
+      var snap = await get(ref(db, 'agua_rt'));
       if (snap.exists()) {
-        localStorage.setItem('agua_rt_' + hoje, snap.val());
-        // Retry with delay to ensure renderAgua is available
+        var aguaData = snap.val();
+        Object.keys(aguaData).forEach(function(data) {
+          localStorage.setItem('agua_rt_' + data, aguaData[data]);
+        });
         var tentativas = 0;
         var tryRender = function() {
           if (window.renderAgua) {
@@ -246,13 +247,17 @@
   });
 
   // ── REALTIME LISTENER AGUA ──
-  var hojeRt = new Date().toISOString().split('T')[0];
-  onValue(ref(db, 'agua_rt/' + hojeRt), (snapshot) => {
+  // Listen to entire agua_rt node to catch any date
+  onValue(ref(db, 'agua_rt'), (snapshot) => {
     if (snapshot.exists()) {
-      localStorage.setItem('agua_rt_' + hojeRt, snapshot.val());
+      var aguaData = snapshot.val();
+      var hoje = new Date().toISOString().split('T')[0];
+      Object.keys(aguaData).forEach(function(data) {
+        localStorage.setItem('agua_rt_' + data, aguaData[data]);
+      });
       setTimeout(function() {
         if (window.renderAgua) window.renderAgua();
-      }, 500);
+      }, 300);
     }
   });
 
@@ -266,6 +271,9 @@
       if (arr.length > 0) {
         localStorage.setItem('luiz_registros', JSON.stringify(arr));
         if (window.renderHistorico) { renderHistorico(); renderCharts(); calcProjecao(getRegistros()); }
+        if (window.initPesoDisplay) initPesoDisplay();
+        if (window.renderStreak) renderStreak();
+        if (window.renderComparativo) renderComparativo();
         setSyncStatus('✅ Sincronizado', '#3a6b3e');
       }
     }
