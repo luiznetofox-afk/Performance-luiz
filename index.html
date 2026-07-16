@@ -172,7 +172,7 @@
       if (window.renderHistorico) { renderHistorico(); renderCharts(); calcProjecao(getRegistros()); }
       if (window.renderCoreDone) renderCoreDone();
       if (window.atualizarCirurgia) atualizarCirurgia();
-      ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni']
+      ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','remada-uni']
         .forEach(ex => { if(window.renderCargaHist) renderCargaHist(ex); });
 
     } catch(e) {
@@ -198,7 +198,7 @@
         localStorage.setItem('carga_' + ex, JSON.stringify(cargas[ex]));
       });
       setTimeout(function() {
-        ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','calf','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'].forEach(function(ex) {
+        ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'].forEach(function(ex) {
           if (window.renderCargaHist) renderCargaHist(ex);
         });
         if (window.renderPRBoard && document.getElementById('prboard') && document.getElementById('prboard').classList.contains('active')) renderPRBoard();
@@ -1188,44 +1188,7 @@
     <div class="ex-log-hist" id="hist-elev-pelvica"></div>
   </div>
   </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Panturrilha (Calf Raise)</span><span class="ex-head-tag">PROPULSÃO</span></div>
-    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 20 · <strong>Descanso:</strong> 60 seg</div>
-    <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-      <button class="btn btn-sm" onclick="logCarga('calf',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-calf" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-calf" min="1">
-        <select class="perc-select" id="perc-calf-s1" onchange="setPercSelect(this,'calf',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'calf S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-calf" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-calf" min="1">
-        <select class="perc-select" id="perc-calf-s2" onchange="setPercSelect(this,'calf',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'calf S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-calf" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-calf" min="1">
-        <select class="perc-select" id="perc-calf-s3" onchange="setPercSelect(this,'calf',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'calf S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-calf" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-calf" min="1">
-        <select class="perc-select" id="perc-calf-s4" onchange="setPercSelect(this,'calf',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'calf S4')">⏱</button>
-      </div>
-    </div>
+
     <div class="ex-log-hist" id="hist-calf"></div>
   </div>
   </div>
@@ -2988,7 +2951,7 @@ function renderCargaHist(ex) {
     '<span style="font-size:.62rem;color:#9ca3af">Vol: ' + vol.toFixed(0) + 'kg | PR: ' + pr + 'kg</span>';
 }
 
-['pullup','remada','pulldown','rosca','supino','press','triceps','hipthrust','abdutor','calf','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank','p-abdutora','p-adutora','p-extensora','p-flexora','p-pant-pe','p-goblet','p-supino-inc','p-dev-db','p-elev-lat-pol','p-tri-franc','p-lombar','p-remada-baixa','p-arnold','p-crucif-inv','p-rosca-scott','p-elev-lat-db','p-rosca-w','p-remada-curv'].forEach(function(ex) { renderCargaHist(ex); });
+['pullup','remada','pulldown','rosca','supino','press','triceps','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank','p-abdutora','p-adutora','p-extensora','p-flexora','p-pant-pe','p-goblet','p-supino-inc','p-dev-db','p-elev-lat-pol','p-tri-franc','p-lombar','p-remada-baixa','p-arnold','p-crucif-inv','p-rosca-scott','p-elev-lat-db','p-rosca-w','p-remada-curv'].forEach(function(ex) { renderCargaHist(ex); });
 
 // PROJECAO
 function calcProjecao(registros) {
@@ -3675,7 +3638,7 @@ function renderPRBoard() {
     {id:'rosca', nome:'Rosca Direta'},
     {id:'hipthrust', nome:'Hip Thrust'},
     {id:'abdutor', nome:'Cadeira Abdutora'},
-    {id:'calf', nome:'Panturrilha'},
+    {id: nome:'Panturrilha'},
     {id:'remada-uni', nome:'Remada Unilateral'},
     {id:'glute4', nome:'Extensao de Quadril'}
   ];
