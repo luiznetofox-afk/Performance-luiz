@@ -3919,7 +3919,7 @@ var TIPO_CORES = {
   natacao: '#0284c7',
   musculacao: '#ea580c',
   core: '#16a34a',
-  cardio: '#d97706'
+  cardio: '#eab308'
 };
 var TIPO_EMOJI = {
   natacao: '🏊',
@@ -3970,13 +3970,13 @@ function renderCalendario() {
     tiposDots.forEach(function(tipo) {
       if (diaParc[tipo] && diaParc[tipo].feito) {
         var cor = TIPO_CORES[tipo];
-        dotsHtml += '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + cor + ';margin:0 1px"></span>';
+        dotsHtml += '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + cor + ';margin:0 2px"></span>';
       }
     });
     // Also check if day was "closed" (has a registro)
     var temRegistro = getRegistros().some(function(r) { return r.data === dataStr; });
     if (temRegistro && !dotsHtml) {
-      dotsHtml = '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#9ca3af;margin:0 1px"></span>';
+      dotsHtml = '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#9ca3af;margin:0 2px"></span>';
     }
 
     var bgCell = isHoje ? '#dbeafe' : '#fff';
@@ -4013,7 +4013,7 @@ function abrirDiaCalendario(dataStr) {
     {tipo:'natacao', nome:'Natacao', emoji:'🏊', cor:'#0284c7', bg:'#eff6ff', border:'#bfdbfe', subOpcoes:null},
     {tipo:'musculacao', nome:'Musculacao', emoji:'💪', cor:'#ea580c', bg:'#fff7ed', border:'#fed7aa', subOpcoes:['A','B','C','D']},
     {tipo:'core', nome:'Core', emoji:'🔥', cor:'#16a34a', bg:'#f0fdf4', border:'#bbf7d0', subOpcoes:null},
-    {tipo:'cardio', nome:'Cardio', emoji:'🚴', cor:'#d97706', bg:'#fefce8', border:'#fde68a', subOpcoes:null}
+    {tipo:'cardio', nome:'Cardio', emoji:'🚴', cor:'#eab308', bg:'#fefff0', border:'#fef08a', subOpcoes:null}
   ];
 
   var sq = String.fromCharCode(39);
