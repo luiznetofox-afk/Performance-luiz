@@ -3997,79 +3997,72 @@ function abrirDiaCalendario(dataStr) {
   diaDetalheAberto = dataStr;
   var dataObj = new Date(dataStr + 'T12:00:00');
   var diaSemana = dataObj.getDay();
-  var treinos = PROGRAMACAO_SEMANAL[diaSemana] || [];
   var parcial = getCheckinParcial();
   var diaData = parcial[dataStr] || {};
-
-  var diasNomes = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var diasNomes = ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado'];
   var dataFmt = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric'});
 
+  var tiposConfig = [
+    {tipo:'natacao', nome:'Natacao', emoji:'🏊', cor:'#0284c7', bg:'#eff6ff', border:'#bfdbfe', subOpcoes:null},
+    {tipo:'musculacao', nome:'Musculacao', emoji:'💪', cor:'#ea580c', bg:'#fff7ed', border:'#fed7aa', subOpcoes:['A','B','C','D']},
+    {tipo:'core', nome:'Core', emoji:'🔥', cor:'#16a34a', bg:'#f0fdf4', border:'#bbf7d0', subOpcoes:null},
+    {tipo:'cardio', nome:'Cardio', emoji:'🚴', cor:'#d97706', bg:'#fefce8', border:'#fde68a', subOpcoes:null}
+  ];
+
+  var sq = String.fromCharCode(39);
   var html = '<div class="card" style="margin-top:1rem">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">' +
     '<div class="card-title">' + diasNomes[diaSemana] + ' - ' + dataFmt + '</div>' +
-    '<button onclick="fecharDiaCalendario()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af">✕</button>' +
-    '</div>';
+    '<button onclick="fecharDiaCalendario()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af">X</button>' +
+    '</div>' +
+    '<div style="font-size:.75rem;color:#6b7280;margin-bottom:.75rem">Selecione os treinos realizados:</div>';
 
-  if (treinos.length === 0) {
-    html += '<div style="text-align:center;padding:1.5rem;color:#9ca3af">Dia de descanso 😴</div>';
-  } else {
-    treinos.forEach(function(t, idx) {
-      var tData = diaData[t.tipo] || {};
-      var feito = tData.feito || false;
-      var kcalId = 'parcial-kcal-' + t.tipo + '-' + dataStr;
-      var fcId = 'parcial-fc-' + t.tipo + '-' + dataStr;
-      var periodoLabel = t.periodo === 'manha' ? '🌅 Manhã' : t.periodo === 'almoco' ? '☀️ Almoço' : '🌙 Noite';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem">';
+  tiposConfig.forEach(function(t) {
+    var tData = diaData[t.tipo] || {};
+    var feito = tData.feito || false;
+    html += '<button onclick="toggleTipoTreino(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" ' +
+      'style="border:2px solid ' + (feito ? t.cor : '#e2e8f0') + ';border-radius:10px;padding:.6rem;background:' + (feito ? t.bg : '#fff') + ';cursor:pointer;text-align:left">' +
+      '<div style="font-size:1.2rem">' + t.emoji + '</div>' +
+      '<div style="font-weight:700;font-size:.8rem;color:' + (feito ? t.cor : '#374151') + '">' + t.nome + '</div>' +
+      (feito ? '<div style="font-size:.65rem;color:' + t.cor + '">Selecionado</div>' : '<div style="font-size:.65rem;color:#9ca3af">Toque para selecionar</div>') +
+      '</button>';
+  });
+  html += '</div>';
 
-      html += '<div style="border:1.5px solid ' + (feito ? '#16a34a' : '#e2e8f0') + ';border-radius:10px;padding:.85rem;margin-bottom:.6rem;background:' + (feito ? '#f0fdf4' : '#fff') + '">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">' +
-        '<div style="font-weight:700;font-size:.85rem;color:#0f172a">' + TIPO_EMOJI[t.tipo] + ' ' + t.nome + '</div>' +
-        '<div style="font-family:DM Mono,monospace;font-size:.62rem;color:#9ca3af">' + periodoLabel + '</div>' +
-        '</div>' +
-        '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
-        '<input type="number" id="' + kcalId + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" style="flex:1;min-width:80px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-        '<input type="number" id="' + fcId + '" placeholder="FC média (bpm)" value="' + (tData.fc || '') + '" style="flex:1;min-width:80px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-        '</div>' +
-        (t.tipo === 'natacao' ?
-          '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
-          '<input type="number" id="metros-' + t.tipo + '-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros || '') + '" style="flex:1;min-width:80px;background:#e0f2fe;border:1px solid #bae6fd;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-          '<input type="number" id="duracao-' + t.tipo + '-' + dataStr + '" placeholder="Duração (min)" value="' + (tData.duracao || '') + '" style="flex:1;min-width:80px;background:#e0f2fe;border:1px solid #bae6fd;border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-          '</div>'
-          : '') +
-        '<button class="btn btn-sm" style="' + (feito ? 'background:#16a34a' : '') + ';width:100%" onclick="toggleTreinoParcial(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ',' + String.fromCharCode(39) + t.tipo + String.fromCharCode(39) + ')">' +
-        (feito ? '✓ Feito! Toque para desmarcar' : 'Marcar como feito') + '</button>' +
+  tiposConfig.forEach(function(t) {
+    var tData = diaData[t.tipo] || {};
+    var feito = tData.feito || false;
+    if (!feito) return;
+
+    html += '<div style="border:1.5px solid ' + t.border + ';border-radius:10px;padding:.85rem;margin-bottom:.6rem;background:' + t.bg + '">';
+    html += '<div style="font-weight:700;font-size:.82rem;color:' + t.cor + ';margin-bottom:.5rem">' + t.emoji + ' ' + t.nome + '</div>';
+
+    if (t.subOpcoes) {
+      html += '<div style="margin-bottom:.5rem"><div style="font-size:.68rem;color:#6b7280;margin-bottom:.3rem">Qual treino?</div>';
+      html += '<div style="display:flex;gap:.3rem;flex-wrap:wrap">';
+      t.subOpcoes.forEach(function(sub) {
+        var sel = tData.sub === sub;
+        html += '<button onclick="setSubTreino(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ',' + sq + sub + sq + ')" ' +
+          'style="border:1.5px solid ' + (sel ? t.cor : '#e2e8f0') + ';border-radius:6px;padding:.3rem .7rem;background:' + (sel ? t.bg : '#fff') + ';cursor:pointer;font-weight:' + (sel ? '700' : '400') + ';font-size:.8rem;color:' + (sel ? t.cor : '#374151') + '">TREINO ' + sub + '</button>';
+      });
+      html += '</div></div>';
+    }
+
+    html += '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
+      '<input type="number" id="parcial-kcal-' + t.tipo + '-' + dataStr + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="flex:1;min-width:90px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+      '<input type="number" id="parcial-fc-' + t.tipo + '-' + dataStr + '" placeholder="FC media (bpm)" value="' + (tData.fc || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="flex:1;min-width:90px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+      '</div>';
+
+    if (t.tipo === 'natacao') {
+      html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
+        '<input type="number" id="metros-natacao-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ','natacao')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '<input type="number" id="duracao-natacao-' + dataStr + '" placeholder="Duracao (min)" value="' + (tData.duracao || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ','natacao')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
         '</div>';
-    });
-  }
+    }
+    html += '</div>';
+  });
 
-  // Botao Fechar o Dia
-  html += '<div style="margin-top:1rem;border-top:1.5px solid #e2e8f0;padding-top:1rem">';
-  
-  // Check if day already has a check-in
-  var regExistente = getRegistros().find(function(r) { return r.data === dataStr; });
-  
-  if (regExistente) {
-    html += '<div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:.85rem;font-size:.82rem">' +
-      '<div style="font-weight:700;color:#15803d;margin-bottom:.3rem">✅ Dia fechado</div>' +
-      '<div style="color:#374151">Kcal total: <strong>' + (regExistente.kcal_gasta || '—') + ' kcal</strong>' +
-      (regExistente.agua ? ' · Água: <strong>' + regExistente.agua + 'L</strong>' : '') + '</div>' +
-      '<button onclick="reabrirFechamentoDia(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ')" style="margin-top:.5rem;background:none;border:1px solid #16a34a;border-radius:6px;padding:.3rem .75rem;font-size:.72rem;color:#15803d;cursor:pointer">Editar</button>' +
-      '</div>';
-  } else {
-    html += '<div id="fechar-dia-form-' + dataStr + '">' +
-      '<div style="font-weight:700;font-size:.85rem;color:#0f172a;margin-bottom:.5rem">Fechar o dia</div>' +
-      '<div style="font-size:.78rem;color:#6b7280;margin-bottom:.75rem">Informe o total de kcal gasta no dia (relógio) para salvar o registro.</div>' +
-      '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">' +
-      '<input type="number" id="fechar-kcal-' + dataStr + '" placeholder="Total kcal gasta no dia" style="flex:1;min-width:140px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.85rem">' +
-      '<button class="btn" onclick="fecharDia(' + String.fromCharCode(39) + dataStr + String.fromCharCode(39) + ')" style="white-space:nowrap">Fechar o dia ✓</button>' +
-      '</div>' +
-      '</div>';
-  }
-  
-  html += '</div></div>';
-
-  var container = document.getElementById('dia-detalhe-container');
-  if (container) container.innerHTML = html;
-}
 
 function fecharDiaCalendario() {
   diaDetalheAberto = null;
