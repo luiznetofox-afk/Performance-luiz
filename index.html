@@ -2677,37 +2677,58 @@
 
     <div class="card">
       <div class="card-title">Novo Registro de Medidas</div>
+      <!-- NAVY BF CALCULATOR -->
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:.85rem;margin-bottom:.75rem">
+        <div style="font-weight:700;font-size:.82rem;color:#1e3a5f;margin-bottom:.5rem">🔬 Método Navy — % Gordura</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem">
+          <div>
+            <label style="font-size:.6rem;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:.2rem">Pescoço (cm)</label>
+            <input type="number" id="navy-pescoco" placeholder="Ex: 15.5" step="0.1" oninput="calcNavyLive()" style="width:100%;background:#fff;border:1.5px solid #bfdbfe;border-radius:6px;padding:.4rem .6rem;font-size:.82rem;outline:none">
+          </div>
+          <div>
+            <label style="font-size:.6rem;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:.2rem">Cintura (cm)</label>
+            <input type="number" id="navy-cintura" placeholder="Ex: 96" step="0.1" oninput="calcNavyLive()" style="width:100%;background:#fff;border:1.5px solid #bfdbfe;border-radius:6px;padding:.4rem .6rem;font-size:.82rem;outline:none">
+          </div>
+          <div>
+            <label style="font-size:.6rem;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:.2rem">Quadril (cm)</label>
+            <input type="number" id="navy-quadril" placeholder="Ex: 106" step="0.1" oninput="calcNavyLive()" style="width:100%;background:#fff;border:1.5px solid #bfdbfe;border-radius:6px;padding:.4rem .6rem;font-size:.82rem;outline:none">
+          </div>
+        </div>
+        <div id="navy-resultado" style="font-size:.82rem;color:#6b7280">Preencha os 3 campos para calcular</div>
+        <button class="btn btn-sm" onclick="salvarNavyBF()" style="margin-top:.5rem">Salvar % Gordura</button>
+      </div>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.75rem 0">
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Pescoço (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Pescoço (cm)</label>
           <input type="number" id="med-pescoco" placeholder="Ex: 15.5" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Peitoral (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Peitoral (cm)</label>
           <input type="number" id="med-peitoral" placeholder="Ex: 102" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Braço (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Braço (cm)</label>
           <input type="number" id="med-braco" placeholder="Ex: 38" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Cintura (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Cintura (cm)</label>
           <input type="number" id="med-cintura" placeholder="Ex: 96" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Quadril (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Quadril (cm)</label>
           <input type="number" id="med-quadril" placeholder="Ex: 106" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Coxa (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Coxa (cm)</label>
           <input type="number" id="med-coxa" placeholder="Ex: 62" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
         <div style="display:flex;flex-direction:column;gap:.3rem">
-          <label style="font-family:'DM Mono',monospace;font-size:.63rem;color:#6b7280;text-transform:uppercase">Panturrilha (cm)</label>
+          <label style="font-size:.63rem;color:#6b7280;text-transform:uppercase">Panturrilha (cm)</label>
           <input type="number" id="med-panturrilha" placeholder="Ex: 40" step="0.1" style="background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:6px;padding:.5rem .75rem;font-size:.85rem;outline:none">
         </div>
       </div>
-      <button class="btn" onclick="salvarMedidas()">Salvar Medidas</button>
+      <button class="btn" onclick="salvarMedidas()">Salvar Medidas Corporais</button>
     </div>
 
     <div id="medidas-historico"></div>
@@ -4056,26 +4077,42 @@ function fecharDiaCalendario() {
   if (container) container.innerHTML = '';
 }
 
-function toggleTreinoParcial(dataStr, tipo) {
+function toggleTipoTreino(dataStr, tipo) {
   var parcial = getCheckinParcial();
   if (!parcial[dataStr]) parcial[dataStr] = {};
   if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  parcial[dataStr][tipo].feito = !parcial[dataStr][tipo].feito;
+  saveCheckinParcial(parcial);
+  renderCalendario();
+  abrirDiaCalendario(dataStr);
+}
 
+function setSubTreino(dataStr, tipo, sub) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  parcial[dataStr][tipo].sub = sub;
+  saveCheckinParcial(parcial);
+  abrirDiaCalendario(dataStr);
+}
+
+function salvarCamposParcial(dataStr, tipo) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
   var kcalEl = document.getElementById('parcial-kcal-' + tipo + '-' + dataStr);
   var fcEl = document.getElementById('parcial-fc-' + tipo + '-' + dataStr);
   var metrosEl = document.getElementById('metros-' + tipo + '-' + dataStr);
   var duracaoEl = document.getElementById('duracao-' + tipo + '-' + dataStr);
-
-  var jaFeitoAntes = parcial[dataStr][tipo].feito;
-  parcial[dataStr][tipo].feito = !jaFeitoAntes;
   if (kcalEl && kcalEl.value) parcial[dataStr][tipo].kcal = parseFloat(kcalEl.value);
   if (fcEl && fcEl.value) parcial[dataStr][tipo].fc = parseFloat(fcEl.value);
   if (metrosEl && metrosEl.value) parcial[dataStr][tipo].metros = parseFloat(metrosEl.value);
   if (duracaoEl && duracaoEl.value) parcial[dataStr][tipo].duracao = parseFloat(duracaoEl.value);
-
   saveCheckinParcial(parcial);
-  renderCalendario();
-  abrirDiaCalendario(dataStr);
+}
+
+function toggleTreinoParcial(dataStr, tipo) {
+  toggleTipoTreino(dataStr, tipo);
 }
 
 // Retorna os treinos ja marcados como feitos hoje (para pre-preencher o check-in)
@@ -4085,7 +4122,11 @@ function getTreinosFeitosHoje() {
   var diaData = parcial[hoje] || {};
   var feitos = [];
   Object.keys(diaData).forEach(function(tipo) {
-    if (diaData[tipo].feito) feitos.push(tipo);
+    if (diaData[tipo].feito) {
+      var nome = tipo;
+      if (diaData[tipo].sub) nome = tipo + ' ' + diaData[tipo].sub;
+      feitos.push(nome);
+    }
   });
   return feitos;
 }
@@ -4164,6 +4205,70 @@ function initPesoDisplay() {
     if (displayGrid) displayGrid.textContent = comPeso.peso.toString().replace('.',',');
     if (sub) sub.textContent = comPeso.data;
   }
+}
+
+// ── NAVY BF NA ABA MEDIDAS ──
+function calcNavyLive() {
+  var p = parseFloat(document.getElementById('navy-pescoco').value);
+  var c = parseFloat(document.getElementById('navy-cintura').value);
+  var q = parseFloat(document.getElementById('navy-quadril').value);
+  var res = document.getElementById('navy-resultado');
+  if (!res) return;
+  if (isNaN(p) || isNaN(c) || isNaN(q)) {
+    res.textContent = 'Preencha os 3 campos para calcular';
+    res.style.color = '#6b7280';
+    return;
+  }
+  var bf = calcNavyBF(p, c, ALTURA_CM);
+  var pesoAtual = parseFloat(document.getElementById('peso-display').textContent.replace(',','.')) || 0;
+  var mm = pesoAtual > 0 ? (pesoAtual * (1 - bf/100)).toFixed(1) : '—';
+  var mg = pesoAtual > 0 ? (pesoAtual * bf/100).toFixed(1) : '—';
+  var cor = bf < 14 ? '#16a34a' : bf < 20 ? '#d97706' : '#e11d48';
+  res.innerHTML = '% Gordura: <strong style="color:' + cor + ';font-size:1.1rem">' + bf + '%</strong>' +
+    (pesoAtual > 0 ? ' — Massa Magra: <strong>' + mm + 'kg</strong> / Gordura: <strong>' + mg + 'kg</strong>' : '');
+  res.style.color = '#374151';
+}
+
+function salvarNavyBF() {
+  var p = parseFloat(document.getElementById('navy-pescoco').value);
+  var c = parseFloat(document.getElementById('navy-cintura').value);
+  var q = parseFloat(document.getElementById('navy-quadril').value);
+  if (isNaN(p) || isNaN(c) || isNaN(q)) { alert('Preencha pescoço, cintura e quadril.'); return; }
+  var bf = calcNavyBF(p, c, ALTURA_CM);
+  var hoje = new Date().toISOString().split('T')[0];
+  
+  // Save to medidas
+  var medidas = getMedidas();
+  var idx = medidas.findIndex(function(m) { return m.data === hoje; });
+  var reg = idx >= 0 ? medidas[idx] : { data: hoje, ts: Date.now() };
+  reg.pescoco = p; reg.cintura = c; reg.quadril = q; reg.bf = bf;
+  if (idx >= 0) medidas[idx] = reg; else medidas.unshift(reg);
+  saveMedidas(medidas);
+  
+  // Update BF display on visao geral
+  var bfDisplay = document.getElementById('bf-display');
+  var bfSub = document.getElementById('bf-sub');
+  if (bfDisplay) bfDisplay.textContent = bf + '%';
+  if (bfSub) bfSub.textContent = hoje;
+  
+  // Update registros with BF data
+  var registros = getRegistros();
+  var rIdx = registros.findIndex(function(r) { return r.data === hoje; });
+  if (rIdx >= 0) {
+    registros[rIdx].pescoco = p;
+    registros[rIdx].cintura = c;
+    registros[rIdx].quadril = q;
+  } else {
+    registros.unshift({ data: hoje, pescoco: p, cintura: c, quadril: q, ts: Date.now() });
+  }
+  saveRegistros(registros);
+  
+  document.getElementById('navy-pescoco').value = '';
+  document.getElementById('navy-cintura').value = '';
+  document.getElementById('navy-quadril').value = '';
+  document.getElementById('navy-resultado').textContent = 'Salvo! % Gordura: ' + bf + '%';
+  renderMedidas();
+  alert('% Gordura salvo: ' + bf + '%');
 }
 
 // ── FECHAR O DIA ──
