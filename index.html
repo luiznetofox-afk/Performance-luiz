@@ -3961,16 +3961,23 @@ function renderCalendario() {
     var dataObj = new Date(calAnoAtual, calMesAtual, dia);
     var dataStr = dataObj.toISOString().split('T')[0];
     var diaSemana = dataObj.getDay();
-    var treinos = PROGRAMACAO_SEMANAL[diaSemana] || [];
     var isHoje = dataStr === hojeStr;
 
+    // Show dots based on actual registered treinos (not fixed schedule)
     var dotsHtml = '';
-    treinos.forEach(function(t) {
-      var feito = parcial[dataStr] && parcial[dataStr][t.tipo] && parcial[dataStr][t.tipo].feito;
-      var cor = TIPO_CORES[t.tipo];
-      var opacidade = feito ? '1' : '0.35';
-      dotsHtml += '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + cor + ';opacity:' + opacidade + ';margin:0 1px"></span>';
+    var diaParc = parcial[dataStr] || {};
+    var tiposDots = ['natacao','musculacao','core','cardio'];
+    tiposDots.forEach(function(tipo) {
+      if (diaParc[tipo] && diaParc[tipo].feito) {
+        var cor = TIPO_CORES[tipo];
+        dotsHtml += '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:' + cor + ';margin:0 1px"></span>';
+      }
     });
+    // Also check if day was "closed" (has a registro)
+    var temRegistro = getRegistros().some(function(r) { return r.data === dataStr; });
+    if (temRegistro && !dotsHtml) {
+      dotsHtml = '<span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:#9ca3af;margin:0 1px"></span>';
+    }
 
     var bgCell = isHoje ? '#dbeafe' : '#fff';
     var borderCell = isHoje ? '2px solid #0284c7' : '1px solid #f1f5f9';
