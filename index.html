@@ -4056,14 +4056,15 @@ function abrirDiaCalendario(dataStr) {
 
     if (t.tipo === 'natacao') {
       html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
-        '<input type="number" id="metros-natacao-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ','natacao')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-        '<input type="number" id="duracao-natacao-' + dataStr + '" placeholder="Duracao (min)" value="' + (tData.duracao || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ','natacao')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '<input type="number" id="metros-natacao-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + 'natacao' + sq + ')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
+        '<input type="number" id="duracao-natacao-' + dataStr + '" placeholder="Duracao (min)" value="' + (tData.duracao || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + 'natacao' + sq + ')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
         '</div>';
     }
     html += '</div>';
   });
 
 
+}
 function fecharDiaCalendario() {
   diaDetalheAberto = null;
   var container = document.getElementById('dia-detalhe-container');
@@ -4352,7 +4353,7 @@ function reabrirFechamentoDia(dataStr) {
 })();
 
 // INIT
-renderHistorico()
+renderHistorico();
 renderCharts();
 calcProjecao(getRegistros());
 renderCalendario();
