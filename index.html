@@ -2226,45 +2226,80 @@
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Rotação com Medicine Ball</span><span class="ex-head-tag">POTÊNCIA ROTACIONAL</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 8 cada lado (4–6 kg) · Rotar tronco com potência máxima, lançar na parede diagonal · <strong>Descanso:</strong> 90 seg</div>
-    <div class="ex-tip">🎯 Potência rotacional do tronco — principal motor da propulsão no crawl.</div>
+    <div class="ex-head"><span class="ex-head-name">Woodchop na Polia</span><span class="ex-head-tag">POTÊNCIA ROTACIONAL</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10-12 cada lado · Movimento diagonal de cima para baixo, rotação de tronco com controle · <strong>Descanso:</strong> 60 seg</div>
     <div class="ex-log-row">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('med-ball',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+      <button class="btn btn-sm" onclick="logCarga('woodchop',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
     </div>
     <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-med-ball" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-med-ball" min="1">
-        <select class="perc-select" id="perc-med-ball-s1" onchange="setPercSelect(this,'med-ball',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'med-ball S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-woodchop" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-woodchop" min="1">
+        <select class="perc-select" id="perc-woodchop-s1" onchange="setPercSelect(this,'woodchop',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'woodchop S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-med-ball" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-med-ball" min="1">
-        <select class="perc-select" id="perc-med-ball-s2" onchange="setPercSelect(this,'med-ball',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'med-ball S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-woodchop" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-woodchop" min="1">
+        <select class="perc-select" id="perc-woodchop-s2" onchange="setPercSelect(this,'woodchop',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'woodchop S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-med-ball" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-med-ball" min="1">
-        <select class="perc-select" id="perc-med-ball-s3" onchange="setPercSelect(this,'med-ball',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'med-ball S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-woodchop" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-woodchop" min="1">
+        <select class="perc-select" id="perc-woodchop-s3" onchange="setPercSelect(this,'woodchop',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'woodchop S3')">⏱</button>
       </div>
     </div>
-    <div class="ex-log-hist" id="hist-med-ball"></div>
+    <div class="ex-log-hist" id="hist-woodchop"></div>
   </div>
-  <div class="ex-done-row" id="done-row-med-ball">
+    <div class="ex-done-row" id="done-row-med-ball">
       <button class="ex-done-btn" id="done-btn-med-ball" onclick="toggleCoreDone('med-ball')">✓ Marcar como feito</button>
       <span class="ex-done-label" id="done-lbl-med-ball">não realizado hoje</span>
     </div>
+    <div class="ex-tip">🎯 Rotação diagonal — padrão específico do crawl.</div>
   </div>
   <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Rotação Horizontal na Polia</span><span class="ex-head-tag">CORE ROTACIONAL</span></div>
+    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10-12 cada lado · Movimento horizontal, rotação pura de tronco · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-log-row">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+      <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+      <button class="btn btn-sm" onclick="logCarga('rot-horizontal',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+    </div>
+    <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-rot-horizontal" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-rot-horizontal" min="1">
+        <select class="perc-select" id="perc-rot-horizontal-s1" onchange="setPercSelect(this,'rot-horizontal',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'rot-horizontal S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-rot-horizontal" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-rot-horizontal" min="1">
+        <select class="perc-select" id="perc-rot-horizontal-s2" onchange="setPercSelect(this,'rot-horizontal',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'rot-horizontal S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-rot-horizontal" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-rot-horizontal" min="1">
+        <select class="perc-select" id="perc-rot-horizontal-s3" onchange="setPercSelect(this,'rot-horizontal',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'rot-horizontal S3')">⏱</button>
+      </div>
+    </div>
+    <div class="ex-log-hist" id="hist-rot-horizontal"></div>
+  </div>
+    <div class="ex-tip">🎯 Força rotacional horizontal — potência de braçada no nado.</div>
+  </div>
+    <div class="ex-block">
     <div class="ex-head"><span class="ex-head-name">Hanging Leg Raise</span><span class="ex-head-tag">CORE INFERIOR</span></div>
     <div class="ex-body"><strong>Protocolo:</strong> 3 × 10–12 · Pernas retas quando conseguir, joelhos dobrados para iniciar · Sem balanço, lombar posteriorizada no topo · <strong>Descanso:</strong> 90 seg</div>
     <div class="ex-tip">🎯 Iliopsoas — potência do chute e streamline nas saídas subaquáticas.</div>
@@ -4395,6 +4430,20 @@ function reabrirFechamentoDia(dataStr) {
   });
 })();
 
+
+// PRE-POP WOODCHOP ROT-HORIZONTAL
+(function() {
+  var novos = {"woodchop": {"data": "2026-07-20", "series": [{"serie": 1, "carga": 20, "reps": 12}, {"serie": 2, "carga": 20, "reps": 12}, {"serie": 3, "carga": 20, "reps": 12}]}, "rot-horizontal": {"data": "2026-07-20", "series": [{"serie": 1, "carga": 17.5, "reps": 12}, {"serie": 2, "carga": 17.5, "reps": 12}, {"serie": 3, "carga": 17.5, "reps": 12}]}};
+  Object.keys(novos).forEach(function(ex) {
+    var key = 'carga_' + ex;
+    var existing = JSON.parse(localStorage.getItem(key) || '[]');
+    var h = novos[ex];
+    if (!existing.some(function(e) { return e.data === h.data; })) {
+      existing.unshift({ data: h.data, series: h.series, ts: Date.now() });
+      localStorage.setItem(key, JSON.stringify(existing));
+    }
+  });
+})();
 // INIT
 renderHistorico();
 renderCharts();
