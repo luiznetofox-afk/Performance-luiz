@@ -199,7 +199,7 @@
         localStorage.setItem('carga_' + ex, JSON.stringify(cargas[ex]));
       });
       setTimeout(function() {
-        ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'].forEach(function(ex) {
+        ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank'].forEach(function(ex) {
           if (window.renderCargaHist) renderCargaHist(ex);
         });
         if (window.renderPRBoard && document.getElementById('prboard') && document.getElementById('prboard').classList.contains('active')) renderPRBoard();
@@ -2965,7 +2965,7 @@ function renderCargaHist(ex) {
     '<span style="font-size:.62rem;color:#9ca3af">Vol: ' + vol.toFixed(0) + 'kg | PR: ' + pr + 'kg</span>';
 }
 
-['pullup','remada','pulldown','rosca','supino','press','triceps','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank','p-abdutora','p-adutora','p-extensora','p-flexora','p-pant-pe','p-goblet','p-supino-inc','p-dev-db','p-elev-lat-pol','p-tri-franc','p-lombar','p-remada-baixa','p-arnold','p-crucif-inv','p-rosca-scott','p-elev-lat-db','p-rosca-w','p-remada-curv'].forEach(function(ex) { renderCargaHist(ex); });
+['pullup','remada','pulldown','rosca','supino','press','triceps','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank','p-abdutora','p-adutora','p-extensora','p-flexora','p-pant-pe','p-goblet','p-supino-inc','p-dev-db','p-elev-lat-pol','p-tri-franc','p-lombar','p-remada-baixa','p-arnold','p-crucif-inv','p-rosca-scott','p-elev-lat-db','p-rosca-w','p-remada-curv'].forEach(function(ex) { renderCargaHist(ex); });
 
 // PROJECAO
 function calcProjecao(registros) {
@@ -3364,7 +3364,7 @@ function limparHistorico() {
 }
 
 // CORE DONE
-var CORE_IDS = ['prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','med-ball','hanging-leg','freestyle-plank'];
+var CORE_IDS = ['prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank'];
 function getCoreStatus() { try { return JSON.parse(localStorage.getItem('core_done') || '{}'); } catch(e) { return {}; } }
 function saveCoreStatus(s) {
   localStorage.setItem('core_done', JSON.stringify(s));
@@ -4374,6 +4374,22 @@ function reabrirFechamentoDia(dataStr) {
     var alreadyHas = existing.some(function(e) { return e.data === h.data; });
     if (!alreadyHas) {
       existing.unshift({ data: h.data, series: h.series, ts: new Date(h.data).getTime() });
+      localStorage.setItem(key, JSON.stringify(existing));
+    }
+  });
+})();
+
+
+// ── PRÉ-POPULACAO WOODCHOP E ROTACAO HORIZONTAL ──
+(function() {
+  var novos = {"woodchop": {"data": "2026-07-20", "series": [{"serie": 1, "carga": 20, "reps": 12}, {"serie": 2, "carga": 20, "reps": 12}, {"serie": 3, "carga": 20, "reps": 12}]}, "rot-horizontal": {"data": "2026-07-20", "series": [{"serie": 1, "carga": 17.5, "reps": 12}, {"serie": 2, "carga": 17.5, "reps": 12}, {"serie": 3, "carga": 17.5, "reps": 12}]}};
+  Object.keys(novos).forEach(function(ex) {
+    var key = 'carga_' + ex;
+    var existing = JSON.parse(localStorage.getItem(key) || '[]');
+    var h = novos[ex];
+    var alreadyHas = existing.some(function(e) { return e.data === h.data; });
+    if (!alreadyHas) {
+      existing.unshift({ data: h.data, series: h.series, ts: Date.now() });
       localStorage.setItem(key, JSON.stringify(existing));
     }
   });
