@@ -3513,6 +3513,40 @@ function renderGraficos() {
       makeLineChart('g-vol-' + ex, hist2.map(function(h){return h.data;}), [{label:'Volume',data:hist2.map(function(h){return h.series.reduce(function(acc,s){return acc+s.carga*s.reps;},0);}),color:i===0?'#0284c7':'#ea580c'}], 'kg');
     } catch(e) {}
   });
+
+  // Graficos natacao: metros e duracao - dados vem do checkin_parcial
+  try {
+    var parcialData = JSON.parse(localStorage.getItem('checkin_parcial') || '{}');
+    var datasNat = Object.keys(parcialData).sort().filter(function(d) {
+      return parcialData[d].natacao && parcialData[d].natacao.feito;
+    });
+    var metrosDados = datasNat.map(function(d) {
+      return parcialData[d].natacao.metros || 0;
+    }).filter(function(v) { return v > 0; });
+    var datasComMetros = datasNat.filter(function(d) {
+      return parcialData[d].natacao.metros > 0;
+    });
+    if (datasComMetros.length > 0) {
+      makeLineChart('g-natacao-metros', datasComMetros, [{
+        label: 'Metros nadados',
+        data: metrosDados,
+        color: '#0284c7'
+      }], 'm');
+    }
+    var duracaoDados = datasNat.map(function(d) {
+      return parcialData[d].natacao.duracao || 0;
+    }).filter(function(v) { return v > 0; });
+    var datasComDuracao = datasNat.filter(function(d) {
+      return parcialData[d].natacao.duracao > 0;
+    });
+    if (datasComDuracao.length > 0) {
+      makeLineChart('g-natacao-duracao', datasComDuracao, [{
+        label: 'Duracao (min)',
+        data: duracaoDados,
+        color: '#06b6d4'
+      }], 'min');
+    }
+  } catch(e) {}
 }
 
 // ── AGUA EM TEMPO REAL ──
