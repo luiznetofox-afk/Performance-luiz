@@ -12,6 +12,7 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
@@ -2529,6 +2530,7 @@
     <div style="display:flex;gap:.5rem;flex-wrap:wrap">
       <button class="btn btn-sm btn-moss" onclick="exportarBackup()">⬇️ Exportar backup</button>
       <button class="btn btn-sm" style="background:#8b5cf6" onclick="exportarPDF()">📄 Exportar PDF</button>
+      <button class="btn btn-sm" style="background:#16a34a" onclick="abrirExportTreinos()">📊 Exportar Treinos</button>
       <button class="btn btn-sm btn-gold" onclick="document.getElementById('import-file').click()">⬆️ Importar</button>
       <button class="btn btn-sm btn-danger" onclick="limparHistorico()">🗑️ Limpar</button>
       <input type="file" id="import-file" accept=".json" style="display:none" onchange="importarBackup(event)">
@@ -4399,6 +4401,234 @@ function reabrirFechamentoDia(dataStr) {
   abrirDiaCalendario(dataStr);
 }
 
+
+// ── EXPORTAR TREINOS EXCEL ──
+var _lastExcelBlob = null;
+
+function abrirExportTreinos() {
+  var modal = document.getElementById('modal-export-treinos');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  // Default: last 28 days
+  setPeriodo(28);
+  gerarMensagemPersonal();
+}
+
+function fecharExportTreinos() {
+  var modal = document.getElementById('modal-export-treinos');
+  if (modal) modal.style.display = 'none';
+}
+
+function setPeriodo(dias) {
+  var fim = new Date();
+  var ini = new Date(Date.now() - dias * 86400000);
+  document.getElementById('export-data-inicio').value = ini.toISOString().split('T')[0];
+  document.getElementById('export-data-fim').value = fim.toISOString().split('T')[0];
+  gerarMensagemPersonal();
+}
+
+function gerarMensagemPersonal() {
+  var ini = document.getElementById('export-data-inicio').value;
+  var fim = document.getElementById('export-data-fim').value;
+  if (!ini || !fim) return;
+  var iniFmt = new Date(ini + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var fimFmt = new Date(fim + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var msg = document.getElementById('export-msg-personal');
+  if (msg && !msg.value) {
+    msg.value = 'Fernando, segue o relatorio do periodo ' + iniFmt + ' a ' + fimFmt + '. Aguardo o novo ciclo de treinos!';
+  }
+}
+
+var TREINO_CONFIG = [
+  {
+    nome: 'Treino 1 - MMII',
+    exercicios: [
+      {nome:'Abdutora', id:'p-abdutora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Adutora', id:'p-adutora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Extensora', id:'p-extensora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Flexora', id:'p-flexora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Panturrilha em Pe', id:'p-pant-pe', series:4, prescricao:'4x15-20 · rest 1min'},
+      {nome:'Goblet Squat', id:'p-goblet', series:4, prescricao:'4x15-20 · rest 1min'},
+      {nome:'Hip Thrust', id:'hipthrust', series:4, prescricao:'4x10-12 · rest 90s'},
+      {nome:'Elevacao Pelvica Unilateral', id:'elev-pelvica', series:3, prescricao:'3x12 cada lado'}
+    ]
+  },
+  {
+    nome: 'Treino 2 - Peito Triceps Ombro',
+    exercicios: [
+      {nome:'Supino Reto c/ Barra', id:'supino', series:5, prescricao:'5x3-4 · 80-85% · rest 2-3min'},
+      {nome:'Supino Inclinado DB', id:'p-supino-inc', series:4, prescricao:'1x8-10 + 3x6-8 · rest 90s'},
+      {nome:'Desenvolvimento DB', id:'p-dev-db', series:5, prescricao:'1x10 + 1x8 + 3x5 · rest 1-2min'},
+      {nome:'Elevacao Lateral Polia', id:'p-elev-lat-pol', series:4, prescricao:'4x8-12 · rest 1min'},
+      {nome:'Triceps Frances', id:'p-tri-franc', series:4, prescricao:'4x8-12 · rest 1min'},
+      {nome:'Triceps Corda Polia', id:'triceps', series:4, prescricao:'4x8-12 · rest 1min'}
+    ]
+  },
+  {
+    nome: 'Treino 3 - Costas Posterior',
+    exercicios: [
+      {nome:'Barra Fixa c/ Carga', id:'pullup', series:5, prescricao:'5x3-5 · rest 90s'},
+      {nome:'Puxada Frontal Aberta', id:'pulldown', series:4, prescricao:'1x10-12 + 3x6-8 · rest 90s'},
+      {nome:'Remada Curvada Supinada', id:'remada', series:4, prescricao:'1x8-10 + 3x5-6 · rest 90s'},
+      {nome:'Lombar Banco Romano', id:'p-lombar', series:4, prescricao:'4x10-12 · rest 1min'},
+      {nome:'Remada Unilateral DB', id:'remada-uni', series:4, prescricao:'1x8-10 + 3x5-6 · rest 2-3min'},
+      {nome:'Remada Baixa', id:'p-remada-baixa', series:4, prescricao:'1x10-12 + 3x6-8 · rest 90s'},
+      {nome:'Face Pull', id:'face-pull', series:4, prescricao:'4x12-15 · rest 1min'}
+    ]
+  },
+  {
+    nome: 'Treino 4 - Ombro Biceps',
+    exercicios: [
+      {nome:'Desenvolvimento Militar Barra', id:'press', series:4, prescricao:'1x8-10 + 3x5-6 · rest 2min'},
+      {nome:'Arnold Press', id:'p-arnold', series:4, prescricao:'4x8-10 · rest 1min'},
+      {nome:'Crucifixo Inverso Polia', id:'p-crucif-inv', series:4, prescricao:'4x8-12 · rest 1min'},
+      {nome:'Rosca Scott Maquina', id:'p-rosca-scott', series:3, prescricao:'3x8-12 · rest 1min'},
+      {nome:'Elevacao Lateral DB', id:'p-elev-lat-db', series:4, prescricao:'piramide 4x15-8 · rest 1min'},
+      {nome:'Rosca Direta Barra W', id:'p-rosca-w', series:4, prescricao:'4x8-12 · rest 1min'}
+    ]
+  }
+];
+
+var PERC_COLORS = {
+  leve:     {bg:'DCFCE7', fg:'15803D', label:'LEVE'},
+  moderada: {bg:'FEF9C3', fg:'A16207', label:'MODERADA'},
+  pesada:   {bg:'FFE4E6', fg:'BE123C', label:'PESADA'},
+  '':       {bg:'FFFFFF', fg:'374151', label:'-'}
+};
+
+function gerarExcelTreinos() {
+  if (typeof XLSX === 'undefined') {
+    document.getElementById('export-status').textContent = 'Biblioteca Excel nao carregada. Tente recarregar a pagina.';
+    return;
+  }
+
+  var ini = document.getElementById('export-data-inicio').value;
+  var fim = document.getElementById('export-data-fim').value;
+  if (!ini || !fim) { alert('Selecione o periodo.'); return; }
+
+  var status = document.getElementById('export-status');
+  status.textContent = 'Gerando planilha...';
+
+  var wb = XLSX.utils.book_new();
+  var iniFmt = new Date(ini + 'T12:00:00').toLocaleDateString('pt-BR');
+  var fimFmt = new Date(fim + 'T12:00:00').toLocaleDateString('pt-BR');
+  var msgPersonal = document.getElementById('export-msg-personal').value;
+
+  // ── ABA RESUMO ──
+  var resumoData = [
+    ['NEXUS - RELATORIO DE TREINOS'],
+    ['Periodo: ' + iniFmt + ' a ' + fimFmt],
+    [''],
+    ['TREINO', 'SESSOES REALIZADAS', 'EXERCICIOS', 'TOTAL SERIES'],
+  ];
+
+  var totalSessoes = 0;
+  TREINO_CONFIG.forEach(function(t) {
+    var sessoes = 0;
+    t.exercicios.forEach(function(ex) {
+      var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
+      var filtradas = hist.filter(function(h) { return h.data >= ini && h.data <= fim; });
+      if (filtradas.length > sessoes) sessoes = filtradas.length;
+    });
+    totalSessoes += sessoes;
+    resumoData.push([t.nome, sessoes, t.exercicios.length, sessoes * t.exercicios.reduce(function(a,e){return a+e.series;},0)]);
+  });
+
+  resumoData.push(['']);
+  resumoData.push(['TOTAL DE SESSOES NO PERIODO', totalSessoes]);
+  resumoData.push(['']);
+  resumoData.push(['MENSAGEM PARA O PERSONAL:']);
+  resumoData.push([msgPersonal]);
+
+  var wsResumo = XLSX.utils.aoa_to_sheet(resumoData);
+  wsResumo['!cols'] = [{wch:35},{wch:20},{wch:15},{wch:15}];
+  XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo Geral');
+
+  // ── ABAS POR TREINO ──
+  TREINO_CONFIG.forEach(function(t, tIdx) {
+    var sheetData = [];
+
+    // Header
+    sheetData.push([t.nome.toUpperCase()]);
+    sheetData.push(['Periodo: ' + iniFmt + ' a ' + fimFmt]);
+    sheetData.push(['']);
+
+    t.exercicios.forEach(function(ex) {
+      var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
+      var sessoes = hist.filter(function(h) { return h.data >= ini && h.data <= fim; }).sort(function(a,b){return a.data>b.data?1:-1;});
+      if (sessoes.length === 0) return;
+
+      // Exercise name row
+      sheetData.push([ex.nome.toUpperCase() + ' | ' + ex.prescricao]);
+
+      // Date headers
+      var dateRow = ['Serie'];
+      sessoes.forEach(function(s) {
+        var d = new Date(s.data + 'T12:00:00').toLocaleDateString('pt-BR');
+        dateRow.push(d, '', '');
+      });
+      sheetData.push(dateRow);
+
+      // Sub-headers
+      var subRow = [''];
+      sessoes.forEach(function() {
+        subRow.push('Carga (kg)', 'Reps', 'Percepcao');
+      });
+      sheetData.push(subRow);
+
+      // Series rows
+      for (var s = 0; s < ex.series; s++) {
+        var row = ['S' + (s+1)];
+        sessoes.forEach(function(sessao) {
+          var serie = sessao.series && sessao.series[s];
+          if (serie) {
+            var percLabel = serie.perc ? PERC_COLORS[serie.perc].label : '-';
+            row.push(serie.carga, serie.reps, percLabel);
+          } else {
+            row.push('-', '-', '-');
+          }
+        });
+        sheetData.push(row);
+      }
+      sheetData.push(['']);
+    });
+
+    var ws = XLSX.utils.aoa_to_sheet(sheetData);
+    ws['!cols'] = [{wch:10},{wch:10},{wch:7},{wch:12},{wch:10},{wch:7},{wch:12},{wch:10},{wch:7},{wch:12},{wch:10},{wch:7},{wch:12}];
+    XLSX.utils.book_append_sheet(wb, ws, 'T' + (tIdx+1) + ' - ' + ['MMII','Peito','Costas','Ombro'][tIdx]);
+  });
+
+  // Generate file
+  var wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+  _lastExcelBlob = new Blob([wbout], {type:'application/octet-stream'});
+  var url = URL.createObjectURL(_lastExcelBlob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'nexus_treinos_' + ini + '_a_' + fim + '.xlsx';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  status.textContent = 'Planilha gerada e baixada!';
+}
+
+function compartilharWhatsApp() {
+  var ini = document.getElementById('export-data-inicio').value;
+  var fim = document.getElementById('export-data-fim').value;
+  var msg = document.getElementById('export-msg-personal').value || 'Segue o relatorio de treinos do Nexus.';
+  var iniFmt = ini ? new Date(ini+'T12:00:00').toLocaleDateString('pt-BR') : '';
+  var fimFmt = fim ? new Date(fim+'T12:00:00').toLocaleDateString('pt-BR') : '';
+  var texto = msg + (iniFmt ? ' Periodo: ' + iniFmt + ' a ' + fimFmt + '.' : '');
+  // First generate excel then open whatsapp
+  if (!_lastExcelBlob) {
+    gerarExcelTreinos();
+    setTimeout(function() {
+      window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+    }, 1000);
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+  }
+}
+
 // ── PRÉ-POPULACAO HISTÓRICO DA PLANILHA ──
 (function() {
   var historicos = {"p-abdutora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 91, "reps": 15}, {"serie": 2, "carga": 91, "reps": 15}, {"serie": 3, "carga": 91, "reps": 15}, {"serie": 4, "carga": 91, "reps": 15}, {"serie": 5, "carga": 91, "reps": 15}]}, "p-adutora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 64, "reps": 15}, {"serie": 2, "carga": 64, "reps": 15}, {"serie": 3, "carga": 64, "reps": 15}, {"serie": 4, "carga": 64, "reps": 15}, {"serie": 5, "carga": 64, "reps": 15}]}, "p-extensora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 73, "reps": 15}, {"serie": 2, "carga": 73, "reps": 15}, {"serie": 3, "carga": 73, "reps": 15}, {"serie": 4, "carga": 73, "reps": 15}, {"serie": 5, "carga": 73, "reps": 15}]}, "p-flexora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 60, "reps": 15}, {"serie": 2, "carga": 60, "reps": 15}, {"serie": 3, "carga": 60, "reps": 15}, {"serie": 4, "carga": 60, "reps": 15}, {"serie": 5, "carga": 55, "reps": 15}]}, "p-pant-pe": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 45, "reps": 15}, {"serie": 2, "carga": 45, "reps": 15}, {"serie": 3, "carga": 45, "reps": 15}, {"serie": 4, "carga": 45, "reps": 15}]}, "p-supino-inc": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 60, "reps": 10}, {"serie": 2, "carga": 68, "reps": 6}, {"serie": 3, "carga": 68, "reps": 6}, {"serie": 4, "carga": 68, "reps": 6}]}, "p-dev-db": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 40, "reps": 10}, {"serie": 2, "carga": 44, "reps": 8}, {"serie": 3, "carga": 52, "reps": 5}, {"serie": 4, "carga": 52, "reps": 5}, {"serie": 5, "carga": 60, "reps": 5}]}, "p-elev-lat-pol": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 10, "reps": 8}, {"serie": 2, "carga": 10, "reps": 8}, {"serie": 3, "carga": 7.5, "reps": 8}, {"serie": 4, "carga": 7.5, "reps": 8}]}, "p-tri-franc": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 40, "reps": 8}, {"serie": 2, "carga": 40, "reps": 8}, {"serie": 3, "carga": 40, "reps": 8}, {"serie": 4, "carga": 40, "reps": 8}]}, "p-lombar": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 15, "reps": 10}, {"serie": 2, "carga": 15, "reps": 10}, {"serie": 3, "carga": 15, "reps": 10}, {"serie": 4, "carga": 15, "reps": 10}]}, "p-remada-baixa": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 55, "reps": 10}, {"serie": 2, "carga": 85, "reps": 6}, {"serie": 3, "carga": 95, "reps": 6}, {"serie": 4, "carga": 95, "reps": 6}]}, "p-arnold": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 48, "reps": 8}, {"serie": 2, "carga": 48, "reps": 8}, {"serie": 3, "carga": 48, "reps": 8}, {"serie": 4, "carga": 44, "reps": 8}]}, "p-crucif-inv": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 15, "reps": 8}, {"serie": 2, "carga": 15, "reps": 8}, {"serie": 3, "carga": 10, "reps": 8}, {"serie": 4, "carga": 10, "reps": 8}]}, "p-rosca-scott": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 40, "reps": 8}, {"serie": 2, "carga": 40, "reps": 8}, {"serie": 3, "carga": 40, "reps": 8}]}, "p-elev-lat-db": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 20, "reps": 15}, {"serie": 2, "carga": 24, "reps": 12}, {"serie": 3, "carga": 32, "reps": 8}, {"serie": 4, "carga": 32, "reps": 8}]}, "p-rosca-w": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 35, "reps": 8}, {"serie": 2, "carga": 35, "reps": 8}, {"serie": 3, "carga": 35, "reps": 8}, {"serie": 4, "carga": 35, "reps": 8}]}};
@@ -4414,6 +4644,234 @@ function reabrirFechamentoDia(dataStr) {
   });
 })();
 
+
+
+// ── EXPORTAR TREINOS EXCEL ──
+var _lastExcelBlob = null;
+
+function abrirExportTreinos() {
+  var modal = document.getElementById('modal-export-treinos');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  // Default: last 28 days
+  setPeriodo(28);
+  gerarMensagemPersonal();
+}
+
+function fecharExportTreinos() {
+  var modal = document.getElementById('modal-export-treinos');
+  if (modal) modal.style.display = 'none';
+}
+
+function setPeriodo(dias) {
+  var fim = new Date();
+  var ini = new Date(Date.now() - dias * 86400000);
+  document.getElementById('export-data-inicio').value = ini.toISOString().split('T')[0];
+  document.getElementById('export-data-fim').value = fim.toISOString().split('T')[0];
+  gerarMensagemPersonal();
+}
+
+function gerarMensagemPersonal() {
+  var ini = document.getElementById('export-data-inicio').value;
+  var fim = document.getElementById('export-data-fim').value;
+  if (!ini || !fim) return;
+  var iniFmt = new Date(ini + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var fimFmt = new Date(fim + 'T12:00:00').toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var msg = document.getElementById('export-msg-personal');
+  if (msg && !msg.value) {
+    msg.value = 'Fernando, segue o relatorio do periodo ' + iniFmt + ' a ' + fimFmt + '. Aguardo o novo ciclo de treinos!';
+  }
+}
+
+var TREINO_CONFIG = [
+  {
+    nome: 'Treino 1 - MMII',
+    exercicios: [
+      {nome:'Abdutora', id:'p-abdutora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Adutora', id:'p-adutora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Extensora', id:'p-extensora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Flexora', id:'p-flexora', series:5, prescricao:'5x15-20 · rest 1min'},
+      {nome:'Panturrilha em Pe', id:'p-pant-pe', series:4, prescricao:'4x15-20 · rest 1min'},
+      {nome:'Goblet Squat', id:'p-goblet', series:4, prescricao:'4x15-20 · rest 1min'},
+      {nome:'Hip Thrust', id:'hipthrust', series:4, prescricao:'4x10-12 · rest 90s'},
+      {nome:'Elevacao Pelvica Unilateral', id:'elev-pelvica', series:3, prescricao:'3x12 cada lado'}
+    ]
+  },
+  {
+    nome: 'Treino 2 - Peito Triceps Ombro',
+    exercicios: [
+      {nome:'Supino Reto c/ Barra', id:'supino', series:5, prescricao:'5x3-4 · 80-85% · rest 2-3min'},
+      {nome:'Supino Inclinado DB', id:'p-supino-inc', series:4, prescricao:'1x8-10 + 3x6-8 · rest 90s'},
+      {nome:'Desenvolvimento DB', id:'p-dev-db', series:5, prescricao:'1x10 + 1x8 + 3x5 · rest 1-2min'},
+      {nome:'Elevacao Lateral Polia', id:'p-elev-lat-pol', series:4, prescricao:'4x8-12 · rest 1min'},
+      {nome:'Triceps Frances', id:'p-tri-franc', series:4, prescricao:'4x8-12 · rest 1min'},
+      {nome:'Triceps Corda Polia', id:'triceps', series:4, prescricao:'4x8-12 · rest 1min'}
+    ]
+  },
+  {
+    nome: 'Treino 3 - Costas Posterior',
+    exercicios: [
+      {nome:'Barra Fixa c/ Carga', id:'pullup', series:5, prescricao:'5x3-5 · rest 90s'},
+      {nome:'Puxada Frontal Aberta', id:'pulldown', series:4, prescricao:'1x10-12 + 3x6-8 · rest 90s'},
+      {nome:'Remada Curvada Supinada', id:'remada', series:4, prescricao:'1x8-10 + 3x5-6 · rest 90s'},
+      {nome:'Lombar Banco Romano', id:'p-lombar', series:4, prescricao:'4x10-12 · rest 1min'},
+      {nome:'Remada Unilateral DB', id:'remada-uni', series:4, prescricao:'1x8-10 + 3x5-6 · rest 2-3min'},
+      {nome:'Remada Baixa', id:'p-remada-baixa', series:4, prescricao:'1x10-12 + 3x6-8 · rest 90s'},
+      {nome:'Face Pull', id:'face-pull', series:4, prescricao:'4x12-15 · rest 1min'}
+    ]
+  },
+  {
+    nome: 'Treino 4 - Ombro Biceps',
+    exercicios: [
+      {nome:'Desenvolvimento Militar Barra', id:'press', series:4, prescricao:'1x8-10 + 3x5-6 · rest 2min'},
+      {nome:'Arnold Press', id:'p-arnold', series:4, prescricao:'4x8-10 · rest 1min'},
+      {nome:'Crucifixo Inverso Polia', id:'p-crucif-inv', series:4, prescricao:'4x8-12 · rest 1min'},
+      {nome:'Rosca Scott Maquina', id:'p-rosca-scott', series:3, prescricao:'3x8-12 · rest 1min'},
+      {nome:'Elevacao Lateral DB', id:'p-elev-lat-db', series:4, prescricao:'piramide 4x15-8 · rest 1min'},
+      {nome:'Rosca Direta Barra W', id:'p-rosca-w', series:4, prescricao:'4x8-12 · rest 1min'}
+    ]
+  }
+];
+
+var PERC_COLORS = {
+  leve:     {bg:'DCFCE7', fg:'15803D', label:'LEVE'},
+  moderada: {bg:'FEF9C3', fg:'A16207', label:'MODERADA'},
+  pesada:   {bg:'FFE4E6', fg:'BE123C', label:'PESADA'},
+  '':       {bg:'FFFFFF', fg:'374151', label:'-'}
+};
+
+function gerarExcelTreinos() {
+  if (typeof XLSX === 'undefined') {
+    document.getElementById('export-status').textContent = 'Biblioteca Excel nao carregada. Tente recarregar a pagina.';
+    return;
+  }
+
+  var ini = document.getElementById('export-data-inicio').value;
+  var fim = document.getElementById('export-data-fim').value;
+  if (!ini || !fim) { alert('Selecione o periodo.'); return; }
+
+  var status = document.getElementById('export-status');
+  status.textContent = 'Gerando planilha...';
+
+  var wb = XLSX.utils.book_new();
+  var iniFmt = new Date(ini + 'T12:00:00').toLocaleDateString('pt-BR');
+  var fimFmt = new Date(fim + 'T12:00:00').toLocaleDateString('pt-BR');
+  var msgPersonal = document.getElementById('export-msg-personal').value;
+
+  // ── ABA RESUMO ──
+  var resumoData = [
+    ['NEXUS - RELATORIO DE TREINOS'],
+    ['Periodo: ' + iniFmt + ' a ' + fimFmt],
+    [''],
+    ['TREINO', 'SESSOES REALIZADAS', 'EXERCICIOS', 'TOTAL SERIES'],
+  ];
+
+  var totalSessoes = 0;
+  TREINO_CONFIG.forEach(function(t) {
+    var sessoes = 0;
+    t.exercicios.forEach(function(ex) {
+      var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
+      var filtradas = hist.filter(function(h) { return h.data >= ini && h.data <= fim; });
+      if (filtradas.length > sessoes) sessoes = filtradas.length;
+    });
+    totalSessoes += sessoes;
+    resumoData.push([t.nome, sessoes, t.exercicios.length, sessoes * t.exercicios.reduce(function(a,e){return a+e.series;},0)]);
+  });
+
+  resumoData.push(['']);
+  resumoData.push(['TOTAL DE SESSOES NO PERIODO', totalSessoes]);
+  resumoData.push(['']);
+  resumoData.push(['MENSAGEM PARA O PERSONAL:']);
+  resumoData.push([msgPersonal]);
+
+  var wsResumo = XLSX.utils.aoa_to_sheet(resumoData);
+  wsResumo['!cols'] = [{wch:35},{wch:20},{wch:15},{wch:15}];
+  XLSX.utils.book_append_sheet(wb, wsResumo, 'Resumo Geral');
+
+  // ── ABAS POR TREINO ──
+  TREINO_CONFIG.forEach(function(t, tIdx) {
+    var sheetData = [];
+
+    // Header
+    sheetData.push([t.nome.toUpperCase()]);
+    sheetData.push(['Periodo: ' + iniFmt + ' a ' + fimFmt]);
+    sheetData.push(['']);
+
+    t.exercicios.forEach(function(ex) {
+      var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
+      var sessoes = hist.filter(function(h) { return h.data >= ini && h.data <= fim; }).sort(function(a,b){return a.data>b.data?1:-1;});
+      if (sessoes.length === 0) return;
+
+      // Exercise name row
+      sheetData.push([ex.nome.toUpperCase() + ' | ' + ex.prescricao]);
+
+      // Date headers
+      var dateRow = ['Serie'];
+      sessoes.forEach(function(s) {
+        var d = new Date(s.data + 'T12:00:00').toLocaleDateString('pt-BR');
+        dateRow.push(d, '', '');
+      });
+      sheetData.push(dateRow);
+
+      // Sub-headers
+      var subRow = [''];
+      sessoes.forEach(function() {
+        subRow.push('Carga (kg)', 'Reps', 'Percepcao');
+      });
+      sheetData.push(subRow);
+
+      // Series rows
+      for (var s = 0; s < ex.series; s++) {
+        var row = ['S' + (s+1)];
+        sessoes.forEach(function(sessao) {
+          var serie = sessao.series && sessao.series[s];
+          if (serie) {
+            var percLabel = serie.perc ? PERC_COLORS[serie.perc].label : '-';
+            row.push(serie.carga, serie.reps, percLabel);
+          } else {
+            row.push('-', '-', '-');
+          }
+        });
+        sheetData.push(row);
+      }
+      sheetData.push(['']);
+    });
+
+    var ws = XLSX.utils.aoa_to_sheet(sheetData);
+    ws['!cols'] = [{wch:10},{wch:10},{wch:7},{wch:12},{wch:10},{wch:7},{wch:12},{wch:10},{wch:7},{wch:12},{wch:10},{wch:7},{wch:12}];
+    XLSX.utils.book_append_sheet(wb, ws, 'T' + (tIdx+1) + ' - ' + ['MMII','Peito','Costas','Ombro'][tIdx]);
+  });
+
+  // Generate file
+  var wbout = XLSX.write(wb, {bookType:'xlsx', type:'array'});
+  _lastExcelBlob = new Blob([wbout], {type:'application/octet-stream'});
+  var url = URL.createObjectURL(_lastExcelBlob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'nexus_treinos_' + ini + '_a_' + fim + '.xlsx';
+  a.click();
+  URL.revokeObjectURL(url);
+
+  status.textContent = 'Planilha gerada e baixada!';
+}
+
+function compartilharWhatsApp() {
+  var ini = document.getElementById('export-data-inicio').value;
+  var fim = document.getElementById('export-data-fim').value;
+  var msg = document.getElementById('export-msg-personal').value || 'Segue o relatorio de treinos do Nexus.';
+  var iniFmt = ini ? new Date(ini+'T12:00:00').toLocaleDateString('pt-BR') : '';
+  var fimFmt = fim ? new Date(fim+'T12:00:00').toLocaleDateString('pt-BR') : '';
+  var texto = msg + (iniFmt ? ' Periodo: ' + iniFmt + ' a ' + fimFmt + '.' : '');
+  // First generate excel then open whatsapp
+  if (!_lastExcelBlob) {
+    gerarExcelTreinos();
+    setTimeout(function() {
+      window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+    }, 1000);
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+  }
+}
 
 // ── PRÉ-POPULACAO WOODCHOP E ROTACAO HORIZONTAL ──
 (function() {
@@ -4457,6 +4915,45 @@ renderCalendario();
   <div class="timer-num" id="timer-display">0:00</div>
   <div class="timer-label" id="timer-ex-name"></div>
   <button class="btn btn-sm" style="margin-top:.5rem;width:100%" onclick="cancelTimer()">Cancelar</button>
+</div>
+
+<!-- MODAL EXPORTAR TREINOS -->
+<div id="modal-export-treinos" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:16px;padding:1.5rem;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:#0f172a">Exportar Treinos</div>
+      <button onclick="fecharExportTreinos()" style="background:none;border:none;font-size:1.4rem;cursor:pointer;color:#9ca3af">✕</button>
+    </div>
+    <div style="font-size:.82rem;color:#6b7280;margin-bottom:1rem">Selecione o período e os treinos para exportar:</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem">
+      <div>
+        <label style="font-size:.68rem;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:.3rem">Data Início</label>
+        <input type="date" id="export-data-inicio" style="width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.85rem">
+      </div>
+      <div>
+        <label style="font-size:.68rem;color:#6b7280;text-transform:uppercase;display:block;margin-bottom:.3rem">Data Fim</label>
+        <input type="date" id="export-data-fim" style="width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.85rem">
+      </div>
+    </div>
+
+    <div style="font-size:.75rem;color:#374151;font-weight:600;margin-bottom:.5rem">Atalhos de período:</div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem">
+      <button class="btn btn-sm" style="background:#f1f5f9;color:#374151" onclick="setPeriodo(7)">7 dias</button>
+      <button class="btn btn-sm" style="background:#f1f5f9;color:#374151" onclick="setPeriodo(14)">14 dias</button>
+      <button class="btn btn-sm" style="background:#f1f5f9;color:#374151" onclick="setPeriodo(28)">4 semanas</button>
+      <button class="btn btn-sm" style="background:#f1f5f9;color:#374151" onclick="setPeriodo(84)">3 meses</button>
+    </div>
+
+    <div style="font-size:.75rem;color:#374151;font-weight:600;margin-bottom:.5rem">Mensagem para o personal:</div>
+    <textarea id="export-msg-personal" rows="3" style="width:100%;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.8rem;resize:none;box-sizing:border-box" placeholder="Será gerada automaticamente, mas você pode editar..."></textarea>
+
+    <div style="display:flex;gap:.5rem;margin-top:1rem">
+      <button class="btn" style="flex:1;background:#16a34a" onclick="gerarExcelTreinos()">📊 Gerar Excel</button>
+      <button class="btn" style="flex:1;background:#25D366" onclick="compartilharWhatsApp()">📱 WhatsApp</button>
+    </div>
+    <div id="export-status" style="margin-top:.5rem;font-size:.75rem;color:#6b7280;text-align:center"></div>
+  </div>
 </div>
 
 <script>
