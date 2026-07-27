@@ -4021,6 +4021,164 @@ function reabrirFechamentoDia(dataStr) {
 
 
 
+
+// ── CALENDARIO / PROGRAMACAO ──
+var calMesAtual = new Date().getMonth();
+var calAnoAtual = new Date().getFullYear();
+var diaDetalheAberto = null;
+
+var TIPO_CORES = {
+  natacao: '#0284c7',
+  musculacao: '#ea580c',
+  core: '#16a34a',
+  cardio: '#eab308'
+};
+
+var TIPO_EMOJI = {
+  natacao: '🏊',
+  musculacao: '💪',
+  core: '🔥',
+  cardio: '🚴'
+};
+
+function getCheckinParcial() {
+  try { return JSON.parse(localStorage.getItem('checkin_parcial') || '{}'); } catch(e) { return {}; }
+}
+function saveCheckinParcial(data) {
+  localStorage.setItem('checkin_parcial', JSON.stringify(data));
+  if (window.fbSaveParcial) window.fbSaveParcial(data);
+}
+
+function renderCalendario() {
+  var titulo = document.getElementById('calendario-mes-titulo');
+  if (!titulo) return;
+  var meses = ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  titulo.textContent = meses[calMesAtual] + ' ' + calAnoAtual;
+
+  var primeiroDia = new Date(calAnoAtual, calMesAtual, 1);
+  var ultimoDia = new Date(calAnoAtual, calMesAtual + 1, 0);
+  var diaSemanaInicio = primeiroDia.getDay();
+  var totalDias = ultimoDia.getDate();
+  var hojeStr = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+
+  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">';
+  ['D','S','T','Q','Q','S','S'].forEach(function(d) {
+    html += '<div style="font-family:DM Mono,monospace;font-size:.6rem;color:#9ca3af;font-weight:700;padding:.3rem 0">' + d + '</div>';
+  });
+
+  for (var i = 0; i < diaSemanaInicio; i++) html += '<div></div>';
+
+  for (var dia = 1; dia <= totalDias; dia++) {
+    var dataObj = new Date(calAnoAtual, calMesAtual, dia);
+    var dataStr = dataObj.toISOString().split('T')[0];
+    var isHoje = dataStr === hojeStr;
+    var diaParc = parcial[dataStr] || {};
+
+    var dotsHtml = '';
+    var tiposDots = ['natacao','musculacao','core','cardio'];
+    tiposDots.forEach(function(tipo) {
+      if (diaParc[tipo] && diaParc[tipo].feito) {
+        var cor = TIPO_CORES[tipo];
+        dotsHtml += '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + cor + ';margin:0 2px"></span>';
+      }
+    });
+    var temRegistro = getRegistros().some(function(r) { return r.data === dataStr; });
+    if (temRegistro && !dotsHtml) {
+      dotsHtml = '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#9ca3af;margin:0 2px"></span>';
+    }
+
+    var bgCell = isHoje ? '#dbeafe' : '#fff';
+    var borderCell = isHoje ? '2px solid #0284c7' : '1px solid #f1f5f9';
+    var sq = String.fromCharCode(39);
+    html += '<div onclick="abrirDiaCalendario(' + sq + dataStr + sq + ')" style="cursor:pointer;background:' + bgCell + ';border:' + borderCell + ';border-radius:6px;padding:.3rem .2rem;min-height:42px">' +
+      '<div style="font-size:.7rem;font-weight:' + (isHoje?'700':'500') + ';color:' + (isHoje?'#0284c7':'#374151') + '">' + dia + '</div>' +
+      '<div style="margin-top:2px">' + dotsHtml + '</div>' +
+      '</div>';
+  }
+  html += '</div>';
+
+  var grid = document.getElementById('calendario-grid');
+  if (grid) grid.innerHTML = html;
+}
+
+function mudarMesCalendario(delta) {
+  calMesAtual += delta;
+  if (calMesAtual > 11) { calMesAtual = 0; calAnoAtual++; }
+  if (calMesAtual < 0) { calMesAtual = 11; calAnoAtual--; }
+  renderCalendario();
+}
+
+function fecharDiaCalendario() {
+  diaDetalheAberto = null;
+  var container = document.getElementById('dia-detalhe-container');
+  if (container) container.innerHTML = '';
+}
+
+function toggleTipoTreino(dataStr, tipo) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  parcial[dataStr][tipo].feito = !parcial[dataStr][tipo].feito;
+  saveCheckinParcial(parcial);
+  renderCalendario();
+  abrirDiaCalendario(dataStr);
+}
+
+function setSubTreino(dataStr, tipo, sub) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  parcial[dataStr][tipo].sub = sub;
+  saveCheckinParcial(parcial);
+  abrirDiaCalendario(dataStr);
+}
+
+function salvarCamposParcial(dataStr, tipo) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  var kcalEl = document.getElementById('parcial-kcal-' + tipo + '-' + dataStr);
+  var fcEl = document.getElementById('parcial-fc-' + tipo + '-' + dataStr);
+  var metrosEl = document.getElementById('metros-natacao-' + dataStr);
+  var duracaoEl = document.getElementById('duracao-natacao-' + dataStr);
+  if (kcalEl && kcalEl.value) parcial[dataStr][tipo].kcal = parseFloat(kcalEl.value);
+  if (fcEl && fcEl.value) parcial[dataStr][tipo].fc = parseFloat(fcEl.value);
+  if (metrosEl && metrosEl.value) parcial[dataStr][tipo].metros = parseFloat(metrosEl.value);
+  if (duracaoEl && duracaoEl.value) parcial[dataStr][tipo].duracao = parseFloat(duracaoEl.value);
+  saveCheckinParcial(parcial);
+}
+
+function toggleTreinoParcial(dataStr, tipo) {
+  toggleTipoTreino(dataStr, tipo);
+}
+
+function getTreinosFeitosHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+  var diaData = parcial[hoje] || {};
+  var feitos = [];
+  Object.keys(diaData).forEach(function(tipo) {
+    if (diaData[tipo].feito) {
+      var nome = tipo;
+      if (diaData[tipo].sub) nome = tipo + ' ' + diaData[tipo].sub;
+      feitos.push(nome);
+    }
+  });
+  return feitos;
+}
+
+function getKcalTreinosHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+  var diaData = parcial[hoje] || {};
+  var total = 0;
+  Object.keys(diaData).forEach(function(tipo) {
+    if (diaData[tipo].feito && diaData[tipo].kcal) total += diaData[tipo].kcal;
+  });
+  return total;
+}
+
 // ── PRÉ-POPULACAO HISTÓRICO DA PLANILHA ──
 (function() {
   var historicos = {"p-abdutora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 91, "reps": 15}, {"serie": 2, "carga": 91, "reps": 15}, {"serie": 3, "carga": 91, "reps": 15}, {"serie": 4, "carga": 91, "reps": 15}, {"serie": 5, "carga": 91, "reps": 15}]}, "p-adutora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 64, "reps": 15}, {"serie": 2, "carga": 64, "reps": 15}, {"serie": 3, "carga": 64, "reps": 15}, {"serie": 4, "carga": 64, "reps": 15}, {"serie": 5, "carga": 64, "reps": 15}]}, "p-extensora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 73, "reps": 15}, {"serie": 2, "carga": 73, "reps": 15}, {"serie": 3, "carga": 73, "reps": 15}, {"serie": 4, "carga": 73, "reps": 15}, {"serie": 5, "carga": 73, "reps": 15}]}, "p-flexora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 60, "reps": 15}, {"serie": 2, "carga": 60, "reps": 15}, {"serie": 3, "carga": 60, "reps": 15}, {"serie": 4, "carga": 60, "reps": 15}, {"serie": 5, "carga": 55, "reps": 15}]}, "p-pant-pe": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 45, "reps": 15}, {"serie": 2, "carga": 45, "reps": 15}, {"serie": 3, "carga": 45, "reps": 15}, {"serie": 4, "carga": 45, "reps": 15}]}, "p-supino-inc": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 60, "reps": 10}, {"serie": 2, "carga": 68, "reps": 6}, {"serie": 3, "carga": 68, "reps": 6}, {"serie": 4, "carga": 68, "reps": 6}]}, "p-dev-db": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 40, "reps": 10}, {"serie": 2, "carga": 44, "reps": 8}, {"serie": 3, "carga": 52, "reps": 5}, {"serie": 4, "carga": 52, "reps": 5}, {"serie": 5, "carga": 60, "reps": 5}]}, "p-elev-lat-pol": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 10, "reps": 8}, {"serie": 2, "carga": 10, "reps": 8}, {"serie": 3, "carga": 7.5, "reps": 8}, {"serie": 4, "carga": 7.5, "reps": 8}]}, "p-tri-franc": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 40, "reps": 8}, {"serie": 2, "carga": 40, "reps": 8}, {"serie": 3, "carga": 40, "reps": 8}, {"serie": 4, "carga": 40, "reps": 8}]}, "p-lombar": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 15, "reps": 10}, {"serie": 2, "carga": 15, "reps": 10}, {"serie": 3, "carga": 15, "reps": 10}, {"serie": 4, "carga": 15, "reps": 10}]}, "p-remada-baixa": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 55, "reps": 10}, {"serie": 2, "carga": 85, "reps": 6}, {"serie": 3, "carga": 95, "reps": 6}, {"serie": 4, "carga": 95, "reps": 6}]}, "p-arnold": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 48, "reps": 8}, {"serie": 2, "carga": 48, "reps": 8}, {"serie": 3, "carga": 48, "reps": 8}, {"serie": 4, "carga": 44, "reps": 8}]}, "p-crucif-inv": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 15, "reps": 8}, {"serie": 2, "carga": 15, "reps": 8}, {"serie": 3, "carga": 10, "reps": 8}, {"serie": 4, "carga": 10, "reps": 8}]}, "p-rosca-scott": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 40, "reps": 8}, {"serie": 2, "carga": 40, "reps": 8}, {"serie": 3, "carga": 40, "reps": 8}]}, "p-elev-lat-db": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 20, "reps": 15}, {"serie": 2, "carga": 24, "reps": 12}, {"serie": 3, "carga": 32, "reps": 8}, {"serie": 4, "carga": 32, "reps": 8}]}, "p-rosca-w": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 35, "reps": 8}, {"serie": 2, "carga": 35, "reps": 8}, {"serie": 3, "carga": 35, "reps": 8}, {"serie": 4, "carga": 35, "reps": 8}]}};
