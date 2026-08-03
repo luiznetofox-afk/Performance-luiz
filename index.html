@@ -279,6 +279,28 @@
     }
   });
 
+  // ── CONFIG (meta_prazo, etc.) ──
+  window.fbSaveConfig = async function(key, value) {
+    try {
+      await set(ref(db, 'config/' + key), value);
+    } catch(e) { console.error('Erro ao salvar config:', e); }
+  };
+
+  // Listener config
+  onValue(ref(db, 'config'), function(snapshot) {
+    if (snapshot.exists()) {
+      var cfg = snapshot.val();
+      if (cfg.meta_prazo) {
+        localStorage.setItem('meta_prazo', cfg.meta_prazo);
+        if (window.aplicarMetaPrazo) aplicarMetaPrazo(cfg.meta_prazo);
+      }
+      if (cfg.data_cirurgia) {
+        var input = document.getElementById('data-cirurgia');
+        if (input) { input.value = cfg.data_cirurgia; salvarDataCirurgia(); }
+      }
+    }
+  });
+
   // Load on start
   carregarDados();
 </script>
@@ -555,7 +577,12 @@
     </div>
     <div class="countdown-label">
       <strong id="countdown-msg">Calculando...</strong>
-      Prazo: 29 de julho de 2026<br>
+      Prazo: <span id="meta-prazo-display">28 de agosto de 2026</span>
+      <span id="meta-prazo-edit-btn" onclick="toggleMetaPrazoEdit()" style="margin-left:.4rem;cursor:pointer;font-size:.7rem;opacity:.6">✏️</span><br>
+      <span id="meta-prazo-edit-row" style="display:none">
+        <input type="date" id="meta-prazo-input" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:5px;padding:.2rem .4rem;font-size:.75rem;color:#fff;margin-top:.3rem">
+        <button onclick="salvarMetaPrazo()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:5px;padding:.2rem .6rem;font-size:.75rem;color:#fff;cursor:pointer;margin-left:.3rem">Salvar</button>
+      </span><br>
       Cirurgia LCA: ~45 dias · Meta: &lt;14% gordura
     </div>
   </div>
@@ -3979,6 +4006,74 @@ function salvarNavyBF() {
   document.getElementById('navy-resultado').textContent = 'Salvo! % Gordura: ' + bf + '%';
   renderMedidas();
   alert('% Gordura salvo: ' + bf + '%');
+}
+
+// ── META PRAZO EDITAVEL ──
+(function() {
+  var saved = localStorage.getItem('meta_prazo');
+  if (saved) aplicarMetaPrazo(saved);
+})();
+
+function toggleMetaPrazoEdit() {
+  var row = document.getElementById('meta-prazo-edit-row');
+  var saved = localStorage.getItem('meta_prazo') || '2026-08-28';
+  var input = document.getElementById('meta-prazo-input');
+  if (row.style.display === 'none') {
+    row.style.display = 'inline';
+    input.value = saved;
+  } else {
+    row.style.display = 'none';
+  }
+}
+
+function salvarMetaPrazo() {
+  var input = document.getElementById('meta-prazo-input');
+  if (!input || !input.value) return;
+  var val = input.value;
+  localStorage.setItem('meta_prazo', val);
+  if (window.fbSaveConfig) window.fbSaveConfig('meta_prazo', val);
+  aplicarMetaPrazo(val);
+  document.getElementById('meta-prazo-edit-row').style.display = 'none';
+}
+
+function aplicarMetaPrazo(val) {
+  var d = new Date(val + 'T12:00:00');
+  var meses = ['janeiro','fevereiro','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var fmt = d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+  var el = document.getElementById('meta-prazo-display');
+  if (el) el.textContent = fmt;
+  atualizarCardsMeta(val);
+}
+
+function atualizarCardsMeta(dataStr) {
+  var hoje = new Date();
+  var meta = new Date(dataStr + 'T12:00:00');
+  var diffDias = Math.round((meta - hoje) / 86400000);
+
+  // Atualiza card colorido Meta Final
+  var metaFinalEl = document.querySelector('.card-value[style*="ea580c"]');
+  if (metaFinalEl) {
+    var d = new Date(dataStr + 'T12:00:00');
+    metaFinalEl.textContent = d.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  }
+
+  // Atualiza dias restantes
+  var diasEl = document.getElementById('dias-restantes-card');
+  if (diasEl) diasEl.textContent = diffDias > 0 ? diffDias : 0;
+
+  // Atualiza countdown card
+  var countMsg = document.getElementById('countdown-msg');
+  if (countMsg) {
+    if (diffDias < 0) {
+      countMsg.textContent = 'Prazo encerrado ha ' + Math.abs(diffDias) + ' dias.';
+    } else if (diffDias === 0) {
+      countMsg.textContent = 'Hoje e o dia da meta!';
+    } else {
+      countMsg.textContent = diffDias + ' dias para a meta.';
+    }
+  }
+  var countNum = document.querySelector('.countdown-num');
+  if (countNum) countNum.textContent = Math.abs(diffDias);
 }
 
 // ── FECHAR O DIA ──
