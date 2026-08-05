@@ -857,74 +857,196 @@
 <!-- ══ MUSCULAÇÃO ══ -->
 <div id="musculacao" class="section">
   <div class="hero-wrap">
-    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 25%" alt="MUSCULAÇÃO" loading="lazy">
+    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 25%" alt="Musculacao" loading="lazy">
     <div class="hero-overlay"></div>
     <div class="hero-text">
       <div class="hero-title">MUSCULAÇÃO</div>
-      <div class="hero-sub" style="color:#fda4af">FORÇA MÁXIMA · PERFORMANCE NA ÁGUA</div>
+      <div class="hero-sub" style="color:#fda4af">FORÇA · PERFORMANCE · EVOLUÇÃO</div>
     </div>
   </div>
   <div class="section-content">
-    <div class="sec-header"><div class="sec-title" style="color:#fff">Musculação</div><span class="sec-badge badge-burn">4x / SEMANA</span></div>
-    <div class="alert alert-info">📋 Treino unificado — exercícios do plano de natação + treino do personal Fernando (Semana 6 Pré-op).</div>
+    <div class="sec-header"><div class="sec-title" style="color:#fff">Musculação</div><span class="sec-badge badge-burn">NOVO CICLO</span></div>
+    <div class="alert alert-info">📋 Novo ciclo — personal Fernando. Log de cargas com cronômetro e percepção de esforço por série.</div>
 
     <div class="day-header">TREINO 1 — Membros Inferiores</div>
-    <div class="alert alert-warn" style="font-size:.78rem">⚠️ Protocolo adaptado pré-cirurgia LCA.</div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Abdutora</span><span class="ex-head-tag">5×15-20 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 5 × 15-20 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-head"><span class="ex-head-name">Back Squat</span><span class="ex-head-tag">1×12, 1×10, 1×8, 2×5-6 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 1×12 + 1×10 + 1×8 + 2×5-6 · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-abdutora',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('back-squat',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-abdutora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-abdutora" min="1">
-        <select class="perc-select" id="perc-p-abdutora-s1" onchange="setPercSelect(this,'p-abdutora',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-back-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-back-squat" min="1">
+        <select class="perc-select" id="perc-back-squat-s1" onchange="setPercSelect(this,'back-squat',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'back-squat S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-abdutora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-abdutora" min="1">
-        <select class="perc-select" id="perc-p-abdutora-s2" onchange="setPercSelect(this,'p-abdutora',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-back-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-back-squat" min="1">
+        <select class="perc-select" id="perc-back-squat-s2" onchange="setPercSelect(this,'back-squat',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'back-squat S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-abdutora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-abdutora" min="1">
-        <select class="perc-select" id="perc-p-abdutora-s3" onchange="setPercSelect(this,'p-abdutora',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-back-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-back-squat" min="1">
+        <select class="perc-select" id="perc-back-squat-s3" onchange="setPercSelect(this,'back-squat',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'back-squat S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-abdutora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-abdutora" min="1">
-        <select class="perc-select" id="perc-p-abdutora-s4" onchange="setPercSelect(this,'p-abdutora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-back-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-back-squat" min="1">
+        <select class="perc-select" id="perc-back-squat-s4" onchange="setPercSelect(this,'back-squat',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'back-squat S4')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S5</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-p-abdutora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-p-abdutora" min="1">
-        <select class="perc-select" id="perc-p-abdutora-s5" onchange="setPercSelect(this,'p-abdutora',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S5')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-back-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-back-squat" min="1">
+        <select class="perc-select" id="perc-back-squat-s5" onchange="setPercSelect(this,'back-squat',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'back-squat S5')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-p-abdutora"></div>
+      <div class="ex-log-hist" id="hist-back-squat"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Adutora</span><span class="ex-head-tag">5×15-20 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 5 × 15-20 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-head"><span class="ex-head-name">Hack Squat 45°</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-adutora',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('hack-squat',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-hack-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-hack-squat" min="1">
+        <select class="perc-select" id="perc-hack-squat-s1" onchange="setPercSelect(this,'hack-squat',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hack-squat S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-hack-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-hack-squat" min="1">
+        <select class="perc-select" id="perc-hack-squat-s2" onchange="setPercSelect(this,'hack-squat',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hack-squat S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-hack-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-hack-squat" min="1">
+        <select class="perc-select" id="perc-hack-squat-s3" onchange="setPercSelect(this,'hack-squat',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hack-squat S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-hack-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-hack-squat" min="1">
+        <select class="perc-select" id="perc-hack-squat-s4" onchange="setPercSelect(this,'hack-squat',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hack-squat S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-hack-squat"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Reverse Lunge na Máquina</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('reverse-lunge',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-reverse-lunge" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-reverse-lunge" min="1">
+        <select class="perc-select" id="perc-reverse-lunge-s1" onchange="setPercSelect(this,'reverse-lunge',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'reverse-lunge S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-reverse-lunge" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-reverse-lunge" min="1">
+        <select class="perc-select" id="perc-reverse-lunge-s2" onchange="setPercSelect(this,'reverse-lunge',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'reverse-lunge S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-reverse-lunge" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-reverse-lunge" min="1">
+        <select class="perc-select" id="perc-reverse-lunge-s3" onchange="setPercSelect(this,'reverse-lunge',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'reverse-lunge S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-reverse-lunge" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-reverse-lunge" min="1">
+        <select class="perc-select" id="perc-reverse-lunge-s4" onchange="setPercSelect(this,'reverse-lunge',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'reverse-lunge S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-reverse-lunge"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Extensora Unilateral</span><span class="ex-head-tag">4×8-10 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-10 reps · Concêntrica explosiva, excêntrica controlada · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('extensora-uni',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-extensora-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-extensora-uni" min="1">
+        <select class="perc-select" id="perc-extensora-uni-s1" onchange="setPercSelect(this,'extensora-uni',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'extensora-uni S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-extensora-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-extensora-uni" min="1">
+        <select class="perc-select" id="perc-extensora-uni-s2" onchange="setPercSelect(this,'extensora-uni',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'extensora-uni S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-extensora-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-extensora-uni" min="1">
+        <select class="perc-select" id="perc-extensora-uni-s3" onchange="setPercSelect(this,'extensora-uni',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'extensora-uni S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-extensora-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-extensora-uni" min="1">
+        <select class="perc-select" id="perc-extensora-uni-s4" onchange="setPercSelect(this,'extensora-uni',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'extensora-uni S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-extensora-uni"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Cadeira Adutora</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('p-adutora',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
@@ -955,198 +1077,13 @@
         <select class="perc-select" id="perc-p-adutora-s4" onchange="setPercSelect(this,'p-adutora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(60,'p-adutora S4')">⏱</button>
       </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S5</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-p-adutora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-p-adutora" min="1">
-        <select class="perc-select" id="perc-p-adutora-s5" onchange="setPercSelect(this,'p-adutora',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-adutora S5')">⏱</button>
-      </div>
       </div>
       <div class="ex-log-hist" id="hist-p-adutora"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Extensora</span><span class="ex-head-tag">5×15-20 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 5 × 15-20 reps · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-extensora',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-extensora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-extensora" min="1">
-        <select class="perc-select" id="perc-p-extensora-s1" onchange="setPercSelect(this,'p-extensora',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-extensora S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-extensora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-extensora" min="1">
-        <select class="perc-select" id="perc-p-extensora-s2" onchange="setPercSelect(this,'p-extensora',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-extensora S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-extensora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-extensora" min="1">
-        <select class="perc-select" id="perc-p-extensora-s3" onchange="setPercSelect(this,'p-extensora',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-extensora S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-extensora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-extensora" min="1">
-        <select class="perc-select" id="perc-p-extensora-s4" onchange="setPercSelect(this,'p-extensora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-extensora S4')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S5</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-p-extensora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-p-extensora" min="1">
-        <select class="perc-select" id="perc-p-extensora-s5" onchange="setPercSelect(this,'p-extensora',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-extensora S5')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-extensora"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Flexora</span><span class="ex-head-tag">5×15-20 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 5 × 15-20 reps · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-flexora',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-flexora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-flexora" min="1">
-        <select class="perc-select" id="perc-p-flexora-s1" onchange="setPercSelect(this,'p-flexora',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-flexora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-flexora" min="1">
-        <select class="perc-select" id="perc-p-flexora-s2" onchange="setPercSelect(this,'p-flexora',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-flexora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-flexora" min="1">
-        <select class="perc-select" id="perc-p-flexora-s3" onchange="setPercSelect(this,'p-flexora',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-flexora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-flexora" min="1">
-        <select class="perc-select" id="perc-p-flexora-s4" onchange="setPercSelect(this,'p-flexora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S4')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S5</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-p-flexora" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-p-flexora" min="1">
-        <select class="perc-select" id="perc-p-flexora-s5" onchange="setPercSelect(this,'p-flexora',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S5')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-flexora"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Panturrilha em Pé</span><span class="ex-head-tag">4×15-20 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 4 × 15-20 reps · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-pant-pe',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-pant-pe" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-pant-pe" min="1">
-        <select class="perc-select" id="perc-p-pant-pe-s1" onchange="setPercSelect(this,'p-pant-pe',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-pant-pe S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-pant-pe" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-pant-pe" min="1">
-        <select class="perc-select" id="perc-p-pant-pe-s2" onchange="setPercSelect(this,'p-pant-pe',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-pant-pe S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-pant-pe" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-pant-pe" min="1">
-        <select class="perc-select" id="perc-p-pant-pe-s3" onchange="setPercSelect(this,'p-pant-pe',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-pant-pe S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-pant-pe" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-pant-pe" min="1">
-        <select class="perc-select" id="perc-p-pant-pe-s4" onchange="setPercSelect(this,'p-pant-pe',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-pant-pe S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-pant-pe"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Goblet Squat</span><span class="ex-head-tag">4×15-20 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 4 × 15-20 reps · Amplitude controlada, atenção ao joelho · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-goblet',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-goblet" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-goblet" min="1">
-        <select class="perc-select" id="perc-p-goblet-s1" onchange="setPercSelect(this,'p-goblet',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-goblet S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-goblet" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-goblet" min="1">
-        <select class="perc-select" id="perc-p-goblet-s2" onchange="setPercSelect(this,'p-goblet',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-goblet S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-goblet" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-goblet" min="1">
-        <select class="perc-select" id="perc-p-goblet-s3" onchange="setPercSelect(this,'p-goblet',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-goblet S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-goblet" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-goblet" min="1">
-        <select class="perc-select" id="perc-p-goblet-s4" onchange="setPercSelect(this,'p-goblet',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-goblet S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-goblet"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Hip Thrust no Banco</span><span class="ex-head-tag">GLÚTEO + POSTERIOR</span></div>
-    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 10-12 · Ombros no banco, pés no chão · <strong>Descanso:</strong> 90 seg</div>
+    <div class="ex-head"><span class="ex-head-name">Hip Thrust</span><span class="ex-head-tag">4×10-12 · rest 90"</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 10-12 reps · <strong>Descanso:</strong> 90 segundos</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
@@ -1184,47 +1121,13 @@
       </div>
       <div class="ex-log-hist" id="hist-hipthrust"></div>
     </div>
-    <div class="ex-tip">🎯 Aprovado para pré-cirúrgico de LCA — sem cisalhamento tibial.</div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Elevação Pélvica Unilateral</span><span class="ex-head-tag">ESTABILIDADE PÉLVICA</span></div>
-    <div class="ex-body"><strong>Séries/Reps:</strong> 3 × 12 cada lado · <strong>Descanso:</strong> 60 seg</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('elev-pelvica',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-elev-pelvica" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-elev-pelvica" min="1">
-        <select class="perc-select" id="perc-elev-pelvica-s1" onchange="setPercSelect(this,'elev-pelvica',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'elev-pelvica S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-elev-pelvica" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-elev-pelvica" min="1">
-        <select class="perc-select" id="perc-elev-pelvica-s2" onchange="setPercSelect(this,'elev-pelvica',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'elev-pelvica S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-elev-pelvica" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-elev-pelvica" min="1">
-        <select class="perc-select" id="perc-elev-pelvica-s3" onchange="setPercSelect(this,'elev-pelvica',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'elev-pelvica S3')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-elev-pelvica"></div>
-    </div>
+    <div class="ex-tip">🎯 Potência de quadril — fundamental para o chute e saída de bloco no costas.</div>
   </div>
 
     <div class="day-header">TREINO 2 — Peito + Tríceps + Ombro</div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Supino Reto c/ Barra</span><span class="ex-head-tag">5×3-4 · 80-85% · rest 2-3'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 5 × 3-4 reps a 80-85% · <strong>Descanso:</strong> 2-3 minutos</div>
+    <div class="ex-head"><span class="ex-head-name">Supino Reto c/ Barra</span><span class="ex-head-tag">1×8, 1×6, 3×3-5 · rest 2-3'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 1×8 + 1×6 + 3×3-5 · <strong>Descanso:</strong> 2-3 minutos</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
@@ -1272,226 +1175,260 @@
     <div class="ex-tip">📚 1RM no supino explica 50-60% da performance nos 50-100m nado livre.</div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Supino Inclinado c/ DB</span><span class="ex-head-tag">1×8-10 + 3×6-8 · rest 90"</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1 × 8-10 + 3 × 6-8 reps · <strong>Descanso:</strong> 90 segundos</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-supino-inc',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-supino-inc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-supino-inc" min="1">
-        <select class="perc-select" id="perc-p-supino-inc-s1" onchange="setPercSelect(this,'p-supino-inc',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-supino-inc S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-supino-inc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-supino-inc" min="1">
-        <select class="perc-select" id="perc-p-supino-inc-s2" onchange="setPercSelect(this,'p-supino-inc',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-supino-inc S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-supino-inc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-supino-inc" min="1">
-        <select class="perc-select" id="perc-p-supino-inc-s3" onchange="setPercSelect(this,'p-supino-inc',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-supino-inc S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-supino-inc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-supino-inc" min="1">
-        <select class="perc-select" id="perc-p-supino-inc-s4" onchange="setPercSelect(this,'p-supino-inc',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-supino-inc S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-supino-inc"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Desenvolvimento c/ DB</span><span class="ex-head-tag">1×10 + 1×8 + 3×5 · rest 1-2'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1×10 + 1×8 + 3×5 reps · <strong>Descanso:</strong> 1-2 minutos</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-dev-db',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-dev-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-dev-db" min="1">
-        <select class="perc-select" id="perc-p-dev-db-s1" onchange="setPercSelect(this,'p-dev-db',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-dev-db S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-dev-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-dev-db" min="1">
-        <select class="perc-select" id="perc-p-dev-db-s2" onchange="setPercSelect(this,'p-dev-db',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-dev-db S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-dev-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-dev-db" min="1">
-        <select class="perc-select" id="perc-p-dev-db-s3" onchange="setPercSelect(this,'p-dev-db',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-dev-db S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-dev-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-dev-db" min="1">
-        <select class="perc-select" id="perc-p-dev-db-s4" onchange="setPercSelect(this,'p-dev-db',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-dev-db S4')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S5</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-p-dev-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-p-dev-db" min="1">
-        <select class="perc-select" id="perc-p-dev-db-s5" onchange="setPercSelect(this,'p-dev-db',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-dev-db S5')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-dev-db"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Elevação Lateral Unilateral Polia</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-head"><span class="ex-head-name">Supino Declinado Máquina Guiada</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
     <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-elev-lat-pol',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('supino-declinado',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-elev-lat-pol" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-elev-lat-pol" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-pol-s1" onchange="setPercSelect(this,'p-elev-lat-pol',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-pol S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-supino-declinado" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-supino-declinado" min="1">
+        <select class="perc-select" id="perc-supino-declinado-s1" onchange="setPercSelect(this,'supino-declinado',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'supino-declinado S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-elev-lat-pol" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-elev-lat-pol" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-pol-s2" onchange="setPercSelect(this,'p-elev-lat-pol',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-pol S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-supino-declinado" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-supino-declinado" min="1">
+        <select class="perc-select" id="perc-supino-declinado-s2" onchange="setPercSelect(this,'supino-declinado',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'supino-declinado S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-elev-lat-pol" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-elev-lat-pol" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-pol-s3" onchange="setPercSelect(this,'p-elev-lat-pol',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-pol S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-supino-declinado" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-supino-declinado" min="1">
+        <select class="perc-select" id="perc-supino-declinado-s3" onchange="setPercSelect(this,'supino-declinado',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'supino-declinado S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-elev-lat-pol" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-elev-lat-pol" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-pol-s4" onchange="setPercSelect(this,'p-elev-lat-pol',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-pol S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-supino-declinado" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-supino-declinado" min="1">
+        <select class="perc-select" id="perc-supino-declinado-s4" onchange="setPercSelect(this,'supino-declinado',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'supino-declinado S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-p-elev-lat-pol"></div>
+      <div class="ex-log-hist" id="hist-supino-declinado"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Tríceps Francês</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-head"><span class="ex-head-name">Push Press c/ Barra</span><span class="ex-head-tag">4×8-10 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-10 reps · Trabalhar bem a extensão das pernas · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('press',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-press" min="1">
+        <select class="perc-select" id="perc-press-s1" onchange="setPercSelect(this,'press',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'press S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-press" min="1">
+        <select class="perc-select" id="perc-press-s2" onchange="setPercSelect(this,'press',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'press S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-press" min="1">
+        <select class="perc-select" id="perc-press-s3" onchange="setPercSelect(this,'press',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'press S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-press" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-press" min="1">
+        <select class="perc-select" id="perc-press-s4" onchange="setPercSelect(this,'press',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'press S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-press"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">DB Miracle Grow</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
     <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-tri-franc',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('miracle-grow',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-tri-franc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-tri-franc" min="1">
-        <select class="perc-select" id="perc-p-tri-franc-s1" onchange="setPercSelect(this,'p-tri-franc',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-tri-franc S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-miracle-grow" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-miracle-grow" min="1">
+        <select class="perc-select" id="perc-miracle-grow-s1" onchange="setPercSelect(this,'miracle-grow',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'miracle-grow S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-tri-franc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-tri-franc" min="1">
-        <select class="perc-select" id="perc-p-tri-franc-s2" onchange="setPercSelect(this,'p-tri-franc',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-tri-franc S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-miracle-grow" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-miracle-grow" min="1">
+        <select class="perc-select" id="perc-miracle-grow-s2" onchange="setPercSelect(this,'miracle-grow',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'miracle-grow S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-tri-franc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-tri-franc" min="1">
-        <select class="perc-select" id="perc-p-tri-franc-s3" onchange="setPercSelect(this,'p-tri-franc',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-tri-franc S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-miracle-grow" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-miracle-grow" min="1">
+        <select class="perc-select" id="perc-miracle-grow-s3" onchange="setPercSelect(this,'miracle-grow',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'miracle-grow S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-tri-franc" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-tri-franc" min="1">
-        <select class="perc-select" id="perc-p-tri-franc-s4" onchange="setPercSelect(this,'p-tri-franc',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-tri-franc S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-miracle-grow" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-miracle-grow" min="1">
+        <select class="perc-select" id="perc-miracle-grow-s4" onchange="setPercSelect(this,'miracle-grow',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'miracle-grow S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-p-tri-franc"></div>
+      <div class="ex-log-hist" id="hist-miracle-grow"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Tríceps Corda Polia</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-head"><span class="ex-head-name">Elevação Lateral Máquina</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · Pausar 1" no alto · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('elev-lat-maq',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-elev-lat-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-elev-lat-maq" min="1">
+        <select class="perc-select" id="perc-elev-lat-maq-s1" onchange="setPercSelect(this,'elev-lat-maq',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-lat-maq S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-elev-lat-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-elev-lat-maq" min="1">
+        <select class="perc-select" id="perc-elev-lat-maq-s2" onchange="setPercSelect(this,'elev-lat-maq',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-lat-maq S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-elev-lat-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-elev-lat-maq" min="1">
+        <select class="perc-select" id="perc-elev-lat-maq-s3" onchange="setPercSelect(this,'elev-lat-maq',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-lat-maq S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-elev-lat-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-elev-lat-maq" min="1">
+        <select class="perc-select" id="perc-elev-lat-maq-s4" onchange="setPercSelect(this,'elev-lat-maq',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'elev-lat-maq S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-elev-lat-maq"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">DB Tríceps Testa</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
     <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('triceps',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('triceps-testa',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-triceps" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-triceps" min="1">
-        <select class="perc-select" id="perc-triceps-s1" onchange="setPercSelect(this,'triceps',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'triceps S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-triceps-testa" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-triceps-testa" min="1">
+        <select class="perc-select" id="perc-triceps-testa-s1" onchange="setPercSelect(this,'triceps-testa',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'triceps-testa S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-triceps" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-triceps" min="1">
-        <select class="perc-select" id="perc-triceps-s2" onchange="setPercSelect(this,'triceps',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'triceps S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-triceps-testa" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-triceps-testa" min="1">
+        <select class="perc-select" id="perc-triceps-testa-s2" onchange="setPercSelect(this,'triceps-testa',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'triceps-testa S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-triceps" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-triceps" min="1">
-        <select class="perc-select" id="perc-triceps-s3" onchange="setPercSelect(this,'triceps',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'triceps S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-triceps-testa" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-triceps-testa" min="1">
+        <select class="perc-select" id="perc-triceps-testa-s3" onchange="setPercSelect(this,'triceps-testa',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'triceps-testa S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-triceps" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-triceps" min="1">
-        <select class="perc-select" id="perc-triceps-s4" onchange="setPercSelect(this,'triceps',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'triceps S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-triceps-testa" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-triceps-testa" min="1">
+        <select class="perc-select" id="perc-triceps-testa-s4" onchange="setPercSelect(this,'triceps-testa',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'triceps-testa S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-triceps"></div>
+      <div class="ex-log-hist" id="hist-triceps-testa"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Paralela no Graviton</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('paralela-graviton',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-paralela-graviton" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-paralela-graviton" min="1">
+        <select class="perc-select" id="perc-paralela-graviton-s1" onchange="setPercSelect(this,'paralela-graviton',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'paralela-graviton S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-paralela-graviton" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-paralela-graviton" min="1">
+        <select class="perc-select" id="perc-paralela-graviton-s2" onchange="setPercSelect(this,'paralela-graviton',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'paralela-graviton S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-paralela-graviton" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-paralela-graviton" min="1">
+        <select class="perc-select" id="perc-paralela-graviton-s3" onchange="setPercSelect(this,'paralela-graviton',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'paralela-graviton S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-paralela-graviton" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-paralela-graviton" min="1">
+        <select class="perc-select" id="perc-paralela-graviton-s4" onchange="setPercSelect(this,'paralela-graviton',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'paralela-graviton S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-paralela-graviton"></div>
     </div>
   </div>
 
-    <div class="day-header">TREINO 3 — Costas + Posterior</div>
+    <div class="day-header">TREINO 3 — Costas + Bíceps</div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Barra Fixa / Strict Pull-up c/ Carga</span><span class="ex-head-tag">5×3-5 · rest 90"</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 5 × 3-5 reps · Peso corporal + carga adicional progressiva · <strong>Descanso:</strong> 90 segundos</div>
+    <div class="ex-head"><span class="ex-head-name">Barra Fixa / Strict Pull-up</span><span class="ex-head-tag">4× Máximo Esforço · rest 90"</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × máximo de reps · Peso corporal · <strong>Descanso:</strong> 90 segundos</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('pullup',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('pullup',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
@@ -1522,347 +1459,91 @@
         <select class="perc-select" id="perc-pullup-s4" onchange="setPercSelect(this,'pullup',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(90,'pullup S4')">⏱</button>
       </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S5</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-pullup" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-pullup" min="1">
-        <select class="perc-select" id="perc-pullup-s5" onchange="setPercSelect(this,'pullup',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'pullup S5')">⏱</button>
-      </div>
       </div>
       <div class="ex-log-hist" id="hist-pullup"></div>
     </div>
-    <div class="ex-tip">🎯 Mimetiza diretamente a fase de tração do nado livre e borboleta.</div>
+    <div class="ex-tip">🎯 Mimetiza diretamente a fase de tração do nado livre e costas.</div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Puxada Frontal Aberta</span><span class="ex-head-tag">1×10-12 + 3×6-8 · rest 90"</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1 × 10-12 + 3 × 6-8 reps · <strong>Descanso:</strong> 90 segundos</div>
+    <div class="ex-head"><span class="ex-head-name">Puxada Supinada</span><span class="ex-head-tag">4×8-10 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-10 reps · Pausar 1" perto do peito · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('pulldown',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('puxada-supinada',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pulldown" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-pulldown" min="1">
-        <select class="perc-select" id="perc-pulldown-s1" onchange="setPercSelect(this,'pulldown',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'pulldown S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-puxada-supinada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-puxada-supinada" min="1">
+        <select class="perc-select" id="perc-puxada-supinada-s1" onchange="setPercSelect(this,'puxada-supinada',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'puxada-supinada S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-pulldown" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-pulldown" min="1">
-        <select class="perc-select" id="perc-pulldown-s2" onchange="setPercSelect(this,'pulldown',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'pulldown S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-puxada-supinada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-puxada-supinada" min="1">
+        <select class="perc-select" id="perc-puxada-supinada-s2" onchange="setPercSelect(this,'puxada-supinada',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'puxada-supinada S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-pulldown" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-pulldown" min="1">
-        <select class="perc-select" id="perc-pulldown-s3" onchange="setPercSelect(this,'pulldown',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'pulldown S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-puxada-supinada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-puxada-supinada" min="1">
+        <select class="perc-select" id="perc-puxada-supinada-s3" onchange="setPercSelect(this,'puxada-supinada',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'puxada-supinada S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-pulldown" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-pulldown" min="1">
-        <select class="perc-select" id="perc-pulldown-s4" onchange="setPercSelect(this,'pulldown',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'pulldown S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-puxada-supinada" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-puxada-supinada" min="1">
+        <select class="perc-select" id="perc-puxada-supinada-s4" onchange="setPercSelect(this,'puxada-supinada',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'puxada-supinada S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-pulldown"></div>
+      <div class="ex-log-hist" id="hist-puxada-supinada"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Remada Curvada Supinada</span><span class="ex-head-tag">1×8-10 + 3×5-6 · rest 90"</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1 × 8-10 + 3 × 5-6 reps · <strong>Descanso:</strong> 90 segundos</div>
+    <div class="ex-head"><span class="ex-head-name">Remada Baixa Unilateral</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('remada',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('remada-baixa-uni',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada" min="1">
-        <select class="perc-select" id="perc-remada-s1" onchange="setPercSelect(this,'remada',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'remada S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-baixa-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-baixa-uni" min="1">
+        <select class="perc-select" id="perc-remada-baixa-uni-s1" onchange="setPercSelect(this,'remada-baixa-uni',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada" min="1">
-        <select class="perc-select" id="perc-remada-s2" onchange="setPercSelect(this,'remada',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'remada S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-baixa-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-baixa-uni" min="1">
+        <select class="perc-select" id="perc-remada-baixa-uni-s2" onchange="setPercSelect(this,'remada-baixa-uni',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada" min="1">
-        <select class="perc-select" id="perc-remada-s3" onchange="setPercSelect(this,'remada',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'remada S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-baixa-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-baixa-uni" min="1">
+        <select class="perc-select" id="perc-remada-baixa-uni-s3" onchange="setPercSelect(this,'remada-baixa-uni',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada" min="1">
-        <select class="perc-select" id="perc-remada-s4" onchange="setPercSelect(this,'remada',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'remada S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada-baixa-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada-baixa-uni" min="1">
+        <select class="perc-select" id="perc-remada-baixa-uni-s4" onchange="setPercSelect(this,'remada-baixa-uni',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-remada"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Lombar Banco Romano / GHD</span><span class="ex-head-tag">4×10-12 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 4 × 10-12 reps com peso · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-lombar',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-lombar" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-lombar" min="1">
-        <select class="perc-select" id="perc-p-lombar-s1" onchange="setPercSelect(this,'p-lombar',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-lombar S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-lombar" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-lombar" min="1">
-        <select class="perc-select" id="perc-p-lombar-s2" onchange="setPercSelect(this,'p-lombar',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-lombar S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-lombar" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-lombar" min="1">
-        <select class="perc-select" id="perc-p-lombar-s3" onchange="setPercSelect(this,'p-lombar',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-lombar S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-lombar" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-lombar" min="1">
-        <select class="perc-select" id="perc-p-lombar-s4" onchange="setPercSelect(this,'p-lombar',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-lombar S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-lombar"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Remada Unilateral c/ DB</span><span class="ex-head-tag">1×8-10 + 3×5-6 · rest 2-3'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1 × 8-10 + 3 × 5-6 reps · <strong>Descanso:</strong> 2-3 minutos</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('remada-uni',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-uni" min="1">
-        <select class="perc-select" id="perc-remada-uni-s1" onchange="setPercSelect(this,'remada-uni',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(150,'remada-uni S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-uni" min="1">
-        <select class="perc-select" id="perc-remada-uni-s2" onchange="setPercSelect(this,'remada-uni',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(150,'remada-uni S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-uni" min="1">
-        <select class="perc-select" id="perc-remada-uni-s3" onchange="setPercSelect(this,'remada-uni',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(150,'remada-uni S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada-uni" min="1">
-        <select class="perc-select" id="perc-remada-uni-s4" onchange="setPercSelect(this,'remada-uni',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(150,'remada-uni S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-remada-uni"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Remada Baixa Pegada Aberta Neutra</span><span class="ex-head-tag">1×10-12 + 3×6-8 · rest 90"</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1 × 10-12 + 3 × 6-8 reps · <strong>Descanso:</strong> 90 segundos</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-remada-baixa',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-remada-baixa" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-remada-baixa" min="1">
-        <select class="perc-select" id="perc-p-remada-baixa-s1" onchange="setPercSelect(this,'p-remada-baixa',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-remada-baixa S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-remada-baixa" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-remada-baixa" min="1">
-        <select class="perc-select" id="perc-p-remada-baixa-s2" onchange="setPercSelect(this,'p-remada-baixa',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-remada-baixa S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-remada-baixa" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-remada-baixa" min="1">
-        <select class="perc-select" id="perc-p-remada-baixa-s3" onchange="setPercSelect(this,'p-remada-baixa',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-remada-baixa S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-remada-baixa" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-remada-baixa" min="1">
-        <select class="perc-select" id="perc-p-remada-baixa-s4" onchange="setPercSelect(this,'p-remada-baixa',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'p-remada-baixa S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-remada-baixa"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Face Pull + Rotação Externa</span><span class="ex-head-tag">4×12-15 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 4 × 12-15 reps · Cotovelos acima dos ombros · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('face-pull',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-face-pull" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-face-pull" min="1">
-        <select class="perc-select" id="perc-face-pull-s1" onchange="setPercSelect(this,'face-pull',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'face-pull S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-face-pull" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-face-pull" min="1">
-        <select class="perc-select" id="perc-face-pull-s2" onchange="setPercSelect(this,'face-pull',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'face-pull S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-face-pull" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-face-pull" min="1">
-        <select class="perc-select" id="perc-face-pull-s3" onchange="setPercSelect(this,'face-pull',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'face-pull S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-face-pull" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-face-pull" min="1">
-        <select class="perc-select" id="perc-face-pull-s4" onchange="setPercSelect(this,'face-pull',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'face-pull S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-face-pull"></div>
-    </div>
-    <div class="ex-tip">⚠️ OBRIGATÓRIO todo treino — protege o manguito rotador.</div>
-  </div>
-
-    <div class="day-header">TREINO 4 — Ombro + Bíceps</div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Desenvolvimento Militar c/ Barra</span><span class="ex-head-tag">1×8-10 + 3×5-6 · rest 2'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 1 × 8-10 + 3 × 5-6 reps · <strong>Descanso:</strong> 2 minutos</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('press',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-press" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-press" min="1">
-        <select class="perc-select" id="perc-press-s1" onchange="setPercSelect(this,'press',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(120,'press S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-press" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-press" min="1">
-        <select class="perc-select" id="perc-press-s2" onchange="setPercSelect(this,'press',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(120,'press S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-press" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-press" min="1">
-        <select class="perc-select" id="perc-press-s3" onchange="setPercSelect(this,'press',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(120,'press S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-press" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-press" min="1">
-        <select class="perc-select" id="perc-press-s4" onchange="setPercSelect(this,'press',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(120,'press S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-press"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Arnold Press</span><span class="ex-head-tag">4×8-10 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 4 × 8-10 reps · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-arnold',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-arnold" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-arnold" min="1">
-        <select class="perc-select" id="perc-p-arnold-s1" onchange="setPercSelect(this,'p-arnold',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-arnold S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-arnold" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-arnold" min="1">
-        <select class="perc-select" id="perc-p-arnold-s2" onchange="setPercSelect(this,'p-arnold',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-arnold S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-arnold" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-arnold" min="1">
-        <select class="perc-select" id="perc-p-arnold-s3" onchange="setPercSelect(this,'p-arnold',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-arnold S3')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-arnold" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-arnold" min="1">
-        <select class="perc-select" id="perc-p-arnold-s4" onchange="setPercSelect(this,'p-arnold',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-arnold S4')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-arnold"></div>
+      <div class="ex-log-hist" id="hist-remada-baixa-uni"></div>
     </div>
   </div>
   <div class="ex-block">
@@ -1907,78 +1588,85 @@
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Rosca Scott Máquina</span><span class="ex-head-tag">3×8-12 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> 3 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-head"><span class="ex-head-name">Remada Máquina Bilateral</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · <strong>Descanso:</strong> 1 minuto</div>
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-rosca-scott',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('remada-maq-bil',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-rosca-scott" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-rosca-scott" min="1">
-        <select class="perc-select" id="perc-p-rosca-scott-s1" onchange="setPercSelect(this,'p-rosca-scott',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-rosca-scott S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-maq-bil" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-maq-bil" min="1">
+        <select class="perc-select" id="perc-remada-maq-bil-s1" onchange="setPercSelect(this,'remada-maq-bil',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-maq-bil S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-rosca-scott" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-rosca-scott" min="1">
-        <select class="perc-select" id="perc-p-rosca-scott-s2" onchange="setPercSelect(this,'p-rosca-scott',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-rosca-scott S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-maq-bil" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-maq-bil" min="1">
+        <select class="perc-select" id="perc-remada-maq-bil-s2" onchange="setPercSelect(this,'remada-maq-bil',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-maq-bil S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-rosca-scott" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-rosca-scott" min="1">
-        <select class="perc-select" id="perc-p-rosca-scott-s3" onchange="setPercSelect(this,'p-rosca-scott',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-rosca-scott S3')">⏱</button>
-      </div>
-      </div>
-      <div class="ex-log-hist" id="hist-p-rosca-scott"></div>
-    </div>
-  </div>
-  <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Elevação Lateral c/ DB</span><span class="ex-head-tag">1×15 + 1×12 + 1×10 + 1×8 · rest 1'</span></div>
-    <div class="ex-body"><strong>Séries:</strong> pirâmide 1×15 + 1×12 + 1×10 + 1×8 · <strong>Descanso:</strong> 1 minuto</div>
-    <div class="ex-log-row">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('p-elev-lat-db',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-      </div>
-      <div class="ex-log-series">
-      <div class="ex-log-series-row">
-        <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-elev-lat-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-elev-lat-db" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-db-s1" onchange="setPercSelect(this,'p-elev-lat-db',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-db S1')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-elev-lat-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-elev-lat-db" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-db-s2" onchange="setPercSelect(this,'p-elev-lat-db',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-db S2')">⏱</button>
-      </div>
-      <div class="ex-log-series-row">
-        <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-elev-lat-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-elev-lat-db" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-db-s3" onchange="setPercSelect(this,'p-elev-lat-db',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-db S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-maq-bil" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-maq-bil" min="1">
+        <select class="perc-select" id="perc-remada-maq-bil-s3" onchange="setPercSelect(this,'remada-maq-bil',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-maq-bil S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-elev-lat-db" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-elev-lat-db" min="1">
-        <select class="perc-select" id="perc-p-elev-lat-db-s4" onchange="setPercSelect(this,'p-elev-lat-db',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'p-elev-lat-db S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada-maq-bil" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada-maq-bil" min="1">
+        <select class="perc-select" id="perc-remada-maq-bil-s4" onchange="setPercSelect(this,'remada-maq-bil',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-maq-bil S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-p-elev-lat-db"></div>
+      <div class="ex-log-hist" id="hist-remada-maq-bil"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Remada Curvada Máquina</span><span class="ex-head-tag">4×6-8 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 6-8 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('remada-curv-maq',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-curv-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-curv-maq" min="1">
+        <select class="perc-select" id="perc-remada-curv-maq-s1" onchange="setPercSelect(this,'remada-curv-maq',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-curv-maq S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-curv-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-curv-maq" min="1">
+        <select class="perc-select" id="perc-remada-curv-maq-s2" onchange="setPercSelect(this,'remada-curv-maq',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-curv-maq S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-curv-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-curv-maq" min="1">
+        <select class="perc-select" id="perc-remada-curv-maq-s3" onchange="setPercSelect(this,'remada-curv-maq',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-curv-maq S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada-curv-maq" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada-curv-maq" min="1">
+        <select class="perc-select" id="perc-remada-curv-maq-s4" onchange="setPercSelect(this,'remada-curv-maq',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-curv-maq S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-remada-curv-maq"></div>
     </div>
   </div>
   <div class="ex-block">
@@ -2022,12 +1710,366 @@
       <div class="ex-log-hist" id="hist-p-rosca-w"></div>
     </div>
   </div>
-
-    <div class="day-header">DIA EXTRA — Full Body / Potência</div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Slam + Arremesso Rotacional (Medicine Ball)</span><span class="ex-head-tag">EXPLOSÃO</span></div>
-    <div class="ex-body"><strong>Séries/Reps:</strong> 4 × 6 cada (medicine ball 6-8 kg) · Apenas tronco e MMSS · <strong>Descanso:</strong> 2 min</div>
-    <div class="ex-tip">🎯 Potência de tronco e braços sem stress no LCA.</div>
+    <div class="ex-head"><span class="ex-head-name">Pull-over c/ Haltere</span><span class="ex-head-tag">3×10-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 10-12 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('pullover',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pullover" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-pullover" min="1">
+        <select class="perc-select" id="perc-pullover-s1" onchange="setPercSelect(this,'pullover',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'pullover S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-pullover" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-pullover" min="1">
+        <select class="perc-select" id="perc-pullover-s2" onchange="setPercSelect(this,'pullover',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'pullover S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-pullover" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-pullover" min="1">
+        <select class="perc-select" id="perc-pullover-s3" onchange="setPercSelect(this,'pullover',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'pullover S3')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-pullover"></div>
+    </div>
+    <div class="ex-tip">🎯 Simula a tração do nado costas e o swing dos braços na saída de bloco.</div>
+  </div>
+
+    <div class="day-header">TREINO 4 — Membros Inferiores / Posterior</div>
+    <div class="alert alert-warn" style="font-size:.78rem">⚠️ Box Jump — aguardar liberação pós-cirurgia LCA.</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Deadlift Unilateral Máquina</span><span class="ex-head-tag">1×5 (75%) + 1×3 (80%) + 3×3 (85%) · rest 2-3'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 1×5 a 75% + 1×3 a 80% + 3×3 a 85% · <strong>Descanso:</strong> 2-3 minutos</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('deadlift-uni',5)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-deadlift-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-deadlift-uni" min="1">
+        <select class="perc-select" id="perc-deadlift-uni-s1" onchange="setPercSelect(this,'deadlift-uni',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(150,'deadlift-uni S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-deadlift-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-deadlift-uni" min="1">
+        <select class="perc-select" id="perc-deadlift-uni-s2" onchange="setPercSelect(this,'deadlift-uni',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(150,'deadlift-uni S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-deadlift-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-deadlift-uni" min="1">
+        <select class="perc-select" id="perc-deadlift-uni-s3" onchange="setPercSelect(this,'deadlift-uni',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(150,'deadlift-uni S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-deadlift-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-deadlift-uni" min="1">
+        <select class="perc-select" id="perc-deadlift-uni-s4" onchange="setPercSelect(this,'deadlift-uni',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(150,'deadlift-uni S4')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S5</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s5-carga-deadlift-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s5-reps-deadlift-uni" min="1">
+        <select class="perc-select" id="perc-deadlift-uni-s5" onchange="setPercSelect(this,'deadlift-uni',5)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(150,'deadlift-uni S5')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-deadlift-uni"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Box Jump</span><span class="ex-head-tag">4×6 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 6 reps · <strong>Descanso:</strong> 1 minuto — ⚠️ aguardar liberação LCA</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('box-jump',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-box-jump" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-box-jump" min="1">
+        <select class="perc-select" id="perc-box-jump-s1" onchange="setPercSelect(this,'box-jump',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'box-jump S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-box-jump" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-box-jump" min="1">
+        <select class="perc-select" id="perc-box-jump-s2" onchange="setPercSelect(this,'box-jump',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'box-jump S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-box-jump" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-box-jump" min="1">
+        <select class="perc-select" id="perc-box-jump-s3" onchange="setPercSelect(this,'box-jump',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'box-jump S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-box-jump" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-box-jump" min="1">
+        <select class="perc-select" id="perc-box-jump-s4" onchange="setPercSelect(this,'box-jump',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'box-jump S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-box-jump"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Bulgarian Squat c/ DB</span><span class="ex-head-tag">4×10-12 cada lado · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 10-12 reps cada lado · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('bulgarian-squat',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-bulgarian-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-bulgarian-squat" min="1">
+        <select class="perc-select" id="perc-bulgarian-squat-s1" onchange="setPercSelect(this,'bulgarian-squat',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'bulgarian-squat S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-bulgarian-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-bulgarian-squat" min="1">
+        <select class="perc-select" id="perc-bulgarian-squat-s2" onchange="setPercSelect(this,'bulgarian-squat',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'bulgarian-squat S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-bulgarian-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-bulgarian-squat" min="1">
+        <select class="perc-select" id="perc-bulgarian-squat-s3" onchange="setPercSelect(this,'bulgarian-squat',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'bulgarian-squat S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-bulgarian-squat" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-bulgarian-squat" min="1">
+        <select class="perc-select" id="perc-bulgarian-squat-s4" onchange="setPercSelect(this,'bulgarian-squat',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'bulgarian-squat S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-bulgarian-squat"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Mesa Flexora</span><span class="ex-head-tag">4×8-10 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-10 reps · Pausar 2" no pico de contração · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('mesa-flexora',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-mesa-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-mesa-flexora" min="1">
+        <select class="perc-select" id="perc-mesa-flexora-s1" onchange="setPercSelect(this,'mesa-flexora',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'mesa-flexora S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-mesa-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-mesa-flexora" min="1">
+        <select class="perc-select" id="perc-mesa-flexora-s2" onchange="setPercSelect(this,'mesa-flexora',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'mesa-flexora S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-mesa-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-mesa-flexora" min="1">
+        <select class="perc-select" id="perc-mesa-flexora-s3" onchange="setPercSelect(this,'mesa-flexora',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'mesa-flexora S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-mesa-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-mesa-flexora" min="1">
+        <select class="perc-select" id="perc-mesa-flexora-s4" onchange="setPercSelect(this,'mesa-flexora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'mesa-flexora S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-mesa-flexora"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Cadeira Flexora</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · Concêntrica explosiva, excêntrica controlada · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('p-flexora',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-flexora" min="1">
+        <select class="perc-select" id="perc-p-flexora-s1" onchange="setPercSelect(this,'p-flexora',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-flexora" min="1">
+        <select class="perc-select" id="perc-p-flexora-s2" onchange="setPercSelect(this,'p-flexora',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-flexora" min="1">
+        <select class="perc-select" id="perc-p-flexora-s3" onchange="setPercSelect(this,'p-flexora',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-flexora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-flexora" min="1">
+        <select class="perc-select" id="perc-p-flexora-s4" onchange="setPercSelect(this,'p-flexora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-flexora S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-p-flexora"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Cadeira Abdutora</span><span class="ex-head-tag">4×8-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 8-12 reps · Pausar 2" aberto + 10 reps velocidade normal · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('p-abdutora',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-p-abdutora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-p-abdutora" min="1">
+        <select class="perc-select" id="perc-p-abdutora-s1" onchange="setPercSelect(this,'p-abdutora',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-p-abdutora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-p-abdutora" min="1">
+        <select class="perc-select" id="perc-p-abdutora-s2" onchange="setPercSelect(this,'p-abdutora',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-p-abdutora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-p-abdutora" min="1">
+        <select class="perc-select" id="perc-p-abdutora-s3" onchange="setPercSelect(this,'p-abdutora',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S3')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S4</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-p-abdutora" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-p-abdutora" min="1">
+        <select class="perc-select" id="perc-p-abdutora-s4" onchange="setPercSelect(this,'p-abdutora',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'p-abdutora S4')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-p-abdutora"></div>
+    </div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Rotação Externa no Cabo</span><span class="ex-head-tag">3×12-15 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 12-15 reps · Cotovelo fixo a 90°, rotacionar o antebraço para fora · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('rot-externa-cabo',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-rot-externa-cabo" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-rot-externa-cabo" min="1">
+        <select class="perc-select" id="perc-rot-externa-cabo-s1" onchange="setPercSelect(this,'rot-externa-cabo',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'rot-externa-cabo S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-rot-externa-cabo" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-rot-externa-cabo" min="1">
+        <select class="perc-select" id="perc-rot-externa-cabo-s2" onchange="setPercSelect(this,'rot-externa-cabo',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'rot-externa-cabo S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-rot-externa-cabo" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-rot-externa-cabo" min="1">
+        <select class="perc-select" id="perc-rot-externa-cabo-s3" onchange="setPercSelect(this,'rot-externa-cabo',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'rot-externa-cabo S3')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-rot-externa-cabo"></div>
+    </div>
+    <div class="ex-tip">🎯 Protege o manguito rotador — essencial para recuperação do braço no nado costas.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Extensão de Ombro no Cabo</span><span class="ex-head-tag">3×10-12 · rest 1'</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 10-12 reps · <strong>Descanso:</strong> 1 minuto</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
+        <button class="btn btn-sm" onclick="logCarga('ext-ombro-cabo',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-ext-ombro-cabo" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-ext-ombro-cabo" min="1">
+        <select class="perc-select" id="perc-ext-ombro-cabo-s1" onchange="setPercSelect(this,'ext-ombro-cabo',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'ext-ombro-cabo S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-ext-ombro-cabo" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-ext-ombro-cabo" min="1">
+        <select class="perc-select" id="perc-ext-ombro-cabo-s2" onchange="setPercSelect(this,'ext-ombro-cabo',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'ext-ombro-cabo S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-ext-ombro-cabo" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-ext-ombro-cabo" min="1">
+        <select class="perc-select" id="perc-ext-ombro-cabo-s3" onchange="setPercSelect(this,'ext-ombro-cabo',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'ext-ombro-cabo S3')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-ext-ombro-cabo"></div>
+    </div>
+    <div class="ex-tip">🎯 Simula o empurrão dos braços na saída de costas.</div>
   </div>
 
   </div>
@@ -2036,106 +2078,96 @@
 <!-- ══ CORE ══ -->
 <div id="core" class="section">
   <div class="hero-wrap">
-    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 35%" alt="TREINO DE CORE" loading="lazy">
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 40%" alt="Core" loading="lazy">
     <div class="hero-overlay"></div>
     <div class="hero-text">
-      <div class="hero-title">TREINO DE CORE</div>
-      <div class="hero-sub" style="color:#86efac">ESTABILIDADE · STREAMLINE · POTÊNCIA</div>
+      <div class="hero-title">CORE</div>
+      <div class="hero-sub" style="color:#86efac">ESTABILIDADE · POTÊNCIA · MOBILIDADE</div>
     </div>
   </div>
   <div class="section-content">
-  <div class="sec-header"><div class="sec-title" style="color:#fff">Treino de Core</div><span class="sec-badge badge-moss">4x / SEMANA</span></div>
-  <div class="alert alert-success">🏊 <strong>Filosofia:</strong> Core para natação = estabilidade anti-rotação, transferência de força tronco superior/inferior e manutenção do streamline em alta fadiga.</div>
+    <div class="sec-header"><div class="sec-title">Core & Mobilidade</div><span class="sec-badge badge-pool">NATAÇÃO</span></div>
+    <div class="alert alert-info">💡 Pode ser feito antes ou depois do treino. O log de cargas registra automaticamente a sessão.</div>
 
-  <div class="day-header">SESSÃO A — Anti-Rotação + Estabilidade (Seg / Qui)</div>
+    <div class="day-header">EXERCÍCIOS DE CORE</div>
+
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Prancha Frontal com Variação</span><span class="ex-head-tag">STREAMLINE</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 45 seg estático + 3 × 30 seg com toque de ombro alternado · Corpo rígido cabeça ao calcanhar · <strong>Progressão:</strong> disco nas costas quando 60 seg ficar fácil</div>
-    <div class="ex-tip">🎯 Mantém a posição hidrodinâmica durante o nado.</div>
+    <div class="ex-head"><span class="ex-head-name">Prancha Frontal com Variação</span><span class="ex-head-tag">3×45s · rest 45s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 45 segundos · <strong>Descanso:</strong> 45 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('prancha-frontal',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('prancha-frontal',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-prancha-frontal" step="0.5">
-        <label>Tempo(s):</label><input type="number" placeholder="seg" id="s1-reps-prancha-frontal" min="1">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-prancha-frontal" min="1">
         <select class="perc-select" id="perc-prancha-frontal-s1" onchange="setPercSelect(this,'prancha-frontal',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(45,'prancha-frontal S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-prancha-frontal" step="0.5">
-        <label>Tempo(s):</label><input type="number" placeholder="seg" id="s2-reps-prancha-frontal" min="1">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-prancha-frontal" min="1">
         <select class="perc-select" id="perc-prancha-frontal-s2" onchange="setPercSelect(this,'prancha-frontal',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(45,'prancha-frontal S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-prancha-frontal" step="0.5">
-        <label>Tempo(s):</label><input type="number" placeholder="seg" id="s3-reps-prancha-frontal" min="1">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-prancha-frontal" min="1">
         <select class="perc-select" id="perc-prancha-frontal-s3" onchange="setPercSelect(this,'prancha-frontal',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(45,'prancha-frontal S3')">⏱</button>
       </div>
-    </div>
-    <div class="ex-log-hist" id="hist-prancha-frontal"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-prancha-frontal">
-      <button class="ex-done-btn" id="done-btn-prancha-frontal" onclick="toggleCoreDone('prancha-frontal')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-prancha-frontal">não realizado hoje</span>
+      </div>
+      <div class="ex-log-hist" id="hist-prancha-frontal"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Prancha Lateral + Abdução de Quadril</span><span class="ex-head-tag">ANTI-LATERAL</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 30 seg cada lado + 10 reps de abdução · Quadril elevado, corpo em linha diagonal rígida · <strong>Descanso:</strong> 45 seg entre lados</div>
-    <div class="ex-tip">🎯 Estabilidade lateral — rotação controlada no freestyle e nado costas.</div>
+    <div class="ex-head"><span class="ex-head-name">Prancha Lateral + Abdução de Quadril</span><span class="ex-head-tag">3×60s · rest 45s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 60 segundos cada lado · <strong>Descanso:</strong> 45 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('prancha-lateral',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('prancha-lateral',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-prancha-lateral" step="0.5">
-        <label>Tempo(s):</label><input type="number" placeholder="seg" id="s1-reps-prancha-lateral" min="1">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-prancha-lateral" min="1">
         <select class="perc-select" id="perc-prancha-lateral-s1" onchange="setPercSelect(this,'prancha-lateral',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(45,'prancha-lateral S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-prancha-lateral" step="0.5">
-        <label>Tempo(s):</label><input type="number" placeholder="seg" id="s2-reps-prancha-lateral" min="1">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-prancha-lateral" min="1">
         <select class="perc-select" id="perc-prancha-lateral-s2" onchange="setPercSelect(this,'prancha-lateral',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(45,'prancha-lateral S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-prancha-lateral" step="0.5">
-        <label>Tempo(s):</label><input type="number" placeholder="seg" id="s3-reps-prancha-lateral" min="1">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-prancha-lateral" min="1">
         <select class="perc-select" id="perc-prancha-lateral-s3" onchange="setPercSelect(this,'prancha-lateral',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(45,'prancha-lateral S3')">⏱</button>
       </div>
-    </div>
-    <div class="ex-log-hist" id="hist-prancha-lateral"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-prancha-lateral">
-      <button class="ex-done-btn" id="done-btn-prancha-lateral" onclick="toggleCoreDone('prancha-lateral')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-prancha-lateral">não realizado hoje</span>
+      </div>
+      <div class="ex-log-hist" id="hist-prancha-lateral"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Pallof Press (Anti-Rotação)</span><span class="ex-head-tag">FORÇA ROTACIONAL</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10 cada lado (cabo ou elástico) · Pé perpendicular ao cabo, estender os braços controlando a rotação · <strong>Descanso:</strong> 60 seg</div>
-    <div class="ex-tip">🎯 Treina resistência à rotação — nadar em linha reta com eficiência.</div>
+    <div class="ex-head"><span class="ex-head-name">Pallof Press (Anti-Rotação)</span><span class="ex-head-tag">3×10 cada lado · rest 60s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 10 reps cada lado · <strong>Descanso:</strong> 60 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('pallof-press',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('pallof-press',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-pallof-press" step="0.5">
@@ -2157,24 +2189,20 @@
         <select class="perc-select" id="perc-pallof-press-s3" onchange="setPercSelect(this,'pallof-press',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(60,'pallof-press S3')">⏱</button>
       </div>
+      </div>
+      <div class="ex-log-hist" id="hist-pallof-press"></div>
     </div>
-    <div class="ex-log-hist" id="hist-pallof-press"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-pallof-press">
-      <button class="ex-done-btn" id="done-btn-pallof-press" onclick="toggleCoreDone('pallof-press')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-pallof-press">não realizado hoje</span>
-    </div>
+    <div class="ex-tip">🎯 Core anti-rotacional — nadar em linha reta com eficiência.</div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Dead Bug</span><span class="ex-head-tag">COORDENAÇÃO NEURAL</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 8 cada lado (braço oposto ao pé) · Lombar colada no chão TODO O TEMPO · Movimento lento, expirar ao descer · <strong>Descanso:</strong> 60 seg</div>
-    <div class="ex-tip">🎯 Coordenação contralateral — exatamente o padrão neuromotor do nado livre.</div>
+    <div class="ex-head"><span class="ex-head-name">Dead Bug</span><span class="ex-head-tag">3×8 cada lado · rest 60s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 8 reps cada lado · Coluna neutra o tempo todo · <strong>Descanso:</strong> 60 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('dead-bug',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('dead-bug',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-dead-bug" step="0.5">
@@ -2196,26 +2224,19 @@
         <select class="perc-select" id="perc-dead-bug-s3" onchange="setPercSelect(this,'dead-bug',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(60,'dead-bug S3')">⏱</button>
       </div>
-    </div>
-    <div class="ex-log-hist" id="hist-dead-bug"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-dead-bug">
-      <button class="ex-done-btn" id="done-btn-dead-bug" onclick="toggleCoreDone('dead-bug')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-dead-bug">não realizado hoje</span>
+      </div>
+      <div class="ex-log-hist" id="hist-dead-bug"></div>
     </div>
   </div>
-
-  <div class="day-header">SESSÃO B — Força + Potência (Ter / Sex)</div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Ab Wheel (Roda Abdominal)</span><span class="ex-head-tag">FORÇA MÁXIMA CORE</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 4 × 6–8 · Amplitude progressiva · Quadril não afunda, lombar neutra, volta controlada · <strong>Descanso:</strong> 90 seg</div>
-    <div class="ex-tip">🎯 Maior ativação do reto abdominal + oblíquos + iliopsoas.</div>
+    <div class="ex-head"><span class="ex-head-name">Ab Wheel (Roda Abdominal)</span><span class="ex-head-tag">4×6-8 · rest 90s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 4 × 6-8 reps · Não deixar o quadril cair · <strong>Descanso:</strong> 90 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('ab-wheel',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('ab-wheel',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-ab-wheel" step="0.5">
@@ -2244,23 +2265,20 @@
         <select class="perc-select" id="perc-ab-wheel-s4" onchange="setPercSelect(this,'ab-wheel',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(90,'ab-wheel S4')">⏱</button>
       </div>
+      </div>
+      <div class="ex-log-hist" id="hist-ab-wheel"></div>
     </div>
-    <div class="ex-log-hist" id="hist-ab-wheel"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-ab-wheel">
-      <button class="ex-done-btn" id="done-btn-ab-wheel" onclick="toggleCoreDone('ab-wheel')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-ab-wheel">não realizado hoje</span>
-    </div>
+    <div class="ex-tip">🎯 Streamline e potência do tronco.</div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Woodchop na Polia</span><span class="ex-head-tag">POTÊNCIA ROTACIONAL</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10-12 cada lado · Movimento diagonal de cima para baixo, rotação de tronco com controle · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-head"><span class="ex-head-name">Woodchop na Polia</span><span class="ex-head-tag">3×10-12 cada lado · rest 60s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 10-12 reps cada lado · Movimento diagonal de cima para baixo · <strong>Descanso:</strong> 60 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('woodchop',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('woodchop',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-woodchop" step="0.5">
@@ -2282,24 +2300,20 @@
         <select class="perc-select" id="perc-woodchop-s3" onchange="setPercSelect(this,'woodchop',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(60,'woodchop S3')">⏱</button>
       </div>
-    </div>
-    <div class="ex-log-hist" id="hist-woodchop"></div>
-  </div>
-    <div class="ex-done-row" id="done-row-med-ball">
-      <button class="ex-done-btn" id="done-btn-med-ball" onclick="toggleCoreDone('med-ball')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-med-ball">não realizado hoje</span>
+      </div>
+      <div class="ex-log-hist" id="hist-woodchop"></div>
     </div>
     <div class="ex-tip">🎯 Rotação diagonal — padrão específico do crawl.</div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Rotação Horizontal na Polia</span><span class="ex-head-tag">CORE ROTACIONAL</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10-12 cada lado · Movimento horizontal, rotação pura de tronco · <strong>Descanso:</strong> 60 seg</div>
+    <div class="ex-head"><span class="ex-head-name">Rotação Horizontal na Polia</span><span class="ex-head-tag">3×10-12 cada lado · rest 60s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 10-12 reps cada lado · Movimento horizontal puro de rotação · <strong>Descanso:</strong> 60 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('rot-horizontal',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('rot-horizontal',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-rot-horizontal" step="0.5">
@@ -2321,96 +2335,147 @@
         <select class="perc-select" id="perc-rot-horizontal-s3" onchange="setPercSelect(this,'rot-horizontal',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
         <button class="serie-timer-btn" onclick="startTimer(60,'rot-horizontal S3')">⏱</button>
       </div>
+      </div>
+      <div class="ex-log-hist" id="hist-rot-horizontal"></div>
     </div>
-    <div class="ex-log-hist" id="hist-rot-horizontal"></div>
-  </div>
     <div class="ex-tip">🎯 Força rotacional horizontal — potência de braçada no nado.</div>
   </div>
-    <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Hanging Leg Raise</span><span class="ex-head-tag">CORE INFERIOR</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 10–12 · Pernas retas quando conseguir, joelhos dobrados para iniciar · Sem balanço, lombar posteriorizada no topo · <strong>Descanso:</strong> 90 seg</div>
-    <div class="ex-tip">🎯 Iliopsoas — potência do chute e streamline nas saídas subaquáticas.</div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Hanging Leg Raise</span><span class="ex-head-tag">3×10-12 · rest 60s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 10-12 reps · Sem balanço, movimento controlado · <strong>Descanso:</strong> 60 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('hanging-leg',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('hanging-leg',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-hanging-leg" step="0.5">
         <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-hanging-leg" min="1">
         <select class="perc-select" id="perc-hanging-leg-s1" onchange="setPercSelect(this,'hanging-leg',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'hanging-leg S1')">⏱</button>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hanging-leg S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-hanging-leg" step="0.5">
         <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-hanging-leg" min="1">
         <select class="perc-select" id="perc-hanging-leg-s2" onchange="setPercSelect(this,'hanging-leg',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'hanging-leg S2')">⏱</button>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hanging-leg S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-hanging-leg" step="0.5">
         <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-hanging-leg" min="1">
         <select class="perc-select" id="perc-hanging-leg-s3" onchange="setPercSelect(this,'hanging-leg',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(90,'hanging-leg S3')">⏱</button>
+        <button class="serie-timer-btn" onclick="startTimer(60,'hanging-leg S3')">⏱</button>
       </div>
-    </div>
-    <div class="ex-log-hist" id="hist-hanging-leg"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-hanging-leg">
-      <button class="ex-done-btn" id="done-btn-hanging-leg" onclick="toggleCoreDone('hanging-leg')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-hanging-leg">não realizado hoje</span>
+      </div>
+      <div class="ex-log-hist" id="hist-hanging-leg"></div>
     </div>
   </div>
   <div class="ex-block">
-    <div class="ex-head"><span class="ex-head-name">Freestyle Plank (Rotação de Braço)</span><span class="ex-head-tag">ESPECÍFICO NATAÇÃO</span></div>
-    <div class="ex-body"><strong>Protocolo:</strong> 3 × 8 cada braço · Posição de flexão, girar o ombro simulando o movimento do freestyle · Core contraído o tempo todo · <strong>Descanso:</strong> 60 seg</div>
-    <div class="ex-tip">🎯 Estabilidade de core + mobilidade de ombro no padrão exato do nado livre.</div>
+    <div class="ex-head"><span class="ex-head-name">Freestyle Plank (Rotação de Braço)</span><span class="ex-head-tag">3×8 cada braço · rest 45s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 8 reps cada braço · <strong>Descanso:</strong> 45 segundos</div>
     <div class="ex-log-row">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-      <span style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
-      <button class="btn btn-sm" onclick="logCarga('freestyle-plank',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
-    </div>
-    <div class="ex-log-series">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('freestyle-plank',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-freestyle-plank" step="0.5">
         <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-freestyle-plank" min="1">
         <select class="perc-select" id="perc-freestyle-plank-s1" onchange="setPercSelect(this,'freestyle-plank',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'freestyle-plank S1')">⏱</button>
+        <button class="serie-timer-btn" onclick="startTimer(45,'freestyle-plank S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-freestyle-plank" step="0.5">
         <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-freestyle-plank" min="1">
         <select class="perc-select" id="perc-freestyle-plank-s2" onchange="setPercSelect(this,'freestyle-plank',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'freestyle-plank S2')">⏱</button>
+        <button class="serie-timer-btn" onclick="startTimer(45,'freestyle-plank S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
         <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-freestyle-plank" step="0.5">
         <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-freestyle-plank" min="1">
         <select class="perc-select" id="perc-freestyle-plank-s3" onchange="setPercSelect(this,'freestyle-plank',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'freestyle-plank S3')">⏱</button>
+        <button class="serie-timer-btn" onclick="startTimer(45,'freestyle-plank S3')">⏱</button>
       </div>
-    </div>
-    <div class="ex-log-hist" id="hist-freestyle-plank"></div>
-  </div>
-  <div class="ex-done-row" id="done-row-freestyle-plank">
-      <button class="ex-done-btn" id="done-btn-freestyle-plank" onclick="toggleCoreDone('freestyle-plank')">✓ Marcar como feito</button>
-      <span class="ex-done-label" id="done-lbl-freestyle-plank">não realizado hoje</span>
+      </div>
+      <div class="ex-log-hist" id="hist-freestyle-plank"></div>
     </div>
   </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Superman Dinâmico</span><span class="ex-head-tag">3×12 · rest 60s</span></div>
+    <div class="ex-body"><strong>Séries:</strong> 3 × 12 reps · Deitar de bruços, elevar braços e pernas simultaneamente, segurar 2" no topo · <strong>Descanso:</strong> 60 segundos</div>
+    <div class="ex-log-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Séries</span>
+        <button class="btn btn-sm" onclick="logCarga('superman-din',3)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+      </div>
+      <div class="ex-log-series">
+      <div class="ex-log-series-row">
+        <span class="serie-label">S1</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-superman-din" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-superman-din" min="1">
+        <select class="perc-select" id="perc-superman-din-s1" onchange="setPercSelect(this,'superman-din',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'superman-din S1')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S2</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-superman-din" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-superman-din" min="1">
+        <select class="perc-select" id="perc-superman-din-s2" onchange="setPercSelect(this,'superman-din',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'superman-din S2')">⏱</button>
+      </div>
+      <div class="ex-log-series-row">
+        <span class="serie-label">S3</span>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-superman-din" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-superman-din" min="1">
+        <select class="perc-select" id="perc-superman-din-s3" onchange="setPercSelect(this,'superman-din',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'superman-din S3')">⏱</button>
+      </div>
+      </div>
+      <div class="ex-log-hist" id="hist-superman-din"></div>
+    </div>
+    <div class="ex-tip">🎯 Simula a posição arqueada do voo na saída de costas. Fortalece lombar e glúteo integrados.</div>
+  </div>
+
+    <div class="day-header">MOBILIDADE & ALONGAMENTOS</div>
+    <div class="alert alert-info" style="font-size:.78rem">🧘 Fazer preferencialmente após o treino ou como aquecimento. Sem pressa — respeite os limites de amplitude.</div>
+
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Mobilidade de Ombro em Flexão</span><span class="ex-head-tag">30s × 3 cada lado · diário</span></div>
+    <div class="ex-body">Deite de costas ou fique em pé. Leve um braço acima da cabeça com rotação externa (polegar apontando para trás). Use a parede ou o chão como apoio para aumentar a amplitude. Segure 30 segundos cada lado.</div>
+    <div class="ex-tip">🎯 Aumenta amplitude do voo na saída de costas — quanto mais flexibilidade, mais aerodinâmico.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Mobilidade Torácica (Foam Roller)</span><span class="ex-head-tag">60s · diário</span></div>
+    <div class="ex-body">Coloque o foam roller horizontalmente na altura das escápulas. Apoie a cabeça nas mãos atrás da nuca. Deixe a coluna torácica se estender sobre o rolo por 60 segundos, podendo rolar levemente entre T4 e T8.</div>
+    <div class="ex-tip">🎯 Essencial para o arqueamento aerodinâmico no voo da saída de costas. Quem fica sentado muito tempo perde essa mobilidade.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Mobilidade de Tornozelo</span><span class="ex-head-tag">30s × 3 cada lado · diário</span></div>
+    <div class="ex-body">Em posição de avanço (lunge), joelho da frente alinhado com o pé. Empurre o joelho para frente ultrapassando o dedão sem tirar o calcanhar do chão. Use uma parede para apoio. Segure 30 segundos cada lado.</div>
+    <div class="ex-tip">🎯 Fundamental para o pé na calha — pouca dorsiflexão compromete diretamente a potência do impulso na saída de costas.</div>
+  </div>
+  <div class="ex-block">
+    <div class="ex-head"><span class="ex-head-name">Alongamento de Flexores de Quadril</span><span class="ex-head-tag">30s × 3 cada lado · diário</span></div>
+    <div class="ex-body">Ajoelhe em posição de lunge baixo — joelho de trás no chão, pé da frente plantado. Empurre o quadril levemente para frente e para baixo até sentir o alongamento na frente da coxa e virilha do lado de trás. Segure 30 segundos cada lado.</div>
+    <div class="ex-tip">🎯 Encurtados em quem trabalha sentado — limitam a extensão de quadril no impulso da saída.</div>
+  </div>
+
   </div>
 </div>
 
-<!-- ══ SEMANA / CALENDARIO ══ -->
+<!-- ══ LISTA DE COMPRAS ══ --><!-- ══ LISTA DE COMPRAS ══ -->
+<!-- ══ PROGRAMAÇÃO ══ -->
 <div id="semana" class="section">
   <div class="hero-wrap">
-    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 60%" alt="Programação" loading="lazy">
+    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 60%" alt="Programacao" loading="lazy">
     <div class="hero-overlay"></div>
     <div class="hero-text">
       <div class="hero-title">PROGRAMAÇÃO</div>
@@ -2420,30 +2485,30 @@
   <div class="section-content">
     <div class="sec-header"><div class="sec-title">Calendário de Treinos</div><span class="sec-badge badge-pool">MICROCICLO</span></div>
 
-    <!-- Navegacao mes -->
     <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem">
-      <button class="btn btn-sm" onclick="mudarMesCalendario(-1)" style="background:#f1f5f9;color:#374151">← Anterior</button>
-      <div id="calendario-mes-titulo" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:#0f172a"></div>
-      <button class="btn btn-sm" onclick="mudarMesCalendario(1)" style="background:#f1f5f9;color:#374151">Próximo →</button>
+      <button class="btn btn-sm" onclick="mudarMesCalendario(-1)">← Anterior</button>
+      <div id="calendario-mes-titulo" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em"></div>
+      <button class="btn btn-sm" onclick="mudarMesCalendario(1)">Próximo →</button>
     </div>
 
-    <!-- Legenda -->
-    <div class="alert alert-info" style="font-size:.72rem">
-      🟦 Natação &nbsp; 🟧 Musculação &nbsp; 🟩 Core &nbsp; 🟨 Cardio &nbsp; ⬜ Descanso &nbsp; · Toque em um dia para ver os treinos e fazer o check-in parcial.
+    <div class="card" style="font-size:.72rem;color:#6b7280;display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;padding:.6rem 1rem">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#0284c7;margin-right:3px"></span>Natação</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ea580c;margin-right:3px"></span>Musculação</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#16a34a;margin-right:3px"></span>Core</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#eab308;margin-right:3px"></span>Cardio</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e2e8f0;margin-right:3px"></span>Descanso</span>
+      <span style="margin-left:auto;font-style:italic">· Toque em um dia para ver os treinos e fazer o check-in parcial.</span>
     </div>
 
-    <!-- Grade do calendario -->
-    <div class="card">
+    <div class="card" style="padding:.5rem">
       <div id="calendario-grid"></div>
     </div>
 
-    <!-- Detalhe do dia selecionado -->
     <div id="dia-detalhe-container"></div>
 
   </div>
 </div>
 
-<!-- ══ LISTA DE COMPRAS ══ --><!-- ══ LISTA DE COMPRAS ══ -->
 <div id="compras" class="section">
   <div class="hero-wrap">
     <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 50%" alt="LISTA DE COMPRAS" loading="lazy">
@@ -3439,7 +3504,7 @@ function limparHistorico() {
 }
 
 // CORE DONE
-var CORE_IDS = ['prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank'];
+var CORE_IDS = ['pullup','supino','press','p-adutora','hipthrust','p-flexora','p-abdutora','p-crucif-inv','p-rosca-w','back-squat','hack-squat','reverse-lunge','extensora-uni','supino-declinado','miracle-grow','elev-lat-maq','triceps-testa','paralela-graviton','puxada-supinada','remada-baixa-uni','remada-maq-bil','remada-curv-maq','pullover','deadlift-uni','box-jump','bulgarian-squat','mesa-flexora','rot-externa-cabo','ext-ombro-cabo','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank','superman-din'];
 function getCoreStatus() { try { return JSON.parse(localStorage.getItem('core_done') || '{}'); } catch(e) { return {}; } }
 function saveCoreStatus(s) {
   localStorage.setItem('core_done', JSON.stringify(s));
