@@ -513,6 +513,12 @@
 </style>
 </head>
 <body>
+<script>
+// Early shim so tab clicks work while main script loads
+function showTab(id, el) {
+  window._pendingTab = [id, el];
+}
+</script>
 
 <header style="height:auto;padding:1rem 1.25rem;position:relative;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.4rem">
   <!-- Sync status — canto direito -->
@@ -541,7 +547,7 @@
   <div>
     <div class="logo" style="font-size:1.9rem;letter-spacing:.2em;color:#fff;-webkit-text-fill-color:#fff">NEXUS</div>
     <div style="font-family:monospace;font-size:.62rem;color:#fff;letter-spacing:.12em;font-weight:600">TREINO · DIETA · EVOLUÇÃO</div>
-    <div style="font-family:'Dancing Script','Pacifico','Georgia',cursive;font-size:1rem;color:#fff;margin-top:.25rem;font-style:italic;font-weight:600">Conecte treino, dieta e evolução.</div>
+    <div style="font-family:serif,cursive;font-size:1rem;color:#fff;margin-top:.25rem;font-style:italic;font-weight:600">Conecte treino, dieta e evolução.</div>
   </div>
 </header>
 
@@ -716,7 +722,7 @@
   <div class="card" style="margin-bottom:1rem">
     <div class="card-title">💧 Controle de Água — Hoje</div>
     <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin:.5rem 0">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:#0284c7;line-height:1" id="agua-hoje-display">0,0 L</div>
+      <div style="font-family:serif;font-size:2.5rem;color:#0284c7;line-height:1" id="agua-hoje-display">0,0 L</div>
       <div style="flex:1">
         <div style="background:#e2e8f0;border-radius:99px;height:10px;margin-bottom:.4rem">
           <div id="agua-progress" style="background:linear-gradient(90deg,#0284c7,#38bdf8);height:10px;border-radius:99px;width:0%;transition:width .4s"></div>
@@ -2487,7 +2493,7 @@
 
     <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem">
       <button class="btn btn-sm" onclick="mudarMesCalendario(-1)">← Anterior</button>
-      <div id="calendario-mes-titulo" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.08em"></div>
+      <div id="calendario-mes-titulo" style="font-family:serif;font-size:1.3rem;letter-spacing:.08em"></div>
       <button class="btn btn-sm" onclick="mudarMesCalendario(1)">Próximo →</button>
     </div>
 
@@ -2592,7 +2598,7 @@
     <div style="border-top:1px solid #e2e8f0;padding:.75rem;background:#fff">
       <div id="chat-input-wrap" style="display:flex;gap:.5rem">
         <input id="chat-input" type="text" placeholder="Digite sua resposta..."
-          style="flex:1;background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:8px;padding:.55rem .75rem;font-family:'DM Sans',sans-serif;font-size:.86rem;outline:none;color:#111827"
+          style="flex:1;background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:8px;padding:.55rem .75rem;font-family:sans-serif;font-size:.86rem;outline:none;color:#111827"
           onkeydown="if(event.key==='Enter')enviarResposta()">
         <button class="btn" onclick="enviarResposta()">Enviar</button>
       </div>
@@ -2631,10 +2637,10 @@
     <div class="card-title">Evolução do Peso</div>
     <canvas id="pesoChart" style="max-height:200px"></canvas>
     <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem">
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">INÍCIO</div><div id="stat-inicio" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem">—</div></div>
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">ATUAL</div><div id="stat-atual" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--pool)">—</div></div>
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">VARIAÇÃO</div><div id="stat-var" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem">—</div></div>
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">META</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--moss)">~92 kg</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">INÍCIO</div><div id="stat-inicio" style="font-family:serif;font-size:1.35rem">—</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">ATUAL</div><div id="stat-atual" style="font-family:serif;font-size:1.35rem;color:var(--pool)">—</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">VARIAÇÃO</div><div id="stat-var" style="font-family:serif;font-size:1.35rem">—</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">META</div><div style="font-family:serif;font-size:1.35rem;color:var(--moss)">~92 kg</div></div>
     </div>
   </div>
 
@@ -2643,9 +2649,9 @@
     <div class="card-title">Evolução do % de Gordura (Método Navy)</div>
     <canvas id="bfChart" style="max-height:200px"></canvas>
     <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:.75rem">
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">INICIAL</div><div id="bf-stat-inicio" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem">—</div></div>
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">ATUAL</div><div id="bf-stat-atual" style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--pool)">—</div></div>
-      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">META</div><div style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;color:var(--moss)">&lt;14%</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">INICIAL</div><div id="bf-stat-inicio" style="font-family:serif;font-size:1.35rem">—</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">ATUAL</div><div id="bf-stat-atual" style="font-family:serif;font-size:1.35rem;color:var(--pool)">—</div></div>
+      <div><div style="font-family:monospace;font-size:.6rem;color:var(--mid)">META</div><div style="font-family:serif;font-size:1.35rem;color:var(--moss)">&lt;14%</div></div>
     </div>
   </div>
 
@@ -3426,7 +3432,7 @@ function renderPRBoard() {
     html += '<div class="card" style="padding:.85rem">' +
       '<div style="font-size:.75rem;font-weight:600;color:#374151;margin-bottom:.3rem">' + ex + '</div>' +
       (pr > 0 ?
-        '<div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
+        '<div style="font-family:serif;font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
         '<div style="font-family:monospace;font-size:.62rem;color:#6b7280">' + prData + ' · ' + total + ' sessao(es)</div>' :
         '<div style="font-size:.8rem;color:#9ca3af">Sem registros</div>'
       ) + '</div>';
