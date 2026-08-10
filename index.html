@@ -199,7 +199,7 @@
         localStorage.setItem('carga_' + ex, JSON.stringify(cargas[ex]));
       });
       setTimeout(function() {
-        ['pullup','remada','pulldown','rosca','supino','press','triceps','glute4','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank'].forEach(function(ex) {
+        Object.keys(cargas).forEach(function(ex) {
           if (window.renderCargaHist) renderCargaHist(ex);
         });
         if (window.renderPRBoard && document.getElementById('prboard') && document.getElementById('prboard').classList.contains('active')) renderPRBoard();
@@ -1511,39 +1511,39 @@
     <div class="ex-log-row">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
         <span style="font-size:.63rem;color:var(--mid);text-transform:uppercase;letter-spacing:.08em">Log de Cargas</span>
-        <button class="btn btn-sm" onclick="logCarga('remada-baixa-uni',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
+        <button class="btn btn-sm" onclick="logCarga('remada-uni',4)" style="padding:.28rem .7rem;font-size:.7rem">Salvar sessão</button>
       </div>
       <div class="ex-log-series">
       <div class="ex-log-series-row">
         <span class="serie-label">S1</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-baixa-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-baixa-uni" min="1">
-        <select class="perc-select" id="perc-remada-baixa-uni-s1" onchange="setPercSelect(this,'remada-baixa-uni',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S1')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s1-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s1-reps-remada-uni" min="1">
+        <select class="perc-select" id="perc-remada-uni-s1" onchange="setPercSelect(this,'remada-uni',1)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-uni S1')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S2</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-baixa-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-baixa-uni" min="1">
-        <select class="perc-select" id="perc-remada-baixa-uni-s2" onchange="setPercSelect(this,'remada-baixa-uni',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S2')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s2-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s2-reps-remada-uni" min="1">
+        <select class="perc-select" id="perc-remada-uni-s2" onchange="setPercSelect(this,'remada-uni',2)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-uni S2')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S3</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-baixa-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-baixa-uni" min="1">
-        <select class="perc-select" id="perc-remada-baixa-uni-s3" onchange="setPercSelect(this,'remada-baixa-uni',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S3')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s3-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s3-reps-remada-uni" min="1">
+        <select class="perc-select" id="perc-remada-uni-s3" onchange="setPercSelect(this,'remada-uni',3)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-uni S3')">⏱</button>
       </div>
       <div class="ex-log-series-row">
         <span class="serie-label">S4</span>
-        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada-baixa-uni" step="0.5">
-        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada-baixa-uni" min="1">
-        <select class="perc-select" id="perc-remada-baixa-uni-s4" onchange="setPercSelect(this,'remada-baixa-uni',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
-        <button class="serie-timer-btn" onclick="startTimer(60,'remada-baixa-uni S4')">⏱</button>
+        <label>Carga:</label><input type="number" placeholder="kg" id="s4-carga-remada-uni" step="0.5">
+        <label>Reps:</label><input type="number" placeholder="reps" id="s4-reps-remada-uni" min="1">
+        <select class="perc-select" id="perc-remada-uni-s4" onchange="setPercSelect(this,'remada-uni',4)"><option value="">—</option><option value="leve">🟢</option><option value="moderada">🟡</option><option value="pesada">🔴</option></select>
+        <button class="serie-timer-btn" onclick="startTimer(60,'remada-uni S4')">⏱</button>
       </div>
       </div>
-      <div class="ex-log-hist" id="hist-remada-baixa-uni"></div>
+      <div class="ex-log-hist" id="hist-remada-uni"></div>
     </div>
   </div>
   <div class="ex-block">
@@ -2865,1641 +2865,132 @@
 <!-- ══ REABILITAÇÃO LCA ══ -->
 <div id="reab" class="section">
   <div class="hero-wrap">
-    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 30%" alt="REABILITAÇÃO LCA" loading="lazy">
+    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=80" style="width:100%;height:190px;object-fit:cover;object-position:center 30%" alt="Reabilitacao" loading="lazy">
     <div class="hero-overlay"></div>
     <div class="hero-text">
       <div class="hero-title">REABILITAÇÃO LCA</div>
-      <div class="hero-sub" style="color:#fda4af">PROTOCOLO PÓS-CIRURGIA · RETORNO</div>
+      <div class="hero-sub" style="color:#86efac">PRÉ-HABILITAÇÃO · FORÇA · ESTABILIDADE</div>
     </div>
   </div>
   <div class="section-content">
-  <div class="sec-header"><div class="sec-title" style="color:#fff">Reabilitação LCA</div><span class="sec-badge badge-burn">PÓS-CIRURGIA</span></div>
-  <div class="alert alert-warn">⚠️ <strong>Atenção:</strong> Este protocolo é baseado na literatura científica de reabilitação de LCA. Siga sempre as orientações do seu fisioterapeuta e cirurgião, que têm prioridade sobre qualquer informação aqui.</div>
+    <div class="sec-header"><div class="sec-title">Pré-Habilitação LCA + Menisco</div><span class="sec-badge badge-pool">ATLETA DE NATAÇÃO</span></div>
+    <div class="alert alert-info">🏥 Protocolo prescrito pela fisioterapeuta — Treino de Potência e Estabilidade Pré-Operatória. Execute antes dos exercícios principais do treino.</div>
+    <div class="alert alert-warn" style="font-size:.78rem">⚠️ Agachamento máximo 90° · Sem pivôs ou mudanças bruscas de direção · Sem saltos horizontais · Monitorar sinais de dor, derrame ou sensação de falseio · Suspender se houver qualquer sintoma.</div>
 
-  <div class="reab-phase">
-    <div class="reab-head" style="background:var(--burn-light)">
-      <strong style="color:var(--burn)">FASE 1 — Semanas 1–2 · Controle da Dor e Edema</strong>
-      <span class="sec-badge badge-burn">PÓS-OP IMEDIATO</span>
-    </div>
-    <div class="reab-body">
-      <strong>Objetivos:</strong> Reduzir dor e edema, recuperar extensão completa do joelho, ativar quadríceps<br>
-      <strong>Exercícios:</strong><br>
-      • Gelo 20 min a cada 2–3h<br>
-      • Elevação do membro operado<br>
-      • Contração isométrica do quadríceps (sem movimento)<br>
-      • Extensão passiva do joelho (meta: 0° de extensão na semana 1)<br>
-      • Mobilização de patela<br>
-      • Deambulação com muleta conforme dor
-    </div>
-  </div>
+    <!-- ══ AQUECIMENTO (todos os treinos) ══ -->
+    <div class="day-header">AQUECIMENTO — Todos os Treinos (8-10 min)</div>
+    <div class="alert alert-info" style="font-size:.78rem">💡 Ative bem glúteos e core antes dos exercícios principais.</div>
 
-  <div class="reab-phase">
-    <div class="reab-head" style="background:var(--gold-light)">
-      <strong style="color:#8a6a1a">FASE 2 — Semanas 3–6 · Recuperação de Mobilidade</strong>
-      <span class="sec-badge badge-gold">MOBILIDADE</span>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Bicicleta Ergométrica</span><span class="ex-head-tag">8 min · intensidade leve a moderada</span></div>
+      <div class="ex-body">8 minutos em intensidade leve a moderada. Aqueça bem os joelhos antes de qualquer exercício.</div>
     </div>
-    <div class="reab-body">
-      <strong>Objetivos:</strong> Flexão 0–90°, marcha sem muleta, iniciar trabalho muscular<br>
-      <strong>Exercícios:</strong><br>
-      • Flexão ativa assistida do joelho (0–90°)<br>
-      • Mini-agachamento (0–45°) com apoio<br>
-      • Elevação da perna estendida (SLR) — 3 × 15<br>
-      • Bicicleta ergométrica (sem resistência)<br>
-      • Cadeia cinética fechada leve (step)<br>
-      • Natação: apenas braços (pull buoy) — liberação médica
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Mobilidade</span><span class="ex-head-tag">Quadril, Joelho e Tornozelo</span></div>
+      <div class="ex-body">Mobilização ativa de quadril, joelho e tornozelo. Movimentos circulares e de amplitude progressiva em cada articulação.</div>
     </div>
-  </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Monster Walk</span><span class="ex-head-tag">2×15 passos cada lado</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 2 × 15 passos para cada lado com miniband. Mantenha os joelhos alinhados e o core ativado.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Caminhada Lateral com Miniband</span><span class="ex-head-tag">2×15 passos cada lado</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 2 × 15 passos para cada lado. Pés paralelos, joelhos levemente flexionados, resistência constante na band.</div>
+    </div>
 
-  <div class="reab-phase">
-    <div class="reab-head" style="background:var(--pool-light)">
-      <strong style="color:var(--pool)">FASE 3 — Semanas 7–12 · Fortalecimento</strong>
-      <span class="sec-badge badge-pool">FORÇA</span>
-    </div>
-    <div class="reab-body">
-      <strong>Objetivos:</strong> Flexão &gt;120°, força &gt;60% do membro contralateral, retornar à natação completa<br>
-      <strong>Exercícios:</strong><br>
-      • Agachamento progressivo (0–60°, depois 0–90°)<br>
-      • Leg Press progressivo (carga baixa → moderada)<br>
-      • Prensa unilateral<br>
-      • Hip Thrust com carga progressiva<br>
-      • Bicicleta com resistência moderada<br>
-      • Natação completa (freestyle + costas): liberação médica ~semana 10–12<br>
-      • Musculação membros superiores: retorno total
-    </div>
-  </div>
+    <!-- ══ TREINO 1 — MMII ══ -->
+    <div class="day-header">TREINO 1 — Membros Inferiores</div>
 
-  <div class="reab-phase">
-    <div class="reab-head" style="background:var(--moss-light)">
-      <strong style="color:var(--moss)">FASE 4 — Meses 3–6 · Retorno à Performance</strong>
-      <span class="sec-badge badge-moss">PERFORMANCE</span>
+    <div class="card" style="background:#f0fdf4;border:1.5px solid #bbf7d0;margin-bottom:.75rem;font-size:.82rem;padding:.85rem">
+      <strong style="color:#15803d">Sequência após o aquecimento:</strong> Estabilidade → Isometria → Treino principal
     </div>
-    <div class="reab-body">
-      <strong>Objetivos:</strong> Força &gt;80–90% do contralateral, retorno ao treino completo, propriocepção avançada<br>
-      <strong>Exercícios:</strong><br>
-      • Agachamento completo com carga progressiva<br>
-      • Levantamento terra (RDL e convencional)<br>
-      • Exercícios pliométricos progressivos (step, caixote)<br>
-      • Corrida em linha reta (início ~mês 4–5, liberação médica)<br>
-      • Retorno ao protocolo completo de musculação para natação<br>
-      • Treinamento de velocidade na natação
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-title">Natação durante a Reabilitação</div>
-    <div style="font-size:.82rem;line-height:1.8">
-      • <strong>Semanas 1–6:</strong> Apenas braços com pull buoy (sem chute) — confirmar com cirurgião<br>
-      • <strong>Semanas 7–12:</strong> Retorno progressivo ao nado completo — velocidade baixa<br>
-      • <strong>Mês 3+:</strong> Retorno ao volume e intensidade normal<br>
-      • <strong>Dica:</strong> A natação é um dos melhores aliados da reabilitação — impacto zero e amplitude controlada
+    <div style="font-size:.75rem;color:#0284c7;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .4rem">Estabilidade</div>
+
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Y Balance Reach</span><span class="ex-head-tag">3×6 reps cada direção (cada perna)</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 6 repetições em cada direção (anterior, póstero-medial, póstero-lateral) para cada perna. Foco: equilíbrio dinâmico, propriocepção e controle do tornozelo, joelho e quadril. Mantenha a coluna neutra e o core ativado.</div>
+      <div class="ex-tip">🎯 Desenvolve equilíbrio dinâmico e controle neuromuscular do membro inferior durante movimentos funcionais.</div>
     </div>
-    <div class="evidence">📚 Revisão JOSPT 2023: retorno à natação competitiva ocorre em média entre 3–6 meses pós-reconstrução de LCA, com protocolo adequado. Critérios: força &gt;80% do membro contralateral e ausência de dor.</div>
-  </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Ponte Unilateral</span><span class="ex-head-tag">3×12 reps cada perna</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 12 repetições cada perna. Deitado de costas, uma perna estendida, elevar o quadril com a perna de apoio. Foco: ativa glúteos e isquiotibiais, melhora o controle da pelve.</div>
+      <div class="ex-tip">🎯 Ativa glúteos e isquiotibiais — fundamental para estabilidade do joelho no nado e na saída de bloco.</div>
+    </div>
+
+    <div style="font-size:.75rem;color:#16a34a;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .4rem">Isometria</div>
+
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Spanish Squat</span><span class="ex-head-tag">3×30-40s</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 30-40 segundos. Com elástico fixo à frente, segure o agachamento isométrico. Joelhos alinhados, tronco ereto, ângulo máximo de 90°.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Afundo Isométrico (80-90°)</span><span class="ex-head-tag">3×30-40s cada perna</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 30-40 segundos cada perna. Posição de avanço isométrica com o joelho da frente a 80-90° de flexão. Foco: fortalece quadríceps, glúteos e melhora o controle do joelho em posição de carga.</div>
+      <div class="ex-tip">🎯 Fortalece quadríceps, glúteos e melhora o controle do joelho em posição de carga.</div>
+    </div>
+
+    <!-- ══ TREINO 4 — MMII/POSTERIOR ══ -->
+    <div class="day-header">TREINO 4 — Membros Inferiores / Posterior</div>
+
+    <div class="card" style="background:#f0fdf4;border:1.5px solid #bbf7d0;margin-bottom:.75rem;font-size:.82rem;padding:.85rem">
+      <strong style="color:#15803d">Sequência após o aquecimento:</strong> Pliometria → Estabilidade → Isometria → Treino principal
+    </div>
+
+    <div style="font-size:.75rem;color:#ea580c;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .4rem">Pliometria</div>
+    <div class="alert alert-warn" style="font-size:.78rem">⚠️ Qualidade acima de quantidade. Aterrissar sempre com joelhos alinhados e controle total. Saltos exclusivamente verticais.</div>
+
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Countermovement Jump (CMJ)</span><span class="ex-head-tag">4×5 reps</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 4 × 5 repetições. Salto vertical com contramovimento — desça rapidamente e salte o mais alto possível. Aterrissagem silenciosa com joelhos alinhados e tempo de contato curto.</div>
+      <div class="ex-tip">🎯 Potência de explosão vertical — diretamente relacionado à saída de costas e chute do crawl.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Squat Jump</span><span class="ex-head-tag">4×6 reps</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 4 × 6 repetições. Agachamento até 90° e salto explosivo. Aterrissagem controlada, joelhos alinhados.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Drop Jump (20-30cm) ⚠️</span><span class="ex-head-tag">3×5 reps — aguardar liberação médica</span></div>
+      <div class="ex-body"><strong>Aguardar liberação médica.</strong> Descer de uma caixa de 20-30cm e saltar imediatamente ao tocar o chão. Somente quando estável e sem dor.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Salto Unipodal Vertical ⚠️</span><span class="ex-head-tag">3×4 reps cada perna — aguardar liberação médica</span></div>
+      <div class="ex-body"><strong>Aguardar liberação médica.</strong> Salto vertical em uma perna. Somente se estável e sem dor.</div>
+    </div>
+
+    <div style="font-size:.75rem;color:#0284c7;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .4rem">Estabilidade</div>
+
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Stiff Unilateral no Bosu</span><span class="ex-head-tag">3×8 reps cada perna</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 8 repetições cada perna em cima do Bosu. Melhora o equilíbrio, a estabilidade do tornozelo, joelho e quadril e o controle da cadeia posterior.</div>
+      <div class="ex-tip">🎯 Controle neuromuscular avançado — equilíbrio e propriocepção da cadeia posterior.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Pallof Press</span><span class="ex-head-tag">3×12 reps cada lado</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 12 repetições cada lado com cabo ou elástico. Empurrar à frente e retornar controladamente. Foco: fortalece o core e melhora o controle anti-rotação do tronco. Mantenha a coluna neutra e o core ativado durante todo o movimento.</div>
+      <div class="ex-tip">🎯 Core anti-rotacional — nadar em linha reta com eficiência.</div>
+    </div>
+
+    <div style="font-size:.75rem;color:#16a34a;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin:.75rem 0 .4rem">Isometria</div>
+
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Wall Sit Unilateral</span><span class="ex-head-tag">3×30s cada perna</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 30 segundos cada perna. Apoie uma perna no solo e eleve a outra à frente. Desça até aproximadamente 90° de flexão de joelho na perna de apoio e mantenha a posição.</div>
+    </div>
+    <div class="ex-block">
+      <div class="ex-head"><span class="ex-head-name">Prancha Unilateral</span><span class="ex-head-tag">3×30-40s cada lado</span></div>
+      <div class="ex-body"><strong>Séries:</strong> 3 × 30-40 segundos cada lado. Prancha lateral com um apoio. Estabilidade do core, ombro e quadril. Mantenha a postura, respiração estável e abdômen ativo em todas as isometrias.</div>
+      <div class="ex-tip">🎯 Estabilidade de core, ombro e quadril — base para a posição streamline no nado.</div>
+    </div>
+
+    <!-- ══ TREINOS 2 E 3 ══ -->
+    <div class="day-header">TREINOS 2 e 3 — Peito/Tríceps/Ombro e Costas/Bíceps</div>
+    <div class="card" style="font-size:.82rem;color:#374151;padding:.85rem">
+      Realizar apenas o <strong>aquecimento completo</strong> (bicicleta + mobilidade) antes do treino principal. Os exercícios de joelho ficam concentrados nos dias de MMII para não sobrecarregar a articulação.
+    </div>
+
   </div>
 </div>
-
-<script>
-const ALTURA_CM = 182;
-const META_PESO = 92;
-const META_BF = 14;
-let chatState = {};
-
-// TABS
-function showTab(id, el) {
-  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
-  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
-  el.classList.add('active');
-  if (id === 'registro') initChat();
-  if (id === 'historico') { renderHistorico(); renderCharts(); }
-  if (id === 'graficos') { if (window.renderGraficos) renderGraficos(); }
-  if (id === 'prboard') renderPRBoard();
-  if (id === 'medidas') renderMedidas();
-
-  if (id === 'semana') { renderCalendario(); fecharDiaCalendario(); }
-  if (id === 'visao') { renderAgua(); renderStreak(); renderComparativo(); renderHeatmap(); }
-}
-
-// COUNTDOWN
-function updateCountdown() {
-  var deadline = new Date('2026-07-29T00:00:00');
-  var now = new Date();
-  var diff = Math.ceil((deadline - now) / 86400000);
-  document.getElementById('dias-restantes').textContent = Math.abs(diff);
-  var cardEl = document.getElementById('dias-restantes-card');
-  if (cardEl) cardEl.textContent = Math.abs(diff);
-  var msg = diff > 0 ? diff + ' dias para o prazo.' : diff === 0 ? 'E hoje!' : 'Prazo encerrado ha ' + Math.abs(diff) + ' dias.';
-  document.getElementById('countdown-msg').textContent = msg;
-}
-updateCountdown();
-
-// CIRURGIA
-function salvarDataCirurgia() {
-  var val = document.getElementById('data-cirurgia').value;
-  if (!val) return;
-  localStorage.setItem('data_cirurgia', val);
-  if (window.fbSaveDataCirurgia) window.fbSaveDataCirurgia(val);
-  atualizarCirurgia();
-}
-function atualizarCirurgia() {
-  var saved = localStorage.getItem('data_cirurgia');
-  if (saved) {
-    document.getElementById('data-cirurgia').value = saved;
-    var diff = Math.ceil((new Date(saved) - new Date()) / 86400000);
-    document.getElementById('dias-cirurgia').textContent = diff > 0 ? diff : 'Realizada';
-    document.getElementById('data-cirurgia-display').textContent = saved;
-  }
-}
-atualizarCirurgia();
-
-// STORAGE
-function getRegistros() {
-  try { return JSON.parse(localStorage.getItem('luiz_registros') || '[]'); } catch(e) { return []; }
-}
-function saveRegistros(r) {
-  localStorage.setItem('luiz_registros', JSON.stringify(r));
-  if (window.fbSaveRegistros) window.fbSaveRegistros(r);
-}
-
-// LOG CARGAS
-function setPercSelect(sel, ex, serie) {
-  var val = sel.value;
-  sel.className = 'perc-select' + (val ? ' ' + val : '');
-  // Update row background
-  var row = sel.closest('.ex-log-series-row');
-  if (row) {
-    row.classList.remove('leve','moderada','pesada');
-    if (val) row.classList.add(val);
-  }
-}
-
-function logCarga(ex, numSeries) {
-  var hoje = new Date().toISOString().split('T')[0];
-  var series = [];
-  for (var i = 1; i <= numSeries; i++) {
-    var carga = document.getElementById('s' + i + '-carga-' + ex);
-    var reps = document.getElementById('s' + i + '-reps-' + ex);
-    var perc = document.getElementById('perc-' + ex + '-s' + i);
-    if (carga && reps && carga.value && reps.value) {
-      series.push({
-        serie: i,
-        carga: parseFloat(carga.value),
-        reps: parseInt(reps.value),
-        perc: perc ? perc.value : ''
-      });
-    }
-  }
-  if (series.length === 0) { alert('Preencha pelo menos uma serie.'); return; }
-  var key = 'carga_' + ex;
-  var hist = JSON.parse(localStorage.getItem(key) || '[]');
-  hist.unshift({ data: hoje, series: series, ts: Date.now() });
-  if (hist.length > 60) hist.pop();
-  localStorage.setItem(key, JSON.stringify(hist));
-  if (window.fbSaveCarga) window.fbSaveCarga(ex, hist);
-  renderCargaHist(ex);
-  for (var j = 1; j <= numSeries; j++) {
-    var c = document.getElementById('s' + j + '-carga-' + ex);
-    var r = document.getElementById('s' + j + '-reps-' + ex);
-    var p = document.getElementById('perc-' + ex + '-s' + j);
-    if (c) c.value = '';
-    if (r) r.value = '';
-    if (p) { p.value = ''; p.className = 'perc-select'; }
-    var row = c ? c.closest('.ex-log-series-row') : null;
-    if (row) row.classList.remove('leve','moderada','pesada');
-  }
-}
-
-function renderCargaHist(ex) {
-  var el = document.getElementById('hist-' + ex);
-  if (!el) return;
-  var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
-  if (hist.length === 0) return;
-  var ultimo = hist[0];
-  var pr = 0;
-  hist.forEach(function(h) { h.series.forEach(function(s) { if (s.carga > pr) pr = s.carga; }); });
-  var vol = ultimo.series.reduce(function(acc, s) { return acc + s.carga * s.reps; }, 0);
-
-  var percColors = { leve: '#16a34a', moderada: '#ca8a04', pesada: '#e11d48' };
-  var seriesHtml = ultimo.series.map(function(s) {
-    var cor = s.perc && percColors[s.perc] ? percColors[s.perc] : '#9ca3af';
-    var dot = s.perc ? '<span class="hist-perc-dot" style="background:' + cor + '"></span>' : '';
-    return '<span style="color:' + cor + ';font-weight:' + (s.perc ? '700' : '400') + '">' + dot + 'S' + s.serie + ': ' + s.carga + 'kg×' + s.reps + '</span>';
-  }).join(' <span style="color:#e2e8f0">|</span> ');
-
-  el.innerHTML = '<span style="color:#6b7280;font-size:.62rem">Ultima sessao (' + ultimo.data + '):</span><br>' +
-    seriesHtml + '<br>' +
-    '<span style="font-size:.62rem;color:#9ca3af">Vol: ' + vol.toFixed(0) + 'kg | PR: ' + pr + 'kg</span>';
-}
-
-['pullup','remada','pulldown','rosca','supino','press','triceps','hipthrust','abdutor','remada-uni','elev-pelvica','face-pull','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank','p-abdutora','p-adutora','p-extensora','p-flexora','p-pant-pe','p-goblet','p-supino-inc','p-dev-db','p-elev-lat-pol','p-tri-franc','p-lombar','p-remada-baixa','p-arnold','p-crucif-inv','p-rosca-scott','p-elev-lat-db','p-rosca-w','p-remada-curv'].forEach(function(ex) { renderCargaHist(ex); });
-
-// PROJECAO
-function calcProjecao(registros) {
-  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse();
-  if (comPeso.length < 4) {
-    document.getElementById('proj-display').textContent = '--';
-    document.getElementById('proj-sub').textContent = 'min. 4 registros';
-    return;
-  }
-  var ultimos = comPeso.slice(-7);
-  var perdaDia = (parseFloat(ultimos[0].peso) - parseFloat(ultimos[ultimos.length-1].peso)) / (ultimos.length - 1);
-  var pesoAtual = parseFloat(comPeso[comPeso.length-1].peso);
-  if (perdaDia <= 0) {
-    document.getElementById('proj-display').textContent = '--';
-    document.getElementById('proj-sub').textContent = 'sem perda recente';
-    return;
-  }
-  var diasParaMeta = Math.ceil((pesoAtual - META_PESO) / perdaDia);
-  var dataMeta = new Date(Date.now() + diasParaMeta * 86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
-  var diasRestantes = Math.ceil((new Date('2026-07-29') - new Date()) / 86400000);
-  document.getElementById('proj-display').textContent = dataMeta;
-  document.getElementById('proj-sub').textContent = diasParaMeta <= diasRestantes ? 'no prazo' : 'atras do prazo';
-}
-
-// ALERTA TREINO DUPLO
-function verificarTreinoDuplo() {
-  var reg = getRegistros();
-  if (reg.length === 0) return;
-  var hoje = new Date().toISOString().split('T')[0];
-  var regHoje = reg.find(function(r) { return r.data === hoje; });
-  if (!regHoje) return;
-  var treinos = (regHoje.treinos || '').toLowerCase();
-  var duplo = treinos.indexOf('natacao') >= 0 && treinos.indexOf('musculacao') >= 0;
-  if (!duplo) duplo = treinos.indexOf('nata') >= 0 && treinos.indexOf('muscula') >= 0;
-  document.getElementById('alerta-treino-duplo').style.display = duplo ? 'block' : 'none';
-}
-verificarTreinoDuplo();
-
-// NAVY BF
-function calcNavyBF(pescoco, cintura, altura) {
-  return Math.round((495 / (1.0324 - 0.19077 * Math.log10(cintura - pescoco) + 0.15456 * Math.log10(altura)) - 450) * 10) / 10;
-}
-function devePedirMedidas() {
-  var registros = getRegistros();
-  var comMedidas = registros.find(function(r) { return r.pescoco; });
-  if (!comMedidas) return registros.length > 0;
-  return Math.floor((new Date() - new Date(comMedidas.data)) / 86400000) >= 7;
-}
-
-// CHAT
-var STEPS = ['peso','kcal','agua','kcal_gasta','fc_media','treinos','sono','obs','confirmar'];
-
-function initChat() {
-  chatState = { step:-1, data:new Date().toISOString().split('T')[0], peso:null, kcal:null, agua:null, kcal_gasta:null, fc_media:null, treinos:[], sono:null, obs:null };
-  document.getElementById('chat-messages').innerHTML = '';
-  document.getElementById('chat-buttons').style.display = 'none';
-  document.getElementById('chat-input-wrap').style.display = 'flex';
-  botMsg('Boa noite! Vamos fazer o check-in.');
-  setTimeout(function() {
-    var hoje = new Date();
-    var ontem = new Date(Date.now() - 86400000);
-    var anteontem = new Date(Date.now() - 172800000);
-    var fmt = function(d) { return d.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}); };
-    var iso = function(d) { return d.toISOString().split('T')[0]; };
-    showButtons([
-      {label:'Hoje (' + fmt(hoje) + ')', value:iso(hoje)},
-      {label:'Ontem (' + fmt(ontem) + ')', value:iso(ontem)},
-      {label:'Anteontem (' + fmt(anteontem) + ')', value:iso(anteontem)},
-      {label:'Outra data', value:'outra'}
-    ]);
-  }, 600);
-}
-
-function botMsg(txt) {
-  var el = document.createElement('div');
-  el.style.cssText = 'background:#eff6ff;border-left:3px solid #3b82f6;padding:.65rem .9rem;border-radius:0 10px 10px 0;font-size:.83rem;line-height:1.65;max-width:88%;align-self:flex-start;color:#1e3a5f';
-  el.innerHTML = txt;
-  document.getElementById('chat-messages').appendChild(el);
-  document.getElementById('chat-messages').scrollTop = 9999;
-}
-function userMsg(txt) {
-  var el = document.createElement('div');
-  el.style.cssText = 'background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;padding:.65rem .9rem;border-radius:10px 0 0 10px;font-size:.83rem;line-height:1.65;max-width:88%;align-self:flex-end;box-shadow:0 2px 8px rgba(2,132,199,.25)';
-  el.textContent = txt;
-  document.getElementById('chat-messages').appendChild(el);
-  document.getElementById('chat-messages').scrollTop = 9999;
-}
-function showButtons(opts) {
-  var wrap = document.getElementById('chat-buttons');
-  document.getElementById('chat-input-wrap').style.display = 'none';
-  wrap.innerHTML = '';
-  wrap.style.display = 'flex';
-  opts.forEach(function(o) {
-    var btn = document.createElement('button');
-    btn.className = 'btn btn-sm';
-    btn.style.cssText = 'background:#f1f5f9;color:#374151;border:1.5px solid #e2e8f0;font-weight:600;border-radius:20px';
-    btn.textContent = o.label;
-    btn.onclick = function() { userMsg(o.label); processAnswer(o.value); };
-    wrap.appendChild(btn);
-  });
-}
-function showInput(ph) {
-  document.getElementById('chat-buttons').style.display = 'none';
-  document.getElementById('chat-input-wrap').style.display = 'flex';
-  var inp = document.getElementById('chat-input');
-  inp.placeholder = ph; inp.value = '';
-  setTimeout(function() { inp.focus(); }, 80);
-}
-function enviarResposta() {
-  var val = document.getElementById('chat-input').value.trim();
-  if (!val) return;
-  userMsg(val); document.getElementById('chat-input').value = '';
-  processAnswer(val);
-}
-
-function activeSteps() {
-  return STEPS;
-}
-
-function askStep() {
-  var step = activeSteps()[chatState.step];
-  if (step === 'peso') { botMsg('Qual foi o seu <strong>peso</strong> hoje? (kg)'); showInput('Ex: 95.8'); }
-  else if (step === 'kcal') { botMsg('Quantas <strong>calorias</strong> voce consumiu? (ou "pular")'); showInput('Ex: 2650'); }
-  else if (step === 'agua') { botMsg('Quantos <strong>litros de agua</strong> voce bebeu?'); showInput('Ex: 3.5'); }
-  else if (step === 'kcal_gasta') {
-    var sugestao = chatState.kcal_gasta_sugerido ? ' Do calendario, somei <strong>' + chatState.kcal_gasta_sugerido + ' kcal</strong> dos treinos marcados.' : '';
-    botMsg('Quantas <strong>calorias voce gastou no total hoje</strong> (rotina completa, incluindo trabalho e caminhadas)?' + sugestao + ' (Mi Fitness, ou "pular")');
-    showInput(chatState.kcal_gasta_sugerido ? 'Ex: ' + chatState.kcal_gasta_sugerido : 'Ex: 650');
-  }
-  else if (step === 'fc_media') { botMsg('Qual foi a <strong>FC media</strong> durante o treino? (Mi Fitness, ou "pular")'); showInput('Ex: 142'); }
-  else if (step === 'treinos') {
-    var jaMarcados = chatState.treinos.length > 0 ? ' Ja marquei: ' + chatState.treinos.join(', ') + '.' : '';
-    botMsg('Quais <strong>treinos</strong> voce fez?' + jaMarcados + ' (confirme ou adicione mais)');
-    showButtons([{label:'Natacao',value:'natacao'},{label:'Musculacao',value:'musculacao'},{label:'Core',value:'core'},{label:'Cardio',value:'cardio'},{label:'Descanso',value:'descanso'},{label:'Concluido',value:'__done__'}]);
-  }
-  else if (step === 'sono') { botMsg('Como foi o <strong>sono</strong> de ontem?'); showButtons([{label:'Pessimo (1)',value:'1'},{label:'Ruim (2)',value:'2'},{label:'Ok (3)',value:'3'},{label:'Bom (4)',value:'4'},{label:'Excelente (5)',value:'5'}]); }
-  else if (step === 'obs') { botMsg('Alguma <strong>observacao</strong>? (ou "nada")'); showInput('Energia, alimentacao, dores...'); }
-  else if (step === 'confirmar') mostrarResumo();
-}
-
-function processAnswer(val) {
-  // Selecao de data (step -1)
-  if (chatState.step === -1) {
-    if (val === 'hoje') {
-      chatState.data = new Date().toISOString().split('T')[0];
-    } else if (val === 'outra') {
-      botMsg('Digite a data no formato <strong>DD/MM/AAAA</strong>:');
-      showInput('Ex: 20/06/2026');
-      chatState.step = -2;
-      return;
-    } else {
-      chatState.data = val;
-    }
-    chatState.step = 0;
-
-    // Pre-preencher treinos do calendario se for o dia de hoje
-    var hojeCheck = new Date().toISOString().split('T')[0];
-    if (chatState.data === hojeCheck) {
-      var feitos = getTreinosFeitosHoje();
-      var mapTipo = {natacao:'natacao', musculacao:'musculacao', core:'core', cardio:'cardio'};
-      feitos.forEach(function(t) { if (chatState.treinos.indexOf(t) < 0) chatState.treinos.push(t); });
-      var kcalCalendario = getKcalTreinosHoje();
-      if (kcalCalendario > 0) chatState.kcal_gasta_sugerido = kcalCalendario;
-    }
-
-    var dataFmt = new Date(chatState.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-    var msgExtra = chatState.treinos.length > 0 ? ' Ja identifiquei ' + chatState.treinos.length + ' treino(s) marcados no calendario hoje!' : '';
-    botMsg('Registro para <strong>' + dataFmt + '</strong>.' + msgExtra + ' Vamos la!');
-    setTimeout(askStep, 400);
-    return;
-  }
-
-  // Data manual (step -2)
-  if (chatState.step === -2) {
-    var parts = val.split('/');
-    if (parts.length === 3 && parts[0].length <= 2 && parts[1].length <= 2 && parts[2].length === 4) {
-      chatState.data = parts[2] + '-' + parts[1].padStart(2,'0') + '-' + parts[0].padStart(2,'0');
-      chatState.pedirMedidas = devePedirMedidas();
-      chatState.step = 0;
-      var dataFmt2 = new Date(chatState.data + 'T12:00:00').toLocaleDateString('pt-BR', {weekday:'long', day:'numeric', month:'long'});
-      botMsg('Registro para <strong>' + dataFmt2 + '</strong>. Vamos la!');
-      setTimeout(askStep, 400);
-    } else {
-      botMsg('Formato invalido. Use DD/MM/AAAA. Ex: 20/06/2026');
-    }
-    return;
-  }
-
-  var step = activeSteps()[chatState.step];
-  var n = parseFloat(val.replace(',','.'));
-  if (step === 'peso') {
-    if (isNaN(n) || n < 40 || n > 200) { botMsg('Valor invalido. Ex: 95.8'); return; }
-    chatState.peso = n; chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'kcal') {
-    chatState.kcal = val.toLowerCase() === 'pular' ? null : (isNaN(n) ? null : n);
-    chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'agua') {
-    if (isNaN(n) || n < 0 || n > 15) { botMsg('Valor invalido. Ex: 3.5'); return; }
-    chatState.agua = n;
-    if (n < 3.5) botMsg('<strong>Hidratacao abaixo da meta!</strong> Voce bebeu ' + n + 'L (meta: 3,5L).');
-    chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'kcal_gasta') {
-    chatState.kcal_gasta = val.toLowerCase() === 'pular' ? null : (isNaN(n) ? null : n);
-    chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'fc_media') {
-    chatState.fc_media = val.toLowerCase() === 'pular' ? null : (isNaN(n) ? null : n);
-    chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'treinos') {
-    if (val === '__done__') {
-      if (chatState.treinos.length === 0) { botMsg('Selecione pelo menos uma opcao.'); return; }
-      chatState.step++; setTimeout(askStep, 350);
-    } else {
-      if (chatState.treinos.indexOf(val) < 0) chatState.treinos.push(val);
-      var duplo = chatState.treinos.indexOf('natacao') >= 0 && chatState.treinos.indexOf('musculacao') >= 0;
-      botMsg('<b>' + val + '</b> adicionado.' + (duplo ? ' TREINO DUPLO: +150 kcal em carbs!' : '') + ' Selecione mais ou clique Concluido.');
-    }
-  } else if (step === 'sono') {
-    chatState.sono = val; chatState.step++; setTimeout(askStep, 350);
-  } else if (step === 'obs') {
-    chatState.obs = val.toLowerCase() === 'nada' ? '' : val; chatState.step++; setTimeout(askStep, 350);
-  }
-}
-
-function mostrarResumo() {
-
-  var stars = '';
-  for (var s = 0; s < parseInt(chatState.sono || 0); s++) stars += '*';
-  var aguaOk = chatState.agua >= 3.5;
-  var html = '<strong>Resumo - ' + chatState.data + ':</strong><br>' +
-    'Peso: <strong>' + chatState.peso + ' kg</strong><br>' +
-    (chatState.kcal ? 'Calorias: <strong>' + chatState.kcal + ' kcal</strong><br>' : '') +
-    'Agua: <strong>' + (aguaOk ? 'OK' : 'ABAIXO') + ' - ' + chatState.agua + 'L</strong><br>' +
-    'Treinos: <strong>' + chatState.treinos.join(', ') + '</strong><br>' +
-    (chatState.kcal_gasta ? 'Kcal gastas: <strong>' + chatState.kcal_gasta + ' kcal</strong><br>' : '') +
-    (chatState.fc_media ? 'FC media: <strong>' + chatState.fc_media + ' bpm</strong><br>' : '') +
-    'Sono: ' + stars + '<br>' +
-    (chatState.obs ? 'Obs: ' + chatState.obs + '<br>' : '');
-  botMsg(html);
-  setTimeout(function() {
-    var wrap = document.getElementById('chat-buttons');
-    document.getElementById('chat-input-wrap').style.display = 'none';
-    wrap.innerHTML = ''; wrap.style.display = 'flex';
-    var b1 = document.createElement('button'); b1.className = 'btn'; b1.textContent = 'Confirmar e Salvar'; b1.onclick = confirmarSalvar; wrap.appendChild(b1);
-    var b2 = document.createElement('button'); b2.className = 'btn'; b2.style.cssText = 'background:#fff;color:#374151;border:1px solid #e2e8f0'; b2.textContent = 'Recomecar'; b2.onclick = initChat; wrap.appendChild(b2);
-  }, 500);
-}
-
-function confirmarSalvar() {
-  var reg = { data:chatState.data, peso:chatState.peso, kcal:chatState.kcal||null, agua:chatState.agua, kcal_gasta:chatState.kcal_gasta||null, fc_media:chatState.fc_media||null, treinos:chatState.treinos.join(', '), sono:chatState.sono, obs:chatState.obs||'', ts:Date.now() };
-  var registros = getRegistros(); registros.unshift(reg); saveRegistros(registros);
-  document.getElementById('chat-buttons').style.display = 'none';
-  document.getElementById('peso-display').textContent = chatState.peso;
-  verificarTreinoDuplo();
-  calcProjecao(registros);
-  botMsg('<strong>Salvo com sucesso!</strong> Consistencia e o que vai te levar ao resultado ate 29/07.');
-  setTimeout(function() {
-    var b = document.createElement('button'); b.className = 'btn btn-sm'; b.style.marginTop = '.5rem'; b.textContent = '+ Novo registro'; b.onclick = initChat;
-    document.getElementById('chat-messages').appendChild(b);
-    document.getElementById('chat-messages').scrollTop = 9999;
-  }, 700);
-}
-
-// HISTORICO
-function renderHistorico() {
-  var registros = getRegistros();
-  var vazio = document.getElementById('historico-vazio');
-  var tabela = document.getElementById('historico-tabela');
-  var tbody = document.getElementById('historico-body');
-  var total = document.getElementById('total-registros');
-  total.textContent = registros.length + (registros.length !== 1 ? ' registros' : ' registro');
-  if (registros.length === 0) { vazio.style.display = 'block'; tabela.style.display = 'none'; return; }
-  vazio.style.display = 'none'; tabela.style.display = 'block';
-  if (registros[0].peso) document.getElementById('peso-display').textContent = registros[0].peso;
-  var sorted = registros.slice().sort(function(a,b) { return a.data > b.data ? 1 : -1; }).reverse();
-  tbody.innerHTML = sorted.map(function(r) {
-    var bfTxt = '-';
-    if (r.pescoco && r.cintura) bfTxt = calcNavyBF(r.pescoco, r.cintura, ALTURA_CM) + '%';
-    return '<tr>' +
-      '<td style="white-space:nowrap;font-size:.7rem;color:#1e293b">' + (r.data || '-') + '</td>' +
-      '<td style="color:#1e293b"><strong>' + (r.peso ? r.peso + ' kg' : '-') + '</strong></td>' +
-      '<td style="color:#1e293b">' + (r.agua ? r.agua + 'L' : '-') + '</td>' +
-      '<td style="font-size:.7rem;color:#1e293b">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
-      '<td style="font-size:.7rem;color:#ea580c">' + (r.kcal_gasta ? r.kcal_gasta + ' kcal' : '-') + '</td>' +
-      '<td style="font-size:.7rem;color:#dc2626">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
-      '<td style="font-size:.7rem;color:#1e293b">' + (r.treinos || '-') + '</td>' +
-      '<td style="color:#1e293b">' + (r.sono ? r.sono + '/5' : '-') + '</td>' +
-      '<td style="font-size:.7rem;color:#0284c7">' + bfTxt + '</td>' +
-      '<td style="font-size:.73rem;max-width:100px;color:#6b7280">' + (r.obs || '') + '</td>' +
-      '</tr>';
-  }).join('');
-  calcProjecao(registros);
-  var comBF = registros.find(function(r) { return r.pescoco && r.cintura; });
-  if (comBF) {
-    var bf = calcNavyBF(comBF.pescoco, comBF.cintura, ALTURA_CM);
-    document.getElementById('bf-display').textContent = bf + '%';
-    document.getElementById('bf-sub').textContent = comBF.data;
-  }
-}
-
-// CHARTS (historico)
-var _pesoChart, _bfChart;
-function renderCharts() {
-  var registros = getRegistros();
-  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
-  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura && r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
-  var pesoCard = document.getElementById('chart-peso-card');
-  if (comPeso.length >= 2) {
-    pesoCard.style.display = 'block';
-    var labels = comPeso.map(function(r) { return r.data; });
-    var pesos = comPeso.map(function(r) { return parseFloat(r.peso); });
-    document.getElementById('stat-inicio').textContent = pesos[0] + ' kg';
-    document.getElementById('stat-atual').textContent = pesos[pesos.length-1] + ' kg';
-    var ve = document.getElementById('stat-var');
-    var variac = (pesos[pesos.length-1] - pesos[0]).toFixed(1);
-    ve.textContent = (variac > 0 ? '+' : '') + variac + ' kg';
-    ve.style.color = variac <= 0 ? '#16a34a' : '#ea580c';
-    if (_pesoChart) _pesoChart.destroy();
-    _pesoChart = new Chart(document.getElementById('pesoChart').getContext('2d'), {
-      type: 'line',
-      data: { labels: labels, datasets: [
-        { label: 'Peso (kg)', data: pesos, borderColor: '#0284c7', backgroundColor: 'rgba(2,132,199,0.08)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
-        { label: 'Meta (92 kg)', data: Array(labels.length).fill(92), borderColor: '#16a34a', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
-      ]},
-      options: { responsive: true, plugins: { legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280' }}}, scales: { x: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', maxTicksLimit: 8 }, grid: { color: '#f1f5f9' }}, y: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', callback: function(v) { return v + ' kg'; }}, grid: { color: '#f1f5f9' }}}}
-    });
-  } else if (pesoCard) pesoCard.style.display = 'none';
-  var bfCard = document.getElementById('chart-bf-card');
-  if (comBF.length >= 2) {
-    bfCard.style.display = 'block';
-    var bflabels = comBF.map(function(r) { return r.data; });
-    var bfs = comBF.map(function(r) { return calcNavyBF(r.pescoco, r.cintura, ALTURA_CM); });
-    document.getElementById('bf-stat-inicio').textContent = bfs[0] + '%';
-    document.getElementById('bf-stat-atual').textContent = bfs[bfs.length-1] + '%';
-    if (_bfChart) _bfChart.destroy();
-    _bfChart = new Chart(document.getElementById('bfChart').getContext('2d'), {
-      type: 'line',
-      data: { labels: bflabels, datasets: [
-        { label: '% Gordura', data: bfs, borderColor: '#ea580c', backgroundColor: 'rgba(234,88,12,0.07)', borderWidth: 2, pointRadius: 4, tension: 0.3, fill: true },
-        { label: 'Meta (<14%)', data: Array(bflabels.length).fill(14), borderColor: '#16a34a', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, fill: false }
-      ]},
-      options: { responsive: true, plugins: { legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280' }}}, scales: { x: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', maxTicksLimit: 8 }, grid: { color: '#f1f5f9' }}, y: { ticks: { font: { family: 'DM Mono', size: 10 }, color: '#6b7280', callback: function(v) { return v + '%'; }}, grid: { color: '#f1f5f9' }}}}
-    });
-  } else if (bfCard) bfCard.style.display = 'none';
-}
-
-// LISTA COMPRAS
-function toggleItem(el) {
-  el.classList.toggle('checked');
-  el.querySelector('input').checked = el.classList.contains('checked');
-}
-function marcarTodos(checked) {
-  document.querySelectorAll('.lista-item').forEach(function(el) {
-    if (checked) el.classList.add('checked'); else el.classList.remove('checked');
-    el.querySelector('input').checked = checked;
-  });
-}
-function enviarWhatsApp() {
-  var itens = [];
-  document.querySelectorAll('.lista-item.checked span').forEach(function(el) { itens.push('- ' + el.textContent.trim()); });
-  if (itens.length === 0) { alert('Marque pelo menos um item antes de enviar!'); return; }
-  var texto = 'Lista de Compras - Performance Luiz' + '%0A%0A' + itens.join('%0A');
-  window.open('https://wa.me/?text=' + texto, '_blank');
-}
-
-// BACKUP
-function exportarBackup() {
-  var EXERCISE_IDS = ['p-abdutora','p-adutora','p-extensora','p-flexora','p-pant-pe','p-goblet','hipthrust','elev-pelvica','supino','p-supino-inc','p-dev-db','p-elev-lat-pol','p-tri-franc','triceps','pullup','pulldown','remada','p-lombar','remada-uni','p-remada-baixa','face-pull','press','p-arnold','p-crucif-inv','p-rosca-scott','p-elev-lat-db','p-rosca-w','woodchop','rot-horizontal','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','hanging-leg','freestyle-plank'];
-  var cargas = {};
-  EXERCISE_IDS.forEach(function(id) {
-    var v = localStorage.getItem('carga_' + id);
-    if (v) { try { cargas[id] = JSON.parse(v); } catch(e) {} }
-  });
-  var dados = {
-    versao: '2.0',
-    exportado_em: new Date().toISOString(),
-    registros: getRegistros(),
-    cargas: cargas,
-    medidas: getMedidas(),
-    checkin_parcial: getCheckinParcial()
-  };
-  var blob = new Blob([JSON.stringify(dados, null, 2)], {type: 'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = 'nexus_backup_' + new Date().toISOString().split('T')[0] + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  alert('Backup completo exportado! Inclui registros, cargas, medidas e programacao.');
-}
-
-function importarBackup(event) {
-  var file = event.target.files[0]; if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      var data = JSON.parse(e.target.result);
-      if (!data.registros || !Array.isArray(data.registros)) { alert('Arquivo invalido.'); return; }
-      var existentes = getRegistros();
-      var tsSet = new Set(existentes.map(function(r) { return r.ts; }));
-      var novos = data.registros.filter(function(r) { return !tsSet.has(r.ts); });
-      var merged = existentes.concat(novos).sort(function(a,b) { return b.ts - a.ts; });
-      saveRegistros(merged); renderHistorico();
-      alert(novos.length + ' novo(s) registro(s) importado(s).');
-    } catch(e) { alert('Erro ao ler arquivo.'); }
-  };
-  reader.readAsText(file); event.target.value = '';
-}
-function limparHistorico() {
-  if (confirm('Apagar todos os registros?')) { localStorage.removeItem('luiz_registros'); renderHistorico(); renderCharts(); }
-}
-
-// CORE DONE
-var CORE_IDS = ['pullup','supino','press','p-adutora','hipthrust','p-flexora','p-abdutora','p-crucif-inv','p-rosca-w','back-squat','hack-squat','reverse-lunge','extensora-uni','supino-declinado','miracle-grow','elev-lat-maq','triceps-testa','paralela-graviton','puxada-supinada','remada-baixa-uni','remada-maq-bil','remada-curv-maq','pullover','deadlift-uni','box-jump','bulgarian-squat','mesa-flexora','rot-externa-cabo','ext-ombro-cabo','prancha-frontal','prancha-lateral','pallof-press','dead-bug','ab-wheel','woodchop','rot-horizontal','hanging-leg','freestyle-plank','superman-din'];
-function getCoreStatus() { try { return JSON.parse(localStorage.getItem('core_done') || '{}'); } catch(e) { return {}; } }
-function saveCoreStatus(s) {
-  localStorage.setItem('core_done', JSON.stringify(s));
-  if (window.fbSaveCoreDone) window.fbSaveCoreDone(s);
-}
-function toggleCoreDone(id) {
-  var hoje = new Date().toISOString().split('T')[0];
-  var status = getCoreStatus();
-  var key = hoje + '_' + id;
-  status[key] = !status[key];
-  saveCoreStatus(status);
-  renderCoreDone();
-}
-function renderCoreDone() {
-  var hoje = new Date().toISOString().split('T')[0];
-  var status = getCoreStatus();
-  CORE_IDS.forEach(function(id) {
-    var key = hoje + '_' + id;
-    var done = !!status[key];
-    var btn = document.getElementById('done-btn-' + id);
-    var lbl = document.getElementById('done-lbl-' + id);
-    var row = document.getElementById('done-row-' + id);
-    if (!btn) return;
-    if (done) { btn.textContent = 'Feito!'; btn.classList.add('done'); lbl.textContent = 'concluido hoje'; lbl.classList.add('done'); row.classList.add('done'); }
-    else { btn.textContent = 'Marcar como feito'; btn.classList.remove('done'); lbl.textContent = 'nao realizado hoje'; lbl.classList.remove('done'); row.classList.remove('done'); }
-  });
-}
-renderCoreDone();
-
-// GRAFICOS AVANCADOS
-var _grafCharts = {};
-function destroyGrafChart(id) { if (_grafCharts[id]) { _grafCharts[id].destroy(); delete _grafCharts[id]; } }
-
-function makeLineChart(canvasId, labels, datasets, yLabel, metaLine) {
-  destroyGrafChart(canvasId);
-  var canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  if (!labels || labels.length < 2) {
-    var ctx0 = canvas.getContext('2d');
-    ctx0.clearRect(0,0,canvas.width,canvas.height);
-    ctx0.fillStyle = '#9ca3af'; ctx0.font = '13px sans-serif'; ctx0.textAlign = 'center';
-    ctx0.fillText('Minimo 2 registros para exibir', canvas.width/2, 60);
-    return;
-  }
-  var colors = ['#0284c7','#ea580c','#16a34a','#d97706','#8b5cf6','#ec4899'];
-  var dsets = datasets.map(function(d, i) {
-    return { label: d.label, data: d.data, borderColor: d.color || colors[i % colors.length], backgroundColor: (d.color || colors[i % colors.length]) + '18', borderWidth: 2.5, pointRadius: 4, pointHoverRadius: 6, tension: 0.35, fill: datasets.length === 1, borderDash: d.dash || [] };
-  });
-  if (metaLine) {
-    dsets.push({ label: metaLine.label, data: Array(labels.length).fill(metaLine.value), borderColor: metaLine.color || '#16a34a', borderWidth: 1.5, borderDash: [6,4], pointRadius: 0, fill: false });
-  }
-  _grafCharts[canvasId] = new Chart(canvas.getContext('2d'), {
-    type: 'line', data: { labels: labels, datasets: dsets },
-    options: { responsive: true, interaction: { mode: 'index', intersect: false },
-      plugins: { legend: { labels: { font: { family: 'DM Sans', size: 11 }, color: '#6b7280', boxWidth: 12 }}, tooltip: { backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#94a3b8', padding: 10 }},
-      scales: { x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', maxTicksLimit: 10 }, grid: { color: '#f1f5f9' }},
-        y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: function(v) { return v + (yLabel ? ' ' + yLabel : ''); }}, grid: { color: '#f1f5f9' }}}}
-  });
-}
-
-function renderGraficos() {
-  var registros = getRegistros().filter(function(r) { return r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
-  var comPeso = registros.filter(function(r) { return r.peso; });
-  makeLineChart('g-peso', comPeso.map(function(r){return r.data;}), [{label:'Peso',data:comPeso.map(function(r){return parseFloat(r.peso);}),color:'#0284c7'}], 'kg', {label:'Meta (92kg)',value:92,color:'#16a34a'});
-  var comBF2 = registros.filter(function(r) { return r.pescoco && r.cintura; });
-  makeLineChart('g-bf', comBF2.map(function(r){return r.data;}), [{label:'% Gordura',data:comBF2.map(function(r){return calcNavyBF(r.pescoco,r.cintura,ALTURA_CM);}),color:'#ea580c'}], '%', {label:'Meta (14%)',value:14,color:'#16a34a'});
-  var comAgua = registros.filter(function(r) { return r.agua; });
-  makeLineChart('g-agua', comAgua.map(function(r){return r.data;}), [{label:'Agua',data:comAgua.map(function(r){return parseFloat(r.agua);}),color:'#0ea5e9'}], 'L', {label:'Meta (3.5L)',value:3.5,color:'#16a34a'});
-  var comSono = registros.filter(function(r) { return r.sono; });
-  makeLineChart('g-sono', comSono.map(function(r){return r.data;}), [{label:'Sono',data:comSono.map(function(r){return parseInt(r.sono);}),color:'#8b5cf6'}], '');
-  var comKcal = registros.filter(function(r) { return r.kcal || r.kcal_gasta; });
-  makeLineChart('g-kcal', comKcal.map(function(r){return r.data;}), [{label:'Ingeridas',data:comKcal.map(function(r){return r.kcal?parseFloat(r.kcal):null;}),color:'#0284c7'},{label:'Gastas',data:comKcal.map(function(r){return r.kcal_gasta?parseFloat(r.kcal_gasta):null;}),color:'#ea580c'}], 'kcal');
-  var comFC = registros.filter(function(r) { return r.fc_media; });
-  makeLineChart('g-fc', comFC.map(function(r){return r.data;}), [{label:'FC Media',data:comFC.map(function(r){return parseFloat(r.fc_media);}),color:'#ef4444'}], 'bpm');
-  var mods = ['natacao','musculacao','core','cardio'];
-  var mCores = ['#0284c7','#ea580c','#16a34a','#d97706'];
-  var semanas = {};
-  registros.forEach(function(r) {
-    if (!r.treinos) return;
-    var mes = r.data.substring(0,7);
-    if (!semanas[mes]) semanas[mes] = {natacao:0,musculacao:0,core:0,cardio:0};
-    mods.forEach(function(m) { if (r.treinos.toLowerCase().indexOf(m) >= 0) semanas[mes][m]++; });
-  });
-  var semLabels = Object.keys(semanas).sort();
-  if (semLabels.length >= 1) {
-    makeLineChart('g-modalidade', semLabels, mods.map(function(m,i){return {label:m,data:semLabels.map(function(s){return semanas[s][m]||0;}),color:mCores[i]};}), 'x');
-  }
-  var exs = [{id:'pullup',canvas:'g-pullup',color:'#0284c7'},{id:'supino',canvas:'g-supino',color:'#ea580c'},{id:'remada',canvas:'g-remada',color:'#16a34a'},{id:'pulldown',canvas:'g-pulldown',color:'#8b5cf6'},{id:'press',canvas:'g-press',color:'#d97706'},{id:'hipthrust',canvas:'g-hipthrust',color:'#ec4899'}];
-  exs.forEach(function(ex) {
-    try {
-      var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]').reverse();
-      makeLineChart(ex.canvas, hist.map(function(h){return h.data;}), [{label:'Carga max',data:hist.map(function(h){return Math.max.apply(null,h.series.map(function(s){return s.carga;}));}),color:ex.color}], 'kg');
-    } catch(e) {}
-  });
-  ['supino','pullup'].forEach(function(ex, i) {
-    try {
-      var hist2 = JSON.parse(localStorage.getItem('carga_' + ex) || '[]').reverse();
-      makeLineChart('g-vol-' + ex, hist2.map(function(h){return h.data;}), [{label:'Volume',data:hist2.map(function(h){return h.series.reduce(function(acc,s){return acc+s.carga*s.reps;},0);}),color:i===0?'#0284c7':'#ea580c'}], 'kg');
-    } catch(e) {}
-  });
-
-  // Graficos natacao: metros e duracao - dados vem do checkin_parcial
-  try {
-    var parcialData = JSON.parse(localStorage.getItem('checkin_parcial') || '{}');
-    var datasNat = Object.keys(parcialData).sort().filter(function(d) {
-      return parcialData[d].natacao && parcialData[d].natacao.feito;
-    });
-    var metrosDados = datasNat.map(function(d) {
-      return parcialData[d].natacao.metros || 0;
-    }).filter(function(v) { return v > 0; });
-    var datasComMetros = datasNat.filter(function(d) {
-      return parcialData[d].natacao.metros > 0;
-    });
-    if (datasComMetros.length > 0) {
-      makeLineChart('g-natacao-metros', datasComMetros, [{
-        label: 'Metros nadados',
-        data: metrosDados,
-        color: '#0284c7'
-      }], 'm');
-    }
-    var duracaoDados = datasNat.map(function(d) {
-      return parcialData[d].natacao.duracao || 0;
-    }).filter(function(v) { return v > 0; });
-    var datasComDuracao = datasNat.filter(function(d) {
-      return parcialData[d].natacao.duracao > 0;
-    });
-    if (datasComDuracao.length > 0) {
-      makeLineChart('g-natacao-duracao', datasComDuracao, [{
-        label: 'Duracao (min)',
-        data: duracaoDados,
-        color: '#06b6d4'
-      }], 'min');
-    }
-  } catch(e) {}
-}
-
-// ── AGUA EM TEMPO REAL ──
-function getAguaHoje() {
-  var hoje = new Date().toISOString().split('T')[0];
-  var key = 'agua_rt_' + hoje;
-  return parseFloat(localStorage.getItem(key) || '0');
-}
-function setAguaHoje(val) {
-  var hoje = new Date().toISOString().split('T')[0];
-  localStorage.setItem('agua_rt_' + hoje, val.toFixed(1));
-  if (window.fbSaveAgua) window.fbSaveAgua(hoje, val.toFixed(1));
-  renderAgua();
-}
-function addAgua(litros) {
-  var atual = getAguaHoje();
-  setAguaHoje(Math.min(atual + litros, 15));
-}
-function resetAgua() {
-  if (confirm('Zerar o controle de agua de hoje?')) setAguaHoje(0);
-}
-function renderAgua() {
-  var val = getAguaHoje();
-  var meta = 3.5;
-  var pct = Math.min(val / meta * 100, 100);
-  var display = document.getElementById('agua-hoje-display');
-  var progress = document.getElementById('agua-progress');
-  var faltam = document.getElementById('agua-faltam');
-  if (display) display.textContent = val.toFixed(1).replace('.', ',') + ' L';
-  if (progress) progress.style.width = pct + '%';
-  if (faltam) {
-    var restam = Math.max(meta - val, 0);
-    faltam.textContent = restam > 0 ? 'Faltam ' + restam.toFixed(1).replace('.', ',') + 'L' : 'Meta atingida!';
-    faltam.style.color = restam === 0 ? '#16a34a' : '#6b7280';
-  }
-}
-renderAgua();
-
-// ── STREAK ──
-function calcStreak() {
-  var registros = getRegistros();
-  if (registros.length === 0) return 0;
-  var sorted = registros.map(function(r) { return r.data; }).filter(Boolean).sort().reverse();
-  var unique = [...new Set(sorted)];
-  var streak = 0;
-  var hoje = new Date();
-  for (var i = 0; i < unique.length; i++) {
-    var esperado = new Date(hoje);
-    esperado.setDate(esperado.getDate() - i);
-    var esperadoStr = esperado.toISOString().split('T')[0];
-    if (unique[i] === esperadoStr) streak++;
-    else break;
-  }
-  return streak;
-}
-function renderStreak() {
-  var streak = calcStreak();
-  var el = document.getElementById('streak-display');
-  var total = document.getElementById('total-checkins');
-  if (el) el.textContent = streak;
-  if (total) total.textContent = getRegistros().length;
-}
-renderStreak();
-
-// ── COMPARATIVO SEMANAL ──
-function renderComparativo() {
-  var el = document.getElementById('comparativo-semanal');
-  if (!el) return;
-  var registros = getRegistros().filter(function(r) { return r.data; }).sort(function(a,b) { return a.data > b.data ? 1 : -1; });
-  if (registros.length < 2) { el.textContent = 'Sem dados suficientes ainda.'; return; }
-
-  var hoje = new Date();
-  var inicioSemana = new Date(hoje);
-  inicioSemana.setDate(hoje.getDate() - hoje.getDay());
-  var inicioSemAnt = new Date(inicioSemana);
-  inicioSemAnt.setDate(inicioSemAnt.getDate() - 7);
-
-  function getRegs(ini, fim) {
-    return registros.filter(function(r) {
-      var d = new Date(r.data + 'T12:00:00');
-      return d >= ini && d < fim;
-    });
-  }
-
-  var semAtual = getRegs(inicioSemana, hoje);
-  var semAnt = getRegs(inicioSemAnt, inicioSemana);
-
-  if (semAtual.length === 0 && semAnt.length === 0) { el.textContent = 'Sem dados desta semana ainda.'; return; }
-
-  var pesoAtual = semAtual.length > 0 && semAtual[semAtual.length-1].peso ? parseFloat(semAtual[semAtual.length-1].peso) : null;
-  var pesoAnt = semAnt.length > 0 && semAnt[semAnt.length-1].peso ? parseFloat(semAnt[semAnt.length-1].peso) : null;
-
-  var treinsAtual = semAtual.reduce(function(acc, r) { return acc + (r.treinos ? r.treinos.split(',').length : 0); }, 0);
-  var treinsAnt = semAnt.reduce(function(acc, r) { return acc + (r.treinos ? r.treinos.split(',').length : 0); }, 0);
-
-  var html = '';
-  if (pesoAtual && pesoAnt) {
-    var diffPeso = (pesoAtual - pesoAnt).toFixed(1);
-    var cor = diffPeso <= 0 ? '#16a34a' : '#ea580c';
-    html += 'Peso: <strong style="color:' + cor + '">' + (diffPeso > 0 ? '+' : '') + diffPeso + ' kg</strong> vs semana anterior<br>';
-  }
-  html += 'Treinos: <strong>' + treinsAtual + '</strong> esta semana vs <strong>' + treinsAnt + '</strong> semana anterior<br>';
-  html += 'Check-ins: <strong>' + semAtual.length + '</strong> esta semana vs <strong>' + semAnt.length + '</strong> semana anterior';
-  el.innerHTML = html;
-}
-renderComparativo();
-
-// ── MAPA DE CALOR ──
-function renderHeatmap() {
-  var container = document.getElementById('heatmap-container');
-  if (!container) return;
-  var registros = getRegistros();
-  var treinosMap = {};
-  registros.forEach(function(r) {
-    if (r.data && r.treinos) treinosMap[r.data] = r.treinos.split(',').length;
-  });
-  var hoje = new Date();
-  var html = '<div class="heatmap-grid">';
-  for (var w = 12; w >= 0; w--) {
-    html += '<div class="heatmap-col">';
-    for (var d = 6; d >= 0; d--) {
-      var date = new Date(hoje);
-      date.setDate(hoje.getDate() - (w * 7 + d));
-      var dateStr = date.toISOString().split('T')[0];
-      var count = treinosMap[dateStr] || 0;
-      var color = count === 0 ? '#e2e8f0' : count === 1 ? '#bfdbfe' : count <= 3 ? '#60a5fa' : '#0284c7';
-      var title = dateStr + ': ' + (count > 0 ? count + ' treino(s)' : 'sem treino');
-      html += '<div class="heatmap-cell" style="background:' + color + '" title="' + title + '"></div>';
-    }
-    html += '</div>';
-  }
-  html += '</div>';
-  container.innerHTML = html;
-}
-renderHeatmap();
-
-// ── TIMER DE DESCANSO ──
-var timerInterval = null;
-var timerSeconds = 0;
-
-function startTimer(segundos, exName) {
-  if (timerInterval) clearInterval(timerInterval);
-  timerSeconds = segundos;
-  var overlay = document.getElementById('timer-overlay');
-  var display = document.getElementById('timer-display');
-  var label = document.getElementById('timer-ex-name');
-  if (!overlay) return;
-  overlay.style.display = 'block';
-  if (label) label.textContent = exName || '';
-  timerInterval = setInterval(function() {
-    timerSeconds--;
-    var min = Math.floor(timerSeconds / 60);
-    var sec = timerSeconds % 60;
-    if (display) display.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
-    if (display) display.style.color = timerSeconds <= 10 ? '#ea580c' : '#0284c7';
-    if (timerSeconds <= 0) {
-      clearInterval(timerInterval);
-      overlay.style.display = 'none';
-    }
-  }, 1000);
-  var min = Math.floor(timerSeconds / 60);
-  var sec = timerSeconds % 60;
-  if (display) display.textContent = min + ':' + (sec < 10 ? '0' : '') + sec;
-}
-
-function cancelTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  var overlay = document.getElementById('timer-overlay');
-  if (overlay) overlay.style.display = 'none';
-}
-
-// Timer agora e individual por serie (botoes na propria serie)
-
-// ── PR BOARD ──
-function renderPRBoard() {
-  var el = document.getElementById('pr-board-content');
-  if (!el) return;
-  var exercicios = [
-    {id:'pullup', nome:'Barra Fixa'},
-    {id:'supino', nome:'Supino Reto'},
-    {id:'remada', nome:'Remada Curvada'},
-    {id:'pulldown', nome:'Puxada Frontal'},
-    {id:'press', nome:'Desenvolvimento Militar'},
-    {id:'triceps', nome:'Triceps Corda'},
-    {id:'rosca', nome:'Rosca Direta'},
-    {id:'hipthrust', nome:'Hip Thrust'},
-    {id:'abdutor', nome:'Cadeira Abdutora'},
-    {id:'p-pant-pe', nome:'Panturrilha em Pe'},
-    {id:'remada-uni', nome:'Remada Unilateral'},
-    {id:'glute4', nome:'Extensao de Quadril'}
-  ];
-  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">';
-  exercicios.forEach(function(ex) {
-    var hist = JSON.parse(localStorage.getItem('carga_' + ex.id) || '[]');
-    var pr = 0; var prData = '-'; var total = 0;
-    hist.forEach(function(h) {
-      h.series.forEach(function(s) {
-        if (s.carga > pr) { pr = s.carga; prData = h.data; }
-      });
-      total++;
-    });
-    var badge = pr > 0 ? '<span style="background:#fef3c7;color:#b45309;font-size:.6rem;padding:2px 6px;border-radius:10px;font-weight:700">PR</span>' : '';
-    html += '<div class="card" style="padding:.85rem">' +
-      '<div style="font-size:.75rem;font-weight:600;color:#374151;margin-bottom:.3rem">' + ex.nome + '</div>' +
-      (pr > 0 ?
-        '<div style="font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
-        '<div style="font-size:.62rem;color:#6b7280">' + prData + ' · ' + total + ' sessao(oes)</div>' :
-        '<div style="font-size:.8rem;color:#9ca3af">Sem registros</div>'
-      ) + '</div>';
-  });
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-// ── MEDIDAS CORPORAIS ──
-function getMedidas() {
-  try { return JSON.parse(localStorage.getItem('nexus_medidas') || '[]'); } catch(e) { return []; }
-}
-function saveMedidas(m) {
-  localStorage.setItem('nexus_medidas', JSON.stringify(m));
-  if (window.fbSaveMedidas) window.fbSaveMedidas(m);
-}
-function salvarMedidas() {
-  var campos = ['pescoco','peitoral','braco','cintura','quadril','coxa','panturrilha'];
-  var reg = { data: new Date().toISOString().split('T')[0], ts: Date.now() };
-  var temAlgum = false;
-  campos.forEach(function(c) {
-    var el = document.getElementById('med-' + c);
-    if (el && el.value) { reg[c] = parseFloat(el.value); temAlgum = true; }
-  });
-  if (!temAlgum) { alert('Preencha pelo menos uma medida.'); return; }
-  var medidas = getMedidas();
-  medidas.unshift(reg);
-  saveMedidas(medidas);
-  renderMedidas();
-  campos.forEach(function(c) {
-    var el = document.getElementById('med-' + c);
-    if (el) el.value = '';
-  });
-  alert('Medidas salvas!');
-}
-function renderMedidas() {
-  var el = document.getElementById('medidas-historico');
-  if (!el) return;
-  var medidas = getMedidas();
-  if (medidas.length === 0) { el.innerHTML = '<div class="alert alert-info">Nenhuma medida registrada ainda.</div>'; return; }
-
-  var campos = [
-    {id:'pescoco', nome:'Pescoço'},
-    {id:'peitoral', nome:'Peitoral'},
-    {id:'braco', nome:'Braço'},
-    {id:'cintura', nome:'Cintura'},
-    {id:'quadril', nome:'Quadril'},
-    {id:'coxa', nome:'Coxa'},
-    {id:'panturrilha', nome:'Panturrilha'}
-  ];
-
-  var html = '<div class="card"><div class="card-title">Histórico de Medidas</div><div style="overflow-x:auto"><table class="log-table"><thead><tr><th>Data</th>';
-  campos.forEach(function(c) { html += '<th>' + c.nome + '</th>'; });
-  html += '</tr></thead><tbody>';
-  medidas.slice(0, 10).forEach(function(m) {
-    html += '<tr><td style="font-size:.7rem;white-space:nowrap">' + m.data + '</td>';
-    campos.forEach(function(c) {
-      var val = m[c.id];
-      html += '<td style="font-size:.72rem">' + (val ? val + ' cm' : '-') + '</td>';
-    });
-    html += '</tr>';
-  });
-  html += '</tbody></table></div></div>';
-
-  // Mini charts per medida
-  html += '<div class="card" style="margin-top:.75rem"><div class="card-title">Evolução por Medida</div>';
-  html += '<canvas id="medidas-chart" style="max-height:220px"></canvas></div>';
-  el.innerHTML = html;
-
-  // Draw chart
-  setTimeout(function() {
-    var sorted = medidas.slice().reverse();
-    if (sorted.length < 2) return;
-    var labels = sorted.map(function(m) { return m.data; });
-    var datasets = campos.map(function(c, i) {
-      var colors = ['#0284c7','#ea580c','#8b5cf6','#16a34a','#d97706','#ec4899','#6b7280'];
-      return {
-        label: c.nome,
-        data: sorted.map(function(m) { return m[c.id] || null; }),
-        borderColor: colors[i],
-        borderWidth: 2,
-        pointRadius: 3,
-        tension: 0.3,
-        fill: false
-      };
-    });
-    if (window._medidasChart) window._medidasChart.destroy();
-    var canvas = document.getElementById('medidas-chart');
-    if (canvas) {
-      window._medidasChart = new Chart(canvas.getContext('2d'), {
-        type: 'line',
-        data: { labels: labels, datasets: datasets },
-        options: { responsive: true, plugins: { legend: { labels: { font: { family: 'DM Sans', size: 10 }, color: '#6b7280' }}}, scales: { x: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af' }}, y: { ticks: { font: { family: 'DM Mono', size: 9 }, color: '#9ca3af', callback: function(v) { return v + ' cm'; }}}}}
-      });
-    }
-  }, 100);
-}
-
-
-
-// ── OVERRIDE SHOWTAB FOR NEW TABS ──
-
-
-// ── PESO RÁPIDO ──
-function salvarPesoRapido() {
-  var input = document.getElementById('peso-novo-input');
-  if (!input || !input.value) { alert('Digite o peso antes de salvar.'); return; }
-  var peso = parseFloat(input.value.replace(',','.'));
-  if (isNaN(peso) || peso < 30 || peso > 300) { alert('Peso inválido.'); return; }
-  
-  var hoje = new Date().toISOString().split('T')[0];
-  var registros = getRegistros();
-  
-  // Check if today already has a registro - update it
-  var idx = registros.findIndex(function(r) { return r.data === hoje; });
-  if (idx >= 0) {
-    registros[idx].peso = peso;
-  } else {
-    // Create minimal registro just with peso
-    registros.unshift({
-      data: hoje,
-      peso: peso,
-      kcal: null,
-      agua: null,
-      kcal_gasta: null,
-      fc_media: null,
-      treinos: '',
-      sono: null,
-      obs: '',
-      ts: Date.now()
-    });
-  }
-  
-  saveRegistros(registros);
-  
-  // Update displays
-  var display = document.getElementById('peso-display');
-  var displayGrid = document.getElementById('peso-display-grid');
-  if (display) display.textContent = peso.toString().replace('.',',');
-  if (displayGrid) displayGrid.textContent = peso.toString().replace('.',',');
-  
-  var sub = document.getElementById('peso-data-sub');
-  if (sub) sub.textContent = hoje;
-  
-  input.value = '';
-  calcProjecao(getRegistros());
-  renderStreak();
-  renderComparativo();
-}
-
-// Load last peso on init
-function initPesoDisplay() {
-  var registros = getRegistros();
-  var comPeso = registros.find(function(r) { return r.peso; });
-  if (comPeso) {
-    var display = document.getElementById('peso-display');
-    var displayGrid = document.getElementById('peso-display-grid');
-    var sub = document.getElementById('peso-data-sub');
-    if (display) display.textContent = comPeso.peso.toString().replace('.',',');
-    if (displayGrid) displayGrid.textContent = comPeso.peso.toString().replace('.',',');
-    if (sub) sub.textContent = comPeso.data;
-  }
-}
-
-// ── NAVY BF NA ABA MEDIDAS ──
-function calcNavyLive() {
-  var p = parseFloat(document.getElementById('navy-pescoco').value);
-  var c = parseFloat(document.getElementById('navy-cintura').value);
-  var q = parseFloat(document.getElementById('navy-quadril').value);
-  var res = document.getElementById('navy-resultado');
-  if (!res) return;
-  if (isNaN(p) || isNaN(c) || isNaN(q)) {
-    res.textContent = 'Preencha os 3 campos para calcular';
-    res.style.color = '#6b7280';
-    return;
-  }
-  var bf = calcNavyBF(p, c, ALTURA_CM);
-  var pesoAtual = parseFloat(document.getElementById('peso-display').textContent.replace(',','.')) || 0;
-  var mm = pesoAtual > 0 ? (pesoAtual * (1 - bf/100)).toFixed(1) : '—';
-  var mg = pesoAtual > 0 ? (pesoAtual * bf/100).toFixed(1) : '—';
-  var cor = bf < 14 ? '#16a34a' : bf < 20 ? '#d97706' : '#e11d48';
-  res.innerHTML = '% Gordura: <strong style="color:' + cor + ';font-size:1.1rem">' + bf + '%</strong>' +
-    (pesoAtual > 0 ? ' — Massa Magra: <strong>' + mm + 'kg</strong> / Gordura: <strong>' + mg + 'kg</strong>' : '');
-  res.style.color = '#374151';
-}
-
-function salvarNavyBF() {
-  var p = parseFloat(document.getElementById('navy-pescoco').value);
-  var c = parseFloat(document.getElementById('navy-cintura').value);
-  var q = parseFloat(document.getElementById('navy-quadril').value);
-  if (isNaN(p) || isNaN(c) || isNaN(q)) { alert('Preencha pescoço, cintura e quadril.'); return; }
-  var bf = calcNavyBF(p, c, ALTURA_CM);
-  var hoje = new Date().toISOString().split('T')[0];
-  
-  // Save to medidas
-  var medidas = getMedidas();
-  var idx = medidas.findIndex(function(m) { return m.data === hoje; });
-  var reg = idx >= 0 ? medidas[idx] : { data: hoje, ts: Date.now() };
-  reg.pescoco = p; reg.cintura = c; reg.quadril = q; reg.bf = bf;
-  if (idx >= 0) medidas[idx] = reg; else medidas.unshift(reg);
-  saveMedidas(medidas);
-  
-  // Update BF display on visao geral
-  var bfDisplay = document.getElementById('bf-display');
-  var bfSub = document.getElementById('bf-sub');
-  if (bfDisplay) bfDisplay.textContent = bf + '%';
-  if (bfSub) bfSub.textContent = hoje;
-  
-  // Update registros with BF data
-  var registros = getRegistros();
-  var rIdx = registros.findIndex(function(r) { return r.data === hoje; });
-  if (rIdx >= 0) {
-    registros[rIdx].pescoco = p;
-    registros[rIdx].cintura = c;
-    registros[rIdx].quadril = q;
-  } else {
-    registros.unshift({ data: hoje, pescoco: p, cintura: c, quadril: q, ts: Date.now() });
-  }
-  saveRegistros(registros);
-  
-  document.getElementById('navy-pescoco').value = '';
-  document.getElementById('navy-cintura').value = '';
-  document.getElementById('navy-quadril').value = '';
-  document.getElementById('navy-resultado').textContent = 'Salvo! % Gordura: ' + bf + '%';
-  renderMedidas();
-  alert('% Gordura salvo: ' + bf + '%');
-}
-
-// ── META PRAZO EDITAVEL ──
-(function() {
-  var saved = localStorage.getItem('meta_prazo');
-  if (saved) aplicarMetaPrazo(saved);
-})();
-
-function toggleMetaPrazoEdit() {
-  var row = document.getElementById('meta-prazo-edit-row');
-  var saved = localStorage.getItem('meta_prazo') || '2026-08-28';
-  var input = document.getElementById('meta-prazo-input');
-  if (row.style.display === 'none') {
-    row.style.display = 'inline';
-    input.value = saved;
-  } else {
-    row.style.display = 'none';
-  }
-}
-
-function salvarMetaPrazo() {
-  var input = document.getElementById('meta-prazo-input');
-  if (!input || !input.value) return;
-  var val = input.value;
-  localStorage.setItem('meta_prazo', val);
-  if (window.fbSaveConfig) window.fbSaveConfig('meta_prazo', val);
-  aplicarMetaPrazo(val);
-  document.getElementById('meta-prazo-edit-row').style.display = 'none';
-}
-
-function aplicarMetaPrazo(val) {
-  var d = new Date(val + 'T12:00:00');
-  var meses = ['janeiro','fevereiro','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
-  var fmt = d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
-  var el = document.getElementById('meta-prazo-display');
-  if (el) el.textContent = fmt;
-  atualizarCardsMeta(val);
-}
-
-function atualizarCardsMeta(dataStr) {
-  var hoje = new Date();
-  var meta = new Date(dataStr + 'T12:00:00');
-  var diffDias = Math.round((meta - hoje) / 86400000);
-
-  // Atualiza card colorido Meta Final
-  var metaFinalEl = document.querySelector('.card-value[style*="ea580c"]');
-  if (metaFinalEl) {
-    var d = new Date(dataStr + 'T12:00:00');
-    metaFinalEl.textContent = d.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  }
-
-  // Atualiza dias restantes
-  var diasEl = document.getElementById('dias-restantes-card');
-  if (diasEl) diasEl.textContent = diffDias > 0 ? diffDias : 0;
-
-  // Atualiza countdown card
-  var countMsg = document.getElementById('countdown-msg');
-  if (countMsg) {
-    if (diffDias < 0) {
-      countMsg.textContent = 'Prazo encerrado ha ' + Math.abs(diffDias) + ' dias.';
-    } else if (diffDias === 0) {
-      countMsg.textContent = 'Hoje e o dia da meta!';
-    } else {
-      countMsg.textContent = diffDias + ' dias para a meta.';
-    }
-  }
-  var countNum = document.querySelector('.countdown-num');
-  if (countNum) countNum.textContent = Math.abs(diffDias);
-}
-
-// ── FECHAR O DIA ──
-function fecharDia(dataStr) {
-  var kcalEl = document.getElementById('fechar-kcal-' + dataStr);
-  var kcalTotal = kcalEl && kcalEl.value ? parseFloat(kcalEl.value) : null;
-
-  // Get treinos from calendar
-  var parcial = getCheckinParcial();
-  var diaData = parcial[dataStr] || {};
-  var treinoFeitos = [];
-  var kcalTreinos = 0;
-  Object.keys(diaData).forEach(function(tipo) {
-    if (diaData[tipo].feito) {
-      treinoFeitos.push(tipo);
-      if (diaData[tipo].kcal) kcalTreinos += diaData[tipo].kcal;
-    }
-  });
-
-  // Get agua from realtime control
-  var agua = parseFloat(localStorage.getItem('agua_rt_' + dataStr) || '0') || null;
-
-  // Get last known weight
-  var registros = getRegistros();
-  var ultimoPeso = null;
-  for (var i = 0; i < registros.length; i++) {
-    if (registros[i].peso) { ultimoPeso = registros[i].peso; break; }
-  }
-
-  // Build registro
-  var reg = {
-    data: dataStr,
-    peso: ultimoPeso,
-    kcal: null,
-    agua: agua,
-    kcal_gasta: kcalTotal,
-    kcal_treinos: kcalTreinos > 0 ? kcalTreinos : null,
-    fc_media: null,
-    treinos: treinoFeitos.join(', '),
-    sono: null,
-    obs: '',
-    ts: new Date(dataStr + 'T23:59:00').getTime()
-  };
-
-  // Check if already exists — update or insert
-  var existing = getRegistros();
-  var idx = existing.findIndex(function(r) { return r.data === dataStr; });
-  if (idx >= 0) {
-    existing[idx] = reg;
-  } else {
-    existing.unshift(reg);
-  }
-  saveRegistros(existing);
-
-  // Re-render
-  renderCalendario();
-  abrirDiaCalendario(dataStr);
-  renderStreak();
-  renderComparativo();
-
-  var msg = 'Dia ' + dataStr + ' fechado!';
-  if (treinoFeitos.length > 0) msg += ' Treinos: ' + treinoFeitos.join(', ') + '.';
-  if (kcalTotal) msg += ' Kcal total: ' + kcalTotal + '.';
-  alert(msg);
-}
-
-function reabrirFechamentoDia(dataStr) {
-  // Remove existing registro for this day
-  var existing = getRegistros();
-  existing = existing.filter(function(r) { return r.data !== dataStr; });
-  saveRegistros(existing);
-  abrirDiaCalendario(dataStr);
-}
-
-
-
-
-// ── CALENDARIO / PROGRAMACAO ──
-var calMesAtual = new Date().getMonth();
-var calAnoAtual = new Date().getFullYear();
-var diaDetalheAberto = null;
-
-var TIPO_CORES = {
-  natacao: '#0284c7',
-  musculacao: '#ea580c',
-  core: '#16a34a',
-  cardio: '#eab308'
-};
-
-var TIPO_EMOJI = {
-  natacao: '🏊',
-  musculacao: '💪',
-  core: '🔥',
-  cardio: '🚴'
-};
-
-function getCheckinParcial() {
-  try { return JSON.parse(localStorage.getItem('checkin_parcial') || '{}'); } catch(e) { return {}; }
-}
-function saveCheckinParcial(data) {
-  localStorage.setItem('checkin_parcial', JSON.stringify(data));
-  if (window.fbSaveParcial) window.fbSaveParcial(data);
-}
-
-function renderCalendario() {
-  var titulo = document.getElementById('calendario-mes-titulo');
-  if (!titulo) return;
-  var meses = ['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  titulo.textContent = meses[calMesAtual] + ' ' + calAnoAtual;
-
-  var primeiroDia = new Date(calAnoAtual, calMesAtual, 1);
-  var ultimoDia = new Date(calAnoAtual, calMesAtual + 1, 0);
-  var diaSemanaInicio = primeiroDia.getDay();
-  var totalDias = ultimoDia.getDate();
-  var hojeStr = new Date().toISOString().split('T')[0];
-  var parcial = getCheckinParcial();
-
-  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">';
-  ['D','S','T','Q','Q','S','S'].forEach(function(d) {
-    html += '<div style="font-family:DM Mono,monospace;font-size:.6rem;color:#9ca3af;font-weight:700;padding:.3rem 0">' + d + '</div>';
-  });
-
-  for (var i = 0; i < diaSemanaInicio; i++) html += '<div></div>';
-
-  for (var dia = 1; dia <= totalDias; dia++) {
-    var dataObj = new Date(calAnoAtual, calMesAtual, dia);
-    var dataStr = dataObj.toISOString().split('T')[0];
-    var isHoje = dataStr === hojeStr;
-    var diaParc = parcial[dataStr] || {};
-
-    var dotsHtml = '';
-    var tiposDots = ['natacao','musculacao','core','cardio'];
-    tiposDots.forEach(function(tipo) {
-      if (diaParc[tipo] && diaParc[tipo].feito) {
-        var cor = TIPO_CORES[tipo];
-        dotsHtml += '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + cor + ';margin:0 2px"></span>';
-      }
-    });
-    var temRegistro = getRegistros().some(function(r) { return r.data === dataStr; });
-    if (temRegistro && !dotsHtml) {
-      dotsHtml = '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#9ca3af;margin:0 2px"></span>';
-    }
-
-    var bgCell = isHoje ? '#dbeafe' : '#fff';
-    var borderCell = isHoje ? '2px solid #0284c7' : '1px solid #f1f5f9';
-    var sq = String.fromCharCode(39);
-    html += '<div onclick="abrirDiaCalendario(' + sq + dataStr + sq + ')" style="cursor:pointer;background:' + bgCell + ';border:' + borderCell + ';border-radius:6px;padding:.3rem .2rem;min-height:42px">' +
-      '<div style="font-size:.7rem;font-weight:' + (isHoje?'700':'500') + ';color:' + (isHoje?'#0284c7':'#374151') + '">' + dia + '</div>' +
-      '<div style="margin-top:2px">' + dotsHtml + '</div>' +
-      '</div>';
-  }
-  html += '</div>';
-
-  var grid = document.getElementById('calendario-grid');
-  if (grid) grid.innerHTML = html;
-}
-
-function mudarMesCalendario(delta) {
-  calMesAtual += delta;
-  if (calMesAtual > 11) { calMesAtual = 0; calAnoAtual++; }
-  if (calMesAtual < 0) { calMesAtual = 11; calAnoAtual--; }
-  renderCalendario();
-}
-
-function abrirDiaCalendario(dataStr) {
-  diaDetalheAberto = dataStr;
-  var dataObj = new Date(dataStr + 'T12:00:00');
-  var diaSemana = dataObj.getDay();
-  var parcial = getCheckinParcial();
-  var diaData = parcial[dataStr] || {};
-  var diasNomes = ['Domingo','Segunda','Terca','Quarta','Quinta','Sexta','Sabado'];
-  var dataFmt = dataObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit', year:'numeric'});
-
-  var tiposConfig = [
-    {tipo:'natacao', nome:'Natacao', emoji:'🏊', cor:'#0284c7', bg:'#eff6ff', border:'#bfdbfe', subOpcoes:null},
-    {tipo:'musculacao', nome:'Musculacao', emoji:'💪', cor:'#ea580c', bg:'#fff7ed', border:'#fed7aa', subOpcoes:['A','B','C','D']},
-    {tipo:'core', nome:'Core', emoji:'🔥', cor:'#16a34a', bg:'#f0fdf4', border:'#bbf7d0', subOpcoes:null},
-    {tipo:'cardio', nome:'Cardio', emoji:'🚴', cor:'#eab308', bg:'#fefff0', border:'#fef08a', subOpcoes:null}
-  ];
-
-  var sq = String.fromCharCode(39);
-  var html = '<div class="card" style="margin-top:1rem">' +
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">' +
-    '<div class="card-title">' + diasNomes[diaSemana] + ' - ' + dataFmt + '</div>' +
-    '<button onclick="fecharDiaCalendario()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af">X</button>' +
-    '</div>' +
-    '<div style="font-size:.75rem;color:#6b7280;margin-bottom:.75rem">Selecione os treinos realizados:</div>';
-
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem">';
-  tiposConfig.forEach(function(t) {
-    var tData = diaData[t.tipo] || {};
-    var feito = tData.feito || false;
-    html += '<button onclick="toggleTipoTreino(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" ' +
-      'style="border:2px solid ' + (feito ? t.cor : '#e2e8f0') + ';border-radius:10px;padding:.6rem;background:' + (feito ? t.bg : '#fff') + ';cursor:pointer;text-align:left">' +
-      '<div style="font-size:1.2rem">' + t.emoji + '</div>' +
-      '<div style="font-weight:700;font-size:.8rem;color:' + (feito ? t.cor : '#374151') + '">' + t.nome + '</div>' +
-      (feito ? '<div style="font-size:.65rem;color:' + t.cor + '">Selecionado</div>' : '<div style="font-size:.65rem;color:#9ca3af">Toque para selecionar</div>') +
-      '</button>';
-  });
-  html += '</div>';
-
-  tiposConfig.forEach(function(t) {
-    var tData = diaData[t.tipo] || {};
-    var feito = tData.feito || false;
-    if (!feito) return;
-
-    html += '<div style="border:1.5px solid ' + t.border + ';border-radius:10px;padding:.85rem;margin-bottom:.6rem;background:' + t.bg + '">';
-    html += '<div style="font-weight:700;font-size:.82rem;color:' + t.cor + ';margin-bottom:.5rem">' + t.emoji + ' ' + t.nome + '</div>';
-
-    if (t.subOpcoes) {
-      html += '<div style="margin-bottom:.5rem"><div style="font-size:.68rem;color:#6b7280;margin-bottom:.3rem">Qual treino?</div>';
-      html += '<div style="display:flex;gap:.3rem;flex-wrap:wrap">';
-      t.subOpcoes.forEach(function(sub) {
-        var sel = tData.sub === sub;
-        html += '<button onclick="setSubTreino(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ',' + sq + sub + sq + ')" ' +
-          'style="border:1.5px solid ' + (sel ? t.cor : '#e2e8f0') + ';border-radius:6px;padding:.3rem .7rem;background:' + (sel ? t.bg : '#fff') + ';cursor:pointer;font-weight:' + (sel ? '700' : '400') + ';font-size:.8rem;color:' + (sel ? t.cor : '#374151') + '">TREINO ' + sub + '</button>';
-      });
-      html += '</div></div>';
-    }
-
-    html += '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap">' +
-      '<input type="number" id="parcial-kcal-' + t.tipo + '-' + dataStr + '" placeholder="Kcal gasta" value="' + (tData.kcal || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="flex:1;min-width:90px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-      '<input type="number" id="parcial-fc-' + t.tipo + '-' + dataStr + '" placeholder="FC media (bpm)" value="' + (tData.fc || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="flex:1;min-width:90px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-      '</div>';
-
-    if (t.tipo === 'natacao') {
-      html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap">' +
-        '<input type="number" id="metros-natacao-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + 'natacao' + sq + ')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-        '<input type="number" id="duracao-natacao-' + dataStr + '" placeholder="Duracao (min)" value="' + (tData.duracao || '') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + 'natacao' + sq + ')" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem">' +
-        '</div>';
-    }
-    html += '</div>';
-  });
-
-  // Fechar o Dia
-  var sq2 = String.fromCharCode(39);
-  html += '<div style="margin-top:1rem;border-top:1.5px solid #e2e8f0;padding-top:1rem">';
-  var regExistente = getRegistros().find(function(r) { return r.data === dataStr; });
-  if (regExistente && regExistente.kcal_gasta) {
-    html += '<div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:.85rem;font-size:.82rem">' +
-      '<div style="font-weight:700;color:#15803d;margin-bottom:.3rem">Dia fechado</div>' +
-      '<div style="color:#374151">Kcal total: <strong>' + regExistente.kcal_gasta + ' kcal</strong></div>' +
-      '<button onclick="reabrirFechamentoDia(' + sq2 + dataStr + sq2 + ')" style="margin-top:.5rem;background:none;border:1px solid #16a34a;border-radius:6px;padding:.3rem .75rem;font-size:.72rem;color:#15803d;cursor:pointer">Editar</button>' +
-      '</div>';
-  } else {
-    html += '<div style="font-weight:700;font-size:.85rem;color:#0f172a;margin-bottom:.4rem">Fechar o dia</div>' +
-      '<div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.4rem">' +
-      '<input type="number" id="fechar-kcal-' + dataStr + '" placeholder="Total kcal gasta no dia" style="flex:1;min-width:140px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.85rem">' +
-      '<button class="btn" onclick="fecharDia(' + sq2 + dataStr + sq2 + ')" style="white-space:nowrap">Fechar o dia</button>' +
-      '</div>';
-  }
-  html += '</div></div>';
-
-  var container = document.getElementById('dia-detalhe-container');
-  if (container) container.innerHTML = html;
-}
-
-
-function fecharDiaCalendario() {
-  diaDetalheAberto = null;
-  var container = document.getElementById('dia-detalhe-container');
-  if (container) container.innerHTML = '';
-}
-
-function toggleTipoTreino(dataStr, tipo) {
-  var parcial = getCheckinParcial();
-  if (!parcial[dataStr]) parcial[dataStr] = {};
-  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
-  parcial[dataStr][tipo].feito = !parcial[dataStr][tipo].feito;
-  saveCheckinParcial(parcial);
-  renderCalendario();
-  abrirDiaCalendario(dataStr);
-}
-
-function setSubTreino(dataStr, tipo, sub) {
-  var parcial = getCheckinParcial();
-  if (!parcial[dataStr]) parcial[dataStr] = {};
-  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
-  parcial[dataStr][tipo].sub = sub;
-  saveCheckinParcial(parcial);
-  abrirDiaCalendario(dataStr);
-}
-
-function salvarCamposParcial(dataStr, tipo) {
-  var parcial = getCheckinParcial();
-  if (!parcial[dataStr]) parcial[dataStr] = {};
-  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
-  var kcalEl = document.getElementById('parcial-kcal-' + tipo + '-' + dataStr);
-  var fcEl = document.getElementById('parcial-fc-' + tipo + '-' + dataStr);
-  var metrosEl = document.getElementById('metros-natacao-' + dataStr);
-  var duracaoEl = document.getElementById('duracao-natacao-' + dataStr);
-  if (kcalEl && kcalEl.value) parcial[dataStr][tipo].kcal = parseFloat(kcalEl.value);
-  if (fcEl && fcEl.value) parcial[dataStr][tipo].fc = parseFloat(fcEl.value);
-  if (metrosEl && metrosEl.value) parcial[dataStr][tipo].metros = parseFloat(metrosEl.value);
-  if (duracaoEl && duracaoEl.value) parcial[dataStr][tipo].duracao = parseFloat(duracaoEl.value);
-  saveCheckinParcial(parcial);
-}
-
-function toggleTreinoParcial(dataStr, tipo) {
-  toggleTipoTreino(dataStr, tipo);
-}
-
-function getTreinosFeitosHoje() {
-  var hoje = new Date().toISOString().split('T')[0];
-  var parcial = getCheckinParcial();
-  var diaData = parcial[hoje] || {};
-  var feitos = [];
-  Object.keys(diaData).forEach(function(tipo) {
-    if (diaData[tipo].feito) {
-      var nome = tipo;
-      if (diaData[tipo].sub) nome = tipo + ' ' + diaData[tipo].sub;
-      feitos.push(nome);
-    }
-  });
-  return feitos;
-}
-
-function getKcalTreinosHoje() {
-  var hoje = new Date().toISOString().split('T')[0];
-  var parcial = getCheckinParcial();
-  var diaData = parcial[hoje] || {};
-  var total = 0;
-  Object.keys(diaData).forEach(function(tipo) {
-    if (diaData[tipo].feito && diaData[tipo].kcal) total += diaData[tipo].kcal;
-  });
-  return total;
-}
-
-// ── PRÉ-POPULACAO HISTÓRICO DA PLANILHA ──
-(function() {
-  var historicos = {"p-abdutora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 91, "reps": 15}, {"serie": 2, "carga": 91, "reps": 15}, {"serie": 3, "carga": 91, "reps": 15}, {"serie": 4, "carga": 91, "reps": 15}, {"serie": 5, "carga": 91, "reps": 15}]}, "p-adutora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 64, "reps": 15}, {"serie": 2, "carga": 64, "reps": 15}, {"serie": 3, "carga": 64, "reps": 15}, {"serie": 4, "carga": 64, "reps": 15}, {"serie": 5, "carga": 64, "reps": 15}]}, "p-extensora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 73, "reps": 15}, {"serie": 2, "carga": 73, "reps": 15}, {"serie": 3, "carga": 73, "reps": 15}, {"serie": 4, "carga": 73, "reps": 15}, {"serie": 5, "carga": 73, "reps": 15}]}, "p-flexora": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 60, "reps": 15}, {"serie": 2, "carga": 60, "reps": 15}, {"serie": 3, "carga": 60, "reps": 15}, {"serie": 4, "carga": 60, "reps": 15}, {"serie": 5, "carga": 55, "reps": 15}]}, "p-pant-pe": {"data": "2026-07-02", "series": [{"serie": 1, "carga": 45, "reps": 15}, {"serie": 2, "carga": 45, "reps": 15}, {"serie": 3, "carga": 45, "reps": 15}, {"serie": 4, "carga": 45, "reps": 15}]}, "p-supino-inc": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 60, "reps": 10}, {"serie": 2, "carga": 68, "reps": 6}, {"serie": 3, "carga": 68, "reps": 6}, {"serie": 4, "carga": 68, "reps": 6}]}, "p-dev-db": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 40, "reps": 10}, {"serie": 2, "carga": 44, "reps": 8}, {"serie": 3, "carga": 52, "reps": 5}, {"serie": 4, "carga": 52, "reps": 5}, {"serie": 5, "carga": 60, "reps": 5}]}, "p-elev-lat-pol": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 10, "reps": 8}, {"serie": 2, "carga": 10, "reps": 8}, {"serie": 3, "carga": 7.5, "reps": 8}, {"serie": 4, "carga": 7.5, "reps": 8}]}, "p-tri-franc": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 40, "reps": 8}, {"serie": 2, "carga": 40, "reps": 8}, {"serie": 3, "carga": 40, "reps": 8}, {"serie": 4, "carga": 40, "reps": 8}]}, "p-lombar": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 15, "reps": 10}, {"serie": 2, "carga": 15, "reps": 10}, {"serie": 3, "carga": 15, "reps": 10}, {"serie": 4, "carga": 15, "reps": 10}]}, "p-remada-baixa": {"data": "2026-07-03", "series": [{"serie": 1, "carga": 55, "reps": 10}, {"serie": 2, "carga": 85, "reps": 6}, {"serie": 3, "carga": 95, "reps": 6}, {"serie": 4, "carga": 95, "reps": 6}]}, "p-arnold": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 48, "reps": 8}, {"serie": 2, "carga": 48, "reps": 8}, {"serie": 3, "carga": 48, "reps": 8}, {"serie": 4, "carga": 44, "reps": 8}]}, "p-crucif-inv": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 15, "reps": 8}, {"serie": 2, "carga": 15, "reps": 8}, {"serie": 3, "carga": 10, "reps": 8}, {"serie": 4, "carga": 10, "reps": 8}]}, "p-rosca-scott": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 40, "reps": 8}, {"serie": 2, "carga": 40, "reps": 8}, {"serie": 3, "carga": 40, "reps": 8}]}, "p-elev-lat-db": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 20, "reps": 15}, {"serie": 2, "carga": 24, "reps": 12}, {"serie": 3, "carga": 32, "reps": 8}, {"serie": 4, "carga": 32, "reps": 8}]}, "p-rosca-w": {"data": "2026-07-06", "series": [{"serie": 1, "carga": 35, "reps": 8}, {"serie": 2, "carga": 35, "reps": 8}, {"serie": 3, "carga": 35, "reps": 8}, {"serie": 4, "carga": 35, "reps": 8}]}};
-  Object.keys(historicos).forEach(function(ex) {
-    var key = 'carga_' + ex;
-    var existing = JSON.parse(localStorage.getItem(key) || '[]');
-    var h = historicos[ex];
-    var alreadyHas = existing.some(function(e) { return e.data === h.data; });
-    if (!alreadyHas) {
-      existing.unshift({ data: h.data, series: h.series, ts: new Date(h.data).getTime() });
-      localStorage.setItem(key, JSON.stringify(existing));
-    }
-  });
-})();
-
-
-
-
-// INIT
-renderHistorico();
-renderCharts();
-calcProjecao(getRegistros());
-renderCalendario();
-
-</script>
-<!-- TIMER OVERLAY -->
-<div class="timer-overlay" id="timer-overlay" style="display:none">
-  <div class="timer-label">Descanso</div>
-  <div class="timer-num" id="timer-display">0:00</div>
-  <div class="timer-label" id="timer-ex-name"></div>
-  <button class="btn btn-sm" style="margin-top:.5rem;width:100%" onclick="cancelTimer()">Cancelar</button>
-</div>
-
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -4507,14 +2998,12 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/Performance-luiz/service-worker.js')
       .then(function(reg) {
         console.log('Nexus SW registrado:', reg.scope);
-        // Verifica atualizações a cada vez que abre o app
         reg.update();
-        // Quando nova versao disponivel, ativa imediatamente
         reg.addEventListener('updatefound', function() {
           var newWorker = reg.installing;
           newWorker.addEventListener('statechange', function() {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              newWorker.postMessage({ type: 'SKIP_WAITING' });
+              newWorker.postMessage({type: 'SKIP_WAITING'});
             }
           });
         });
