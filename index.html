@@ -2993,6 +2993,741 @@
 </div>
 
 <script>
+const ALTURA_CM = 182;
+const META_PESO = 92;
+const META_BF = 14;
+var chatState = {};
+
+// TABS
+function showTab(id, el) {
+  document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'registro') initChat();
+  if (id === 'historico') { renderHistorico(); renderCharts(); }
+  if (id === 'graficos') { if (window.renderGraficos) renderGraficos(); }
+  if (id === 'prboard') { if (window.renderPRBoard) renderPRBoard(); }
+  if (id === 'medidas') { if (window.renderMedidas) renderMedidas(); }
+  if (id === 'semana') { if (window.renderCalendario) renderCalendario(); }
+  if (id === 'visao') { if (window.renderAgua) renderAgua(); if (window.renderStreak) renderStreak(); }
+}
+
+// COUNTDOWN
+function updateCountdown() {
+  var prazoStr = localStorage.getItem('meta_prazo') || '2026-08-28';
+  var deadline = new Date(prazoStr + 'T00:00:00');
+  var now = new Date();
+  var diff = Math.ceil((deadline - now) / 86400000);
+  var numEl = document.querySelector('.countdown-num');
+  if (numEl) numEl.textContent = Math.abs(diff);
+  var msg = diff > 0 ? diff + ' dias para a meta.' : diff === 0 ? 'E hoje!' : 'Prazo encerrado ha ' + Math.abs(diff) + ' dias.';
+  var msgEl = document.getElementById('countdown-msg');
+  if (msgEl) msgEl.textContent = msg;
+}
+updateCountdown();
+
+// META PRAZO EDITAVEL
+function toggleMetaPrazoEdit() {
+  var row = document.getElementById('meta-prazo-edit-row');
+  var saved = localStorage.getItem('meta_prazo') || '2026-08-28';
+  var input = document.getElementById('meta-prazo-input');
+  if (!row) return;
+  if (row.style.display === 'none') {
+    row.style.display = 'inline';
+    if (input) input.value = saved;
+  } else {
+    row.style.display = 'none';
+  }
+}
+function salvarMetaPrazo() {
+  var input = document.getElementById('meta-prazo-input');
+  if (!input || !input.value) return;
+  var val = input.value;
+  localStorage.setItem('meta_prazo', val);
+  if (window.fbSaveConfig) window.fbSaveConfig('meta_prazo', val);
+  aplicarMetaPrazo(val);
+  var row = document.getElementById('meta-prazo-edit-row');
+  if (row) row.style.display = 'none';
+}
+function aplicarMetaPrazo(val) {
+  var d = new Date(val + 'T12:00:00');
+  var meses = ['janeiro','fevereiro','marco','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  var fmt = d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+  var el = document.getElementById('meta-prazo-display');
+  if (el) el.textContent = fmt;
+  updateCountdown();
+  atualizarCardsMeta(val);
+}
+function atualizarCardsMeta(dataStr) {
+  var hoje = new Date();
+  var meta = new Date(dataStr + 'T12:00:00');
+  var diffDias = Math.round((meta - hoje) / 86400000);
+  var diasEl = document.getElementById('dias-restantes-card');
+  if (diasEl) diasEl.textContent = diffDias > 0 ? diffDias : 0;
+}
+(function() {
+  var saved = localStorage.getItem('meta_prazo');
+  if (saved) aplicarMetaPrazo(saved);
+})();
+
+// CIRURGIA
+function salvarDataCirurgia() {
+  var val = document.getElementById('data-cirurgia').value;
+  if (!val) return;
+  localStorage.setItem('data_cirurgia', val);
+  if (window.fbSaveConfig) window.fbSaveConfig('data_cirurgia', val);
+  atualizarCirurgia();
+}
+function atualizarCirurgia() {
+  var saved = localStorage.getItem('data_cirurgia');
+  if (saved) {
+    var inp = document.getElementById('data-cirurgia');
+    if (inp) inp.value = saved;
+    var diff = Math.ceil((new Date(saved) - new Date()) / 86400000);
+    var el = document.getElementById('dias-cirurgia');
+    if (el) el.textContent = diff > 0 ? diff : 'Realizada';
+    var disp = document.getElementById('data-cirurgia-display');
+    if (disp) disp.textContent = saved;
+  }
+}
+atualizarCirurgia();
+
+// STORAGE
+function getRegistros() {
+  try { return JSON.parse(localStorage.getItem('luiz_registros') || '[]'); } catch(e) { return []; }
+}
+function saveRegistros(r) {
+  localStorage.setItem('luiz_registros', JSON.stringify(r));
+  if (window.fbSaveRegistros) window.fbSaveRegistros(r);
+}
+
+// PERCEPÇÃO DE ESFORÇO
+var PERC_COLORS = { leve: '#16a34a', moderada: '#d97706', pesada: '#dc2626', '': '#9ca3af' };
+function setPercSelect(el, exId, serieNum) {
+  var val = el.value;
+  el.style.borderColor = PERC_COLORS[val] || '#e2e8f0';
+  el.style.color = PERC_COLORS[val] || '#374151';
+}
+
+// LOG CARGAS
+function logCarga(ex, numSeries) {
+  var hoje = new Date().toISOString().split('T')[0];
+  var series = [];
+  for (var i = 1; i <= numSeries; i++) {
+    var carga = document.getElementById('s' + i + '-carga-' + ex);
+    var reps = document.getElementById('s' + i + '-reps-' + ex);
+    var perc = document.getElementById('perc-' + ex + '-s' + i);
+    if (carga && reps && (carga.value || reps.value)) {
+      series.push({
+        serie: i,
+        carga: carga.value ? parseFloat(carga.value) : null,
+        reps: reps.value ? parseInt(reps.value) : null,
+        perc: perc ? perc.value : ''
+      });
+    }
+  }
+  if (series.length === 0) { alert('Preencha pelo menos uma serie.'); return; }
+  var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
+  hist.unshift({ data: hoje, series: series, ts: Date.now() });
+  if (hist.length > 60) hist.pop();
+  localStorage.setItem('carga_' + ex, JSON.stringify(hist));
+  if (window.fbSaveCarga) window.fbSaveCarga(ex, hist);
+  renderCargaHist(ex);
+  for (var j = 1; j <= numSeries; j++) {
+    var c = document.getElementById('s' + j + '-carga-' + ex);
+    var r = document.getElementById('s' + j + '-reps-' + ex);
+    var p = document.getElementById('perc-' + ex + '-s' + j);
+    if (c) c.value = '';
+    if (r) r.value = '';
+    if (p) { p.value = ''; p.style.borderColor = ''; p.style.color = ''; }
+  }
+}
+
+function renderCargaHist(ex) {
+  var el = document.getElementById('hist-' + ex);
+  if (!el) return;
+  var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
+  if (hist.length === 0) return;
+  var ultimo = hist[0];
+  var PERC_EMOJI = { leve: '🟢', moderada: '🟡', pesada: '🔴', '': '' };
+  var seriesTxt = ultimo.series.map(function(s) {
+    var txt = 'S' + s.serie + ': ';
+    if (s.carga) txt += s.carga + 'kg';
+    if (s.carga && s.reps) txt += ' × ';
+    if (s.reps) txt += s.reps + ' reps';
+    if (s.perc) txt += ' ' + PERC_EMOJI[s.perc];
+    return txt;
+  }).join(' | ');
+  var pr = 0;
+  hist.forEach(function(h) { h.series.forEach(function(s) { if (s.carga && s.carga > pr) pr = s.carga; }); });
+  var vol = ultimo.series.reduce(function(acc, s) { return acc + (s.carga||0) * (s.reps||0); }, 0);
+  el.innerHTML = '<span style="color:#0284c7">Ultima sessao (' + ultimo.data + '):</span> ' + seriesTxt + '<br><span style="color:#6b7280">Volume: ' + vol.toFixed(0) + ' kg | PR: ' + pr + ' kg</span>';
+}
+
+// PROJECAO
+function calcProjecao(registros) {
+  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse();
+  var projEl = document.getElementById('proj-display');
+  var projSub = document.getElementById('proj-sub');
+  if (!projEl) return;
+  if (comPeso.length < 4) {
+    projEl.textContent = '--';
+    if (projSub) projSub.textContent = 'min. 4 registros';
+    return;
+  }
+  var ultimos = comPeso.slice(-7);
+  var perdaDia = (parseFloat(ultimos[0].peso) - parseFloat(ultimos[ultimos.length-1].peso)) / (ultimos.length - 1);
+  var pesoAtual = parseFloat(comPeso[comPeso.length-1].peso);
+  if (perdaDia <= 0) {
+    projEl.textContent = '--';
+    if (projSub) projSub.textContent = 'sem perda recente';
+    return;
+  }
+  var diasParaMeta = Math.ceil((pesoAtual - META_PESO) / perdaDia);
+  var dataMeta = new Date(Date.now() + diasParaMeta * 86400000).toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'});
+  var prazoStr = localStorage.getItem('meta_prazo') || '2026-08-28';
+  var diasRestantes = Math.ceil((new Date(prazoStr) - new Date()) / 86400000);
+  projEl.textContent = dataMeta;
+  if (projSub) projSub.textContent = diasParaMeta <= diasRestantes ? 'no prazo' : 'atras do prazo';
+}
+
+// NAVY BF
+function calcNavyBF(pescoco, cintura, altura) {
+  return Math.round((495 / (1.0324 - 0.19077 * Math.log10(cintura - pescoco) + 0.15456 * Math.log10(altura)) - 450) * 10) / 10;
+}
+
+// AGUA EM TEMPO REAL
+function getAguaHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  return parseFloat(localStorage.getItem('agua_rt_' + hoje) || '0');
+}
+function setAguaHoje(val) {
+  var hoje = new Date().toISOString().split('T')[0];
+  var v = parseFloat(val.toFixed(1));
+  localStorage.setItem('agua_rt_' + hoje, v);
+  if (window.fbSaveAgua) window.fbSaveAgua(hoje, v);
+  renderAgua();
+}
+function addAgua(litros) { setAguaHoje(Math.min(getAguaHoje() + litros, 15)); }
+function resetAgua() { if (confirm('Zerar agua de hoje?')) setAguaHoje(0); }
+function renderAgua() {
+  var val = getAguaHoje();
+  var meta = 3.5;
+  var pct = Math.min(val / meta * 100, 100);
+  var display = document.getElementById('agua-hoje-display');
+  var progress = document.getElementById('agua-progress');
+  var faltam = document.getElementById('agua-faltam');
+  if (display) display.textContent = val.toFixed(1).replace('.', ',') + ' L';
+  if (progress) progress.style.width = pct + '%';
+  if (faltam) {
+    var restam = Math.max(meta - val, 0);
+    faltam.textContent = restam > 0 ? 'Faltam ' + restam.toFixed(1).replace('.', ',') + 'L' : 'Meta atingida!';
+    faltam.style.color = restam === 0 ? '#16a34a' : '#6b7280';
+  }
+}
+renderAgua();
+
+// STREAK
+function calcStreak() {
+  var registros = getRegistros();
+  if (registros.length === 0) return 0;
+  var sorted = registros.map(function(r) { return r.data; }).filter(Boolean).sort().reverse();
+  var unique = sorted.filter(function(v, i, a) { return a.indexOf(v) === i; });
+  var streak = 0;
+  var hoje = new Date();
+  for (var i = 0; i < unique.length; i++) {
+    var esperado = new Date(hoje);
+    esperado.setDate(esperado.getDate() - i);
+    var esperadoStr = esperado.toISOString().split('T')[0];
+    if (unique[i] === esperadoStr) streak++;
+    else break;
+  }
+  return streak;
+}
+function renderStreak() {
+  var el = document.getElementById('streak-display');
+  var total = document.getElementById('total-checkins');
+  if (el) el.textContent = calcStreak();
+  if (total) total.textContent = getRegistros().length;
+}
+renderStreak();
+
+// TIMER DE DESCANSO
+var timerInterval = null;
+var timerSeconds = 0;
+function startTimer(segundos, exName) {
+  if (timerInterval) clearInterval(timerInterval);
+  timerSeconds = segundos;
+  var overlay = document.getElementById('timer-overlay');
+  var display = document.getElementById('timer-display');
+  var label = document.getElementById('timer-ex-name');
+  if (!overlay) return;
+  overlay.style.display = 'block';
+  if (label) label.textContent = exName || '';
+  timerInterval = setInterval(function() {
+    timerSeconds--;
+    var min = Math.floor(timerSeconds / 60);
+    var sec = timerSeconds % 60;
+    if (display) { display.textContent = min + ':' + (sec < 10 ? '0' : '') + sec; display.style.color = timerSeconds <= 10 ? '#ea580c' : '#0284c7'; }
+    if (timerSeconds <= 0) { clearInterval(timerInterval); overlay.style.display = 'none'; }
+  }, 1000);
+  if (display) { var m = Math.floor(timerSeconds / 60); var s = timerSeconds % 60; display.textContent = m + ':' + (s < 10 ? '0' : '') + s; }
+}
+function cancelTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  var overlay = document.getElementById('timer-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// HISTORICO
+function renderHistorico() {
+  var registros = getRegistros();
+  var vazioEl = document.getElementById('historico-vazio');
+  var tabelaEl = document.getElementById('historico-tabela');
+  var tbody = document.getElementById('historico-body');
+  var total = document.getElementById('total-registros');
+  if (total) total.textContent = registros.length + (registros.length !== 1 ? ' registros' : ' registro');
+  if (registros.length === 0) {
+    if (vazioEl) vazioEl.style.display = 'block';
+    if (tabelaEl) tabelaEl.style.display = 'none';
+    return;
+  }
+  if (vazioEl) vazioEl.style.display = 'none';
+  if (tabelaEl) tabelaEl.style.display = 'block';
+  var pesoEl = document.getElementById('peso-display');
+  if (registros[0].peso && pesoEl) pesoEl.textContent = registros[0].peso;
+  if (tbody) tbody.innerHTML = registros.map(function(r) {
+    var bfTxt = '-';
+    if (r.pescoco && r.cintura) bfTxt = calcNavyBF(r.pescoco, r.cintura, ALTURA_CM) + '%';
+    return '<tr>' +
+      '<td style="white-space:nowrap;font-family:'DM Mono',monospace;font-size:.7rem">' + (r.data || '-') + '</td>' +
+      '<td><strong>' + (r.peso ? r.peso + ' kg' : '-') + '</strong></td>' +
+      '<td>' + (r.agua ? r.agua + 'L' : '-') + '</td>' +
+      '<td style="font-family:'DM Mono',monospace;font-size:.7rem">' + (r.kcal ? r.kcal + ' kcal' : '-') + '</td>' +
+      '<td style="font-family:'DM Mono',monospace;font-size:.7rem;color:#ea580c">' + (r.kcal_gasta ? r.kcal_gasta + ' kcal' : '-') + '</td>' +
+      '<td style="font-family:'DM Mono',monospace;font-size:.7rem;color:#ea580c">' + (r.fc_media ? r.fc_media + ' bpm' : '-') + '</td>' +
+      '<td style="font-size:.7rem">' + (r.treinos || '-') + '</td>' +
+      '<td>' + (r.sono ? r.sono + '/5' : '-') + '</td>' +
+      '<td style="font-family:'DM Mono',monospace;font-size:.7rem;color:#0284c7">' + bfTxt + '</td>' +
+      '<td style="font-size:.73rem;max-width:100px;color:#6b7280">' + (r.obs || '') + '</td>' +
+      '</tr>';
+  }).join('');
+  calcProjecao(registros);
+  var comBF = registros.find(function(r) { return r.pescoco && r.cintura; });
+  if (comBF) {
+    var bf = calcNavyBF(comBF.pescoco, comBF.cintura, ALTURA_CM);
+    var bfDisp = document.getElementById('bf-display');
+    var bfSub = document.getElementById('bf-sub');
+    if (bfDisp) bfDisp.textContent = bf + '%';
+    if (bfSub) bfSub.textContent = comBF.data;
+  }
+}
+
+// CHARTS
+var _pesoChart, _bfChart;
+function renderCharts() {
+  var registros = getRegistros();
+  var comPeso = registros.filter(function(r) { return r.peso && r.data; }).reverse();
+  var comBF = registros.filter(function(r) { return r.pescoco && r.cintura && r.data; }).reverse();
+  var pesoCard = document.getElementById('chart-peso-card');
+  if (comPeso.length >= 2) {
+    if (pesoCard) pesoCard.style.display = 'block';
+    var labels = comPeso.map(function(r) { return r.data; });
+    var pesos = comPeso.map(function(r) { return parseFloat(r.peso); });
+    var si = document.getElementById('stat-inicio'); if (si) si.textContent = pesos[0] + ' kg';
+    var sa = document.getElementById('stat-atual'); if (sa) sa.textContent = pesos[pesos.length-1] + ' kg';
+    var ve = document.getElementById('stat-var');
+    if (ve) { var variac = (pesos[pesos.length-1] - pesos[0]).toFixed(1); ve.textContent = (variac > 0 ? '+' : '') + variac + ' kg'; ve.style.color = variac <= 0 ? '#16a34a' : '#ea580c'; }
+    if (_pesoChart) _pesoChart.destroy();
+    var pc = document.getElementById('pesoChart');
+    if (pc) _pesoChart = new Chart(pc.getContext('2d'), { type:'line', data:{labels:labels,datasets:[{label:'Peso (kg)',data:pesos,borderColor:'#0284c7',backgroundColor:'rgba(2,132,199,0.08)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'Meta (92 kg)',data:Array(labels.length).fill(92),borderColor:'#16a34a',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]}, options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b7280'}}},scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6b7280',maxTicksLimit:8},grid:{color:'#f1f5f9'}},y:{ticks:{font:{family:'DM Mono',size:10},color:'#6b7280',callback:function(v){return v+' kg'}},grid:{color:'#f1f5f9'}}}}});
+  } else if (pesoCard) pesoCard.style.display = 'none';
+  var bfCard = document.getElementById('chart-bf-card');
+  if (comBF.length >= 2) {
+    if (bfCard) bfCard.style.display = 'block';
+    var bflabels = comBF.map(function(r) { return r.data; });
+    var bfs = comBF.map(function(r) { return calcNavyBF(r.pescoco, r.cintura, ALTURA_CM); });
+    var bs = document.getElementById('bf-stat-inicio'); if (bs) bs.textContent = bfs[0] + '%';
+    var ba = document.getElementById('bf-stat-atual'); if (ba) ba.textContent = bfs[bfs.length-1] + '%';
+    if (_bfChart) _bfChart.destroy();
+    var bc = document.getElementById('bfChart');
+    if (bc) _bfChart = new Chart(bc.getContext('2d'), { type:'line', data:{labels:bflabels,datasets:[{label:'% Gordura',data:bfs,borderColor:'#ea580c',backgroundColor:'rgba(234,88,12,0.07)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},{label:'Meta (<14%)',data:Array(bflabels.length).fill(14),borderColor:'#16a34a',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}]}, options:{responsive:true,plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b7280'}}},scales:{x:{ticks:{font:{family:'DM Mono',size:10},color:'#6b7280',maxTicksLimit:8},grid:{color:'#f1f5f9'}},y:{ticks:{font:{family:'DM Mono',size:10},color:'#6b7280',callback:function(v){return v+'%'}},grid:{color:'#f1f5f9'}}}}});
+  } else if (bfCard) bfCard.style.display = 'none';
+}
+
+// BACKUP
+function exportarBackup() {
+  var registros = getRegistros();
+  var cargas = {};
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    if (k && k.startsWith('carga_')) {
+      var ex = k.replace('carga_', '');
+      try { cargas[ex] = JSON.parse(localStorage.getItem(k)); } catch(e) {}
+    }
+  }
+  var payload = JSON.stringify({ versao: '2.0', exportado_em: new Date().toISOString(), registros: registros, cargas: cargas, checkin_parcial: JSON.parse(localStorage.getItem('checkin_parcial') || '{}') }, null, 2);
+  var blob = new Blob([payload], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'nexus_backup_' + new Date().toISOString().split('T')[0] + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importarBackup(event) {
+  var file = event.target.files[0]; if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.registros || !Array.isArray(data.registros)) { alert('Arquivo invalido.'); return; }
+      var existentes = getRegistros();
+      var tsSet = existentes.map(function(r) { return r.ts; });
+      var novos = data.registros.filter(function(r) { return tsSet.indexOf(r.ts) < 0; });
+      var merged = existentes.concat(novos).sort(function(a,b) { return b.ts - a.ts; });
+      saveRegistros(merged);
+      if (data.cargas) { Object.keys(data.cargas).forEach(function(ex) { localStorage.setItem('carga_' + ex, JSON.stringify(data.cargas[ex])); }); }
+      renderHistorico();
+      alert(novos.length + ' novo(s) registro(s) importado(s).');
+    } catch(e) { alert('Erro ao ler arquivo.'); }
+  };
+  reader.readAsText(file); event.target.value = '';
+}
+function limparHistorico() {
+  if (confirm('Apagar todos os registros?')) { localStorage.removeItem('luiz_registros'); renderHistorico(); renderCharts(); }
+}
+
+// LISTA COMPRAS
+function toggleItem(el) { el.classList.toggle('checked'); el.querySelector('input').checked = el.classList.contains('checked'); }
+function marcarTodos(checked) { document.querySelectorAll('.lista-item').forEach(function(el) { if (checked) el.classList.add('checked'); else el.classList.remove('checked'); el.querySelector('input').checked = checked; }); }
+function enviarWhatsApp() {
+  var itens = [];
+  document.querySelectorAll('.lista-item.checked span').forEach(function(el) { itens.push('- ' + el.textContent.trim()); });
+  if (itens.length === 0) { alert('Marque pelo menos um item!'); return; }
+  window.open('https://wa.me/?text=' + 'Lista de Compras - Nexus%0A%0A' + itens.join('%0A'), '_blank');
+}
+
+// PR BOARD
+function renderPRBoard() {
+  var el = document.getElementById('pr-board-content');
+  if (!el) return;
+  var ids = [];
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    if (k && k.startsWith('carga_')) ids.push(k.replace('carga_', ''));
+  }
+  if (ids.length === 0) { el.innerHTML = '<div class="alert alert-info">Nenhum registro de carga ainda.</div>'; return; }
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">';
+  ids.forEach(function(ex) {
+    var hist = JSON.parse(localStorage.getItem('carga_' + ex) || '[]');
+    var pr = 0; var prData = '-'; var total = hist.length;
+    hist.forEach(function(h) { h.series.forEach(function(s) { if (s.carga && s.carga > pr) { pr = s.carga; prData = h.data; } }); });
+    html += '<div class="card" style="padding:.85rem">' +
+      '<div style="font-size:.75rem;font-weight:600;color:#374151;margin-bottom:.3rem">' + ex + '</div>' +
+      (pr > 0 ?
+        '<div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#d4a017;line-height:1">' + pr + ' <span style="font-size:.9rem">kg</span></div>' +
+        '<div style="font-family:'DM Mono',monospace;font-size:.62rem;color:#6b7280">' + prData + ' · ' + total + ' sessao(es)</div>' :
+        '<div style="font-size:.8rem;color:#9ca3af">Sem registros</div>'
+      ) + '</div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// MEDIDAS
+function getMedidas() { try { return JSON.parse(localStorage.getItem('nexus_medidas') || '[]'); } catch(e) { return []; } }
+function saveMedidas(m) {
+  localStorage.setItem('nexus_medidas', JSON.stringify(m));
+  if (window.fbSaveMedidas) window.fbSaveMedidas(m);
+}
+function salvarMedidas() {
+  var campos = ['pescoco','peitoral','braco','cintura','quadril','coxa','panturrilha'];
+  var reg = { data: new Date().toISOString().split('T')[0], ts: Date.now() };
+  var temAlgum = false;
+  campos.forEach(function(c) { var el = document.getElementById('med-' + c); if (el && el.value) { reg[c] = parseFloat(el.value); temAlgum = true; } });
+  if (!temAlgum) { alert('Preencha pelo menos uma medida.'); return; }
+  var medidas = getMedidas(); medidas.unshift(reg); saveMedidas(medidas); renderMedidas();
+  campos.forEach(function(c) { var el = document.getElementById('med-' + c); if (el) el.value = ''; });
+  var navy = document.getElementById('navy-result');
+  if (reg.pescoco && reg.cintura) {
+    var bf = calcNavyBF(reg.pescoco, reg.cintura, ALTURA_CM);
+    if (navy) navy.textContent = bf + '%';
+    var bfDisp = document.getElementById('bf-display'); if (bfDisp) bfDisp.textContent = bf + '%';
+  }
+  alert('Medidas salvas!');
+}
+function calcNavyLive() {
+  var pescoco = parseFloat(document.getElementById('med-pescoco') ? document.getElementById('med-pescoco').value : 0);
+  var cintura = parseFloat(document.getElementById('med-cintura') ? document.getElementById('med-cintura').value : 0);
+  var navy = document.getElementById('navy-result');
+  if (pescoco && cintura && navy) navy.textContent = calcNavyBF(pescoco, cintura, ALTURA_CM) + '%';
+}
+function renderMedidas() {
+  var el = document.getElementById('medidas-historico');
+  if (!el) return;
+  var medidas = getMedidas();
+  if (medidas.length === 0) { el.innerHTML = '<div class="alert alert-info">Nenhuma medida registrada ainda.</div>'; return; }
+  var campos = [{id:'pescoco',nome:'Pescoço'},{id:'peitoral',nome:'Peitoral'},{id:'braco',nome:'Braço'},{id:'cintura',nome:'Cintura'},{id:'quadril',nome:'Quadril'},{id:'coxa',nome:'Coxa'},{id:'panturrilha',nome:'Panturrilha'}];
+  var html = '<div class="card"><div class="card-title">Histórico</div><div style="overflow-x:auto"><table class="log-table"><thead><tr><th>Data</th>';
+  campos.forEach(function(c) { html += '<th>' + c.nome + '</th>'; });
+  html += '</tr></thead><tbody>';
+  medidas.slice(0, 10).forEach(function(m) {
+    html += '<tr><td style="font-family:'DM Mono',monospace;font-size:.7rem;white-space:nowrap">' + m.data + '</td>';
+    campos.forEach(function(c) { var val = m[c.id]; html += '<td style="font-family:'DM Mono',monospace;font-size:.72rem">' + (val ? val + ' cm' : '-') + '</td>'; });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+  el.innerHTML = html;
+}
+
+// GRAFICOS AVANCADOS
+var _grafCharts = {};
+function destroyGrafChart(id) { if (_grafCharts[id]) { _grafCharts[id].destroy(); delete _grafCharts[id]; } }
+function makeLineChart(canvasId, labels, datasets, yLabel, metaLine) {
+  destroyGrafChart(canvasId);
+  var canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  if (!labels || labels.length < 2) {
+    var ctx0 = canvas.getContext('2d');
+    ctx0.clearRect(0,0,canvas.width,canvas.height);
+    ctx0.fillStyle = '#9ca3af'; ctx0.font = '13px sans-serif'; ctx0.textAlign = 'center';
+    ctx0.fillText('Minimo 2 registros para exibir', canvas.width/2, 60);
+    return;
+  }
+  var colors = ['#0284c7','#ea580c','#16a34a','#d97706','#8b5cf6','#ec4899'];
+  var dsets = datasets.map(function(d,i) {
+    return { label:d.label, data:d.data, borderColor:d.color||colors[i%colors.length], backgroundColor:(d.color||colors[i%colors.length])+'18', borderWidth:2.5, pointRadius:4, pointHoverRadius:6, tension:0.35, fill:datasets.length===1, borderDash:d.dash||[] };
+  });
+  if (metaLine) dsets.push({ label:metaLine.label, data:Array(labels.length).fill(metaLine.value), borderColor:metaLine.color||'#16a34a', borderWidth:1.5, borderDash:[6,4], pointRadius:0, fill:false });
+  _grafCharts[canvasId] = new Chart(canvas.getContext('2d'), {
+    type:'line', data:{labels:labels,datasets:dsets},
+    options:{responsive:true,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{labels:{font:{family:'DM Sans',size:11},color:'#6b7280',boxWidth:12}},tooltip:{backgroundColor:'#0f172a',titleColor:'#fff',bodyColor:'#94a3b8',padding:10}},
+      scales:{x:{ticks:{font:{family:'DM Mono',size:9},color:'#9ca3af',maxTicksLimit:10},grid:{color:'#f1f5f9'}},
+        y:{ticks:{font:{family:'DM Mono',size:9},color:'#9ca3af',callback:function(v){return v+(yLabel?' '+yLabel:'');}},grid:{color:'#f1f5f9'}}}}
+  });
+}
+function renderGraficos() {
+  var registros = getRegistros().filter(function(r){return r.data;}).reverse();
+  var comPeso = registros.filter(function(r){return r.peso;});
+  makeLineChart('g-peso',comPeso.map(function(r){return r.data;}),[{label:'Peso',data:comPeso.map(function(r){return parseFloat(r.peso);}),color:'#0284c7'}],'kg',{label:'Meta (92kg)',value:92,color:'#16a34a'});
+  var comBF2 = registros.filter(function(r){return r.pescoco&&r.cintura;});
+  makeLineChart('g-bf',comBF2.map(function(r){return r.data;}),[{label:'% Gordura',data:comBF2.map(function(r){return calcNavyBF(r.pescoco,r.cintura,ALTURA_CM);}),color:'#ea580c'}],'%',{label:'Meta (14%)',value:14,color:'#16a34a'});
+  var comAgua = registros.filter(function(r){return r.agua;});
+  makeLineChart('g-agua',comAgua.map(function(r){return r.data;}),[{label:'Agua',data:comAgua.map(function(r){return parseFloat(r.agua);}),color:'#0ea5e9'}],'L',{label:'Meta (3.5L)',value:3.5,color:'#16a34a'});
+  var comSono = registros.filter(function(r){return r.sono;});
+  makeLineChart('g-sono',comSono.map(function(r){return r.data;}),[{label:'Sono',data:comSono.map(function(r){return parseInt(r.sono);}),color:'#8b5cf6'}],'');
+  var comKcal = registros.filter(function(r){return r.kcal||r.kcal_gasta;});
+  makeLineChart('g-kcal',comKcal.map(function(r){return r.data;}),[{label:'Ingeridas',data:comKcal.map(function(r){return r.kcal?parseFloat(r.kcal):null;}),color:'#0284c7'},{label:'Gastas',data:comKcal.map(function(r){return r.kcal_gasta?parseFloat(r.kcal_gasta):null;}),color:'#ea580c'}],'kcal');
+  var comFC = registros.filter(function(r){return r.fc_media;});
+  makeLineChart('g-fc',comFC.map(function(r){return r.data;}),[{label:'FC Media',data:comFC.map(function(r){return parseFloat(r.fc_media);}),color:'#ef4444'}],'bpm');
+  var mods=['natacao','musculacao','core','cardio']; var mCores=['#0284c7','#ea580c','#16a34a','#d97706'];
+  var semanas={};
+  registros.forEach(function(r){if(!r.treinos)return;var mes=r.data.substring(0,7);if(!semanas[mes])semanas[mes]={natacao:0,musculacao:0,core:0,cardio:0};mods.forEach(function(m){if(r.treinos.toLowerCase().indexOf(m)>=0)semanas[mes][m]++;});});
+  var semLabels=Object.keys(semanas).sort();
+  if(semLabels.length>=1) makeLineChart('g-modalidade',semLabels,mods.map(function(m,i){return{label:m,data:semLabels.map(function(s){return semanas[s][m]||0;}),color:mCores[i]};}), 'x');
+  var exs=[{id:'pullup',canvas:'g-pullup',color:'#0284c7'},{id:'supino',canvas:'g-supino',color:'#ea580c'},{id:'remada',canvas:'g-remada',color:'#16a34a'},{id:'pulldown',canvas:'g-pulldown',color:'#8b5cf6'},{id:'press',canvas:'g-press',color:'#d97706'},{id:'hipthrust',canvas:'g-hipthrust',color:'#ec4899'}];
+  exs.forEach(function(ex){try{var hist=JSON.parse(localStorage.getItem('carga_'+ex.id)||'[]').reverse();makeLineChart(ex.canvas,hist.map(function(h){return h.data;}),[{label:'Carga max',data:hist.map(function(h){return Math.max.apply(null,h.series.map(function(s){return s.carga||0;}));}),color:ex.color}],'kg');}catch(e){}});
+  ['supino','pullup'].forEach(function(ex,i){try{var hist2=JSON.parse(localStorage.getItem('carga_'+ex)||'[]').reverse();makeLineChart('g-vol-'+ex,hist2.map(function(h){return h.data;}),[{label:'Volume',data:hist2.map(function(h){return h.series.reduce(function(acc,s){return acc+(s.carga||0)*(s.reps||0);},0);}),color:i===0?'#0284c7':'#ea580c'}],'kg');}catch(e){}});
+
+  // Natacao metros e duracao
+  try {
+    var parcialData = JSON.parse(localStorage.getItem('checkin_parcial') || '{}');
+    var datasNat = Object.keys(parcialData).sort().filter(function(d) { return parcialData[d].natacao && parcialData[d].natacao.feito; });
+    var datasComMetros = datasNat.filter(function(d) { return parcialData[d].natacao.metros > 0; });
+    if (datasComMetros.length > 0) makeLineChart('g-natacao-metros', datasComMetros, [{label:'Metros nadados', data:datasComMetros.map(function(d){return parcialData[d].natacao.metros;}), color:'#0284c7'}], 'm');
+    var datasComDuracao = datasNat.filter(function(d) { return parcialData[d].natacao.duracao > 0; });
+    if (datasComDuracao.length > 0) makeLineChart('g-natacao-duracao', datasComDuracao, [{label:'Duracao (min)', data:datasComDuracao.map(function(d){return parcialData[d].natacao.duracao;}), color:'#06b6d4'}], 'min');
+  } catch(e) {}
+}
+
+// CALENDARIO
+var calMesAtual = new Date().getMonth();
+var calAnoAtual = new Date().getFullYear();
+var diaDetalheAberto = null;
+var TIPO_CORES = { natacao:'#0284c7', musculacao:'#ea580c', core:'#16a34a', cardio:'#eab308' };
+var TIPO_EMOJI = { natacao:'🏊', musculacao:'💪', core:'🔥', cardio:'🚴' };
+
+function getCheckinParcial() { try { return JSON.parse(localStorage.getItem('checkin_parcial') || '{}'); } catch(e) { return {}; } }
+function saveCheckinParcial(data) { localStorage.setItem('checkin_parcial', JSON.stringify(data)); if (window.fbSaveParcial) window.fbSaveParcial(data); }
+
+function renderCalendario() {
+  var titulo = document.getElementById('calendario-mes-titulo');
+  if (!titulo) return;
+  var meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  titulo.textContent = meses[calMesAtual] + ' ' + calAnoAtual;
+  var primeiroDia = new Date(calAnoAtual, calMesAtual, 1);
+  var ultimoDia = new Date(calAnoAtual, calMesAtual + 1, 0);
+  var diaSemanaInicio = primeiroDia.getDay();
+  var totalDias = ultimoDia.getDate();
+  var hojeStr = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial();
+  var html = '<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center">';
+  ['D','S','T','Q','Q','S','S'].forEach(function(d) { html += '<div style="font-family:DM Mono,monospace;font-size:.6rem;color:#9ca3af;font-weight:700;padding:.3rem 0">' + d + '</div>'; });
+  for (var i = 0; i < diaSemanaInicio; i++) html += '<div></div>';
+  for (var dia = 1; dia <= totalDias; dia++) {
+    var dataObj = new Date(calAnoAtual, calMesAtual, dia);
+    var dataStr = dataObj.toISOString().split('T')[0];
+    var isHoje = dataStr === hojeStr;
+    var diaParc = parcial[dataStr] || {};
+    var dotsHtml = '';
+    ['natacao','musculacao','core','cardio'].forEach(function(tipo) { if (diaParc[tipo] && diaParc[tipo].feito) dotsHtml += '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:' + TIPO_CORES[tipo] + ';margin:0 2px"></span>'; });
+    var sq = "'";
+    html += '<div onclick="abrirDiaCalendario(' + sq + dataStr + sq + ')" style="cursor:pointer;background:' + (isHoje?'#dbeafe':'#fff') + ';border:' + (isHoje?'2px solid #0284c7':'1px solid #f1f5f9') + ';border-radius:6px;padding:.3rem .2rem;min-height:42px">' +
+      '<div style="font-size:.7rem;font-weight:' + (isHoje?'700':'500') + ';color:' + (isHoje?'#0284c7':'#374151') + '">' + dia + '</div>' +
+      '<div style="margin-top:2px">' + dotsHtml + '</div></div>';
+  }
+  html += '</div>';
+  var grid = document.getElementById('calendario-grid');
+  if (grid) grid.innerHTML = html;
+}
+
+function mudarMesCalendario(delta) {
+  calMesAtual += delta;
+  if (calMesAtual > 11) { calMesAtual = 0; calAnoAtual++; }
+  if (calMesAtual < 0) { calMesAtual = 11; calAnoAtual--; }
+  renderCalendario();
+}
+
+function abrirDiaCalendario(dataStr) {
+  diaDetalheAberto = dataStr;
+  var dataObj = new Date(dataStr + 'T12:00:00');
+  var diaSemana = dataObj.getDay();
+  var parcial = getCheckinParcial();
+  var diaData = parcial[dataStr] || {};
+  var diasNomes = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  var dataFmt = dataObj.toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var tiposConfig = [
+    {tipo:'natacao',nome:'Natação',emoji:'🏊',cor:'#0284c7',bg:'#eff6ff',border:'#bfdbfe',subOpcoes:null},
+    {tipo:'musculacao',nome:'Musculação',emoji:'💪',cor:'#ea580c',bg:'#fff7ed',border:'#fed7aa',subOpcoes:['A','B','C','D']},
+    {tipo:'core',nome:'Core',emoji:'🔥',cor:'#16a34a',bg:'#f0fdf4',border:'#bbf7d0',subOpcoes:null},
+    {tipo:'cardio',nome:'Cardio',emoji:'🚴',cor:'#eab308',bg:'#fefff0',border:'#fef08a',subOpcoes:null}
+  ];
+  var sq = "'";
+  var html = '<div class="card" style="margin-top:1rem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem"><div class="card-title">' + diasNomes[diaSemana] + ' - ' + dataFmt + '</div><button onclick="fecharDiaCalendario()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:#9ca3af">✕</button></div>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem">';
+  tiposConfig.forEach(function(t) {
+    var tData = diaData[t.tipo] || {};
+    var feito = tData.feito || false;
+    html += '<button onclick="toggleTipoTreino(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="border:2px solid ' + (feito?t.cor:'#e2e8f0') + ';border-radius:10px;padding:.6rem;background:' + (feito?t.bg:'#fff') + ';cursor:pointer;text-align:left"><div style="font-size:1.2rem">' + t.emoji + '</div><div style="font-weight:700;font-size:.8rem;color:' + (feito?t.cor:'#374151') + '">' + t.nome + '</div>' + (feito?'<div style="font-size:.65rem;color:'+t.cor+'">Selecionado</div>':'<div style="font-size:.65rem;color:#9ca3af">Toque para selecionar</div>') + '</button>';
+  });
+  html += '</div>';
+  tiposConfig.forEach(function(t) {
+    var tData = diaData[t.tipo] || {};
+    if (!tData.feito) return;
+    html += '<div style="border:1.5px solid ' + t.border + ';border-radius:10px;padding:.85rem;margin-bottom:.6rem;background:' + t.bg + '"><div style="font-weight:700;font-size:.82rem;color:' + t.cor + ';margin-bottom:.5rem">' + t.emoji + ' ' + t.nome + '</div>';
+    if (t.subOpcoes) {
+      html += '<div style="margin-bottom:.5rem"><div style="font-size:.68rem;color:#6b7280;margin-bottom:.3rem">Qual treino?</div><div style="display:flex;gap:.3rem;flex-wrap:wrap">';
+      t.subOpcoes.forEach(function(sub) {
+        var sel = tData.sub === sub;
+        html += '<button onclick="setSubTreino(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ',' + sq + sub + sq + ')" style="border:1.5px solid ' + (sel?t.cor:'#e2e8f0') + ';border-radius:6px;padding:.3rem .7rem;background:' + (sel?t.bg:'#fff') + ';cursor:pointer;font-weight:' + (sel?'700':'400') + ';font-size:.8rem;color:' + (sel?t.cor:'#374151') + '">TREINO ' + sub + '</button>';
+      });
+      html += '</div></div>';
+    }
+    html += '<div style="display:flex;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap"><input type="number" id="parcial-kcal-' + t.tipo + '-' + dataStr + '" placeholder="Kcal gasta" value="' + (tData.kcal||'') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="flex:1;min-width:90px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem"><input type="number" id="parcial-fc-' + t.tipo + '-' + dataStr + '" placeholder="FC media (bpm)" value="' + (tData.fc||'') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ',' + sq + t.tipo + sq + ')" style="flex:1;min-width:90px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem"></div>';
+    if (t.tipo === 'natacao') {
+      html += '<div style="display:flex;gap:.5rem;flex-wrap:wrap"><input type="number" id="metros-natacao-' + dataStr + '" placeholder="Metros nadados" value="' + (tData.metros||'') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ",'natacao')" + '" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem"><input type="number" id="duracao-natacao-' + dataStr + '" placeholder="Duracao (min)" value="' + (tData.duracao||'') + '" onchange="salvarCamposParcial(' + sq + dataStr + sq + ",'natacao')" + '" style="flex:1;min-width:80px;background:#fff;border:1px solid ' + t.border + ';border-radius:6px;padding:.4rem .6rem;font-size:.78rem"></div>';
+    }
+    html += '</div>';
+  });
+  var regExistente = getRegistros().find(function(r){return r.data===dataStr;});
+  html += '<div style="margin-top:1rem;border-top:1.5px solid #e2e8f0;padding-top:1rem">';
+  if (regExistente && regExistente.kcal_gasta) {
+    html += '<div style="background:#f0fdf4;border:1.5px solid #16a34a;border-radius:10px;padding:.85rem;font-size:.82rem"><div style="font-weight:700;color:#15803d;margin-bottom:.3rem">Dia fechado</div><div style="color:#374151">Kcal total: <strong>' + regExistente.kcal_gasta + ' kcal</strong></div><button onclick="reabrirFechamentoDia(' + sq + dataStr + sq + ')" style="margin-top:.5rem;background:none;border:1px solid #16a34a;border-radius:6px;padding:.3rem .75rem;font-size:.72rem;color:#15803d;cursor:pointer">Editar</button></div>';
+  } else {
+    html += '<div style="font-weight:700;font-size:.85rem;color:#0f172a;margin-bottom:.4rem">Fechar o dia</div><div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:.4rem"><input type="number" id="fechar-kcal-' + dataStr + '" placeholder="Total kcal gasta no dia" style="flex:1;min-width:140px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:.5rem .75rem;font-size:.85rem"><button class="btn" onclick="fecharDia(' + sq + dataStr + sq + ')" style="white-space:nowrap">Fechar o dia</button></div>';
+  }
+  html += '</div></div>';
+  var container = document.getElementById('dia-detalhe-container');
+  if (container) container.innerHTML = html;
+}
+
+function fecharDiaCalendario() {
+  diaDetalheAberto = null;
+  var container = document.getElementById('dia-detalhe-container');
+  if (container) container.innerHTML = '';
+}
+
+function toggleTipoTreino(dataStr, tipo) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  parcial[dataStr][tipo].feito = !parcial[dataStr][tipo].feito;
+  saveCheckinParcial(parcial);
+  renderCalendario();
+  abrirDiaCalendario(dataStr);
+}
+
+function setSubTreino(dataStr, tipo, sub) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  parcial[dataStr][tipo].sub = sub;
+  saveCheckinParcial(parcial);
+  abrirDiaCalendario(dataStr);
+}
+
+function salvarCamposParcial(dataStr, tipo) {
+  var parcial = getCheckinParcial();
+  if (!parcial[dataStr]) parcial[dataStr] = {};
+  if (!parcial[dataStr][tipo]) parcial[dataStr][tipo] = {};
+  var kcalEl = document.getElementById('parcial-kcal-' + tipo + '-' + dataStr);
+  var fcEl = document.getElementById('parcial-fc-' + tipo + '-' + dataStr);
+  var metrosEl = document.getElementById('metros-natacao-' + dataStr);
+  var duracaoEl = document.getElementById('duracao-natacao-' + dataStr);
+  if (kcalEl && kcalEl.value) parcial[dataStr][tipo].kcal = parseFloat(kcalEl.value);
+  if (fcEl && fcEl.value) parcial[dataStr][tipo].fc = parseFloat(fcEl.value);
+  if (metrosEl && metrosEl.value) parcial[dataStr][tipo].metros = parseFloat(metrosEl.value);
+  if (duracaoEl && duracaoEl.value) parcial[dataStr][tipo].duracao = parseFloat(duracaoEl.value);
+  saveCheckinParcial(parcial);
+}
+
+function fecharDia(dataStr) {
+  var kcalEl = document.getElementById('fechar-kcal-' + dataStr);
+  var kcal = kcalEl ? parseFloat(kcalEl.value) : null;
+  var registros = getRegistros();
+  var existente = registros.find(function(r) { return r.data === dataStr; });
+  if (existente) {
+    existente.kcal_gasta = kcal;
+  } else {
+    registros.unshift({ data: dataStr, kcal_gasta: kcal, ts: Date.now() });
+  }
+  saveRegistros(registros);
+  abrirDiaCalendario(dataStr);
+}
+
+function reabrirFechamentoDia(dataStr) {
+  var registros = getRegistros();
+  var idx = registros.findIndex(function(r) { return r.data === dataStr; });
+  if (idx >= 0) { registros[idx].kcal_gasta = null; saveRegistros(registros); }
+  abrirDiaCalendario(dataStr);
+}
+
+function getTreinosFeitosHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial(); var diaData = parcial[hoje] || {};
+  var feitos = [];
+  Object.keys(diaData).forEach(function(tipo) { if (diaData[tipo].feito) { var nome = tipo; if (diaData[tipo].sub) nome += ' ' + diaData[tipo].sub; feitos.push(nome); } });
+  return feitos;
+}
+
+function getKcalTreinosHoje() {
+  var hoje = new Date().toISOString().split('T')[0];
+  var parcial = getCheckinParcial(); var diaData = parcial[hoje] || {};
+  var total = 0;
+  Object.keys(diaData).forEach(function(tipo) { if (diaData[tipo].feito && diaData[tipo].kcal) total += diaData[tipo].kcal; });
+  return total;
+}
+
+// INIT
+renderHistorico();
+renderCharts();
+calcProjecao(getRegistros());
+renderCalendario();
+</script>
+
+<script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('/Performance-luiz/service-worker.js')
