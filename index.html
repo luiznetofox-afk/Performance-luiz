@@ -3564,6 +3564,41 @@ function calcNavyLive() {
   var navy = document.getElementById('navy-result');
   if (pescoco && cintura && navy) navy.textContent = calcNavyBF(pescoco, cintura, ALTURA_CM) + '%';
 }
+function salvarNavyBF() {
+  var pescoco = parseFloat(document.getElementById('navy-pescoco') ? document.getElementById('navy-pescoco').value : 0);
+  var cintura = parseFloat(document.getElementById('navy-cintura') ? document.getElementById('navy-cintura').value : 0);
+  var quadril = parseFloat(document.getElementById('navy-quadril') ? document.getElementById('navy-quadril').value : 0);
+  if (!pescoco || !cintura) { alert('Preencha pescoço e cintura para calcular.'); return; }
+  var bf = calcNavyBF(pescoco, cintura, ALTURA_CM);
+  var hoje = new Date().toISOString().split('T')[0];
+  var medidas = getMedidas();
+  var regHoje = medidas.find(function(m) { return m.data === hoje; });
+  if (regHoje) {
+    regHoje.pescoco = pescoco;
+    regHoje.cintura = cintura;
+    if (quadril) regHoje.quadril = quadril;
+    regHoje.bf = bf;
+  } else {
+    var novo = { data: hoje, ts: Date.now(), pescoco: pescoco, cintura: cintura, bf: bf };
+    if (quadril) novo.quadril = quadril;
+    medidas.unshift(novo);
+  }
+  saveMedidas(medidas);
+  // Atualiza display
+  var bfDisp = document.getElementById('bf-display');
+  if (bfDisp) bfDisp.textContent = bf + '%';
+  var bfSub = document.getElementById('bf-sub');
+  if (bfSub) bfSub.textContent = hoje;
+  var navyRes = document.getElementById('navy-resultado');
+  if (navyRes) navyRes.textContent = 'Salvo! % Gordura: ' + bf + '%';
+  // Limpa campos
+  ['navy-pescoco','navy-cintura','navy-quadril'].forEach(function(id) {
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderMedidas();
+  alert('% Gordura salvo: ' + bf + '%');
+}
+
 function renderMedidas() {
   var el = document.getElementById('medidas-historico');
   if (!el) return;
