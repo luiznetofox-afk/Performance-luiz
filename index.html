@@ -3564,6 +3564,31 @@ function calcNavyLive() {
   var navy = document.getElementById('navy-result');
   if (pescoco && cintura && navy) navy.textContent = calcNavyBF(pescoco, cintura, ALTURA_CM) + '%';
 }
+
+function salvarPesoRapido() {
+  var input = document.getElementById('peso-novo-input');
+  if (!input || !input.value) { alert('Digite o peso antes de salvar.'); return; }
+  var peso = parseFloat(input.value);
+  if (peso < 30 || peso > 300) { alert('Peso inválido.'); return; }
+  var hoje = new Date().toISOString().split('T')[0];
+  var registros = getRegistros();
+  var regHoje = registros.find(function(r) { return r.data === hoje; });
+  if (regHoje) {
+    regHoje.peso = peso;
+  } else {
+    registros.unshift({ data: hoje, peso: peso, ts: Date.now() });
+  }
+  saveRegistros(registros);
+  // Atualiza display
+  var pesoDisp = document.getElementById('peso-display-grid');
+  if (pesoDisp) pesoDisp.textContent = peso;
+  var pesoDisp2 = document.getElementById('peso-display');
+  if (pesoDisp2) pesoDisp2.textContent = peso;
+  input.value = '';
+  calcProjecao(registros);
+  alert('Peso salvo: ' + peso + ' kg');
+}
+
 function salvarNavyBF() {
   var pescoco = parseFloat(document.getElementById('navy-pescoco') ? document.getElementById('navy-pescoco').value : 0);
   var cintura = parseFloat(document.getElementById('navy-cintura') ? document.getElementById('navy-cintura').value : 0);
