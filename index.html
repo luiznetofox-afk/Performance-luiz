@@ -710,7 +710,7 @@ function showTab(id, el) {
   <div class="grid-4" style="margin-bottom:.75rem">
     <div class="card" style="border-left:4px solid #ea580c">
       <div class="card-title">Meta Final</div>
-      <div class="card-value" style="font-size:1.6rem;color:#ea580c">28/08/2026</div>
+      <div class="card-value" id="meta-final-display" style="font-size:1.6rem;color:#ea580c">28/08/2026</div>
       <div class="card-sub">prazo de resultado</div>
     </div>
     <div class="card" style="border-left:4px solid #0284c7">
@@ -2896,8 +2896,18 @@ function atualizarCardsMeta(dataStr) {
   var hoje = new Date();
   var meta = new Date(dataStr + 'T12:00:00');
   var diffDias = Math.round((meta - hoje) / 86400000);
+  // Dias restantes
   var diasEl = document.getElementById('dias-restantes-card');
   if (diasEl) diasEl.textContent = diffDias > 0 ? diffDias : 0;
+  // Card Meta Final (formato dd/mm/aaaa)
+  var metaFinalEl = document.getElementById('meta-final-display');
+  if (metaFinalEl) {
+    var d = new Date(dataStr + 'T12:00:00');
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var aaaa = d.getFullYear();
+    metaFinalEl.textContent = dd + '/' + mm + '/' + aaaa;
+  }
 }
 (function() {
   var saved = localStorage.getItem('meta_prazo');
