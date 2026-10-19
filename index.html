@@ -246,8 +246,19 @@
     if (snapshot.exists()) {
       localStorage.setItem('nexus_medidas', JSON.stringify(snapshot.val()));
       setTimeout(function() {
+        // Atualiza aba Medidas se estiver ativa
         if (document.getElementById('medidas') && document.getElementById('medidas').classList.contains('active')) {
           if (window.renderMedidas) renderMedidas();
+        }
+        // Sempre atualiza card de % gordura na Visao Geral
+        var medidas = JSON.parse(localStorage.getItem('nexus_medidas') || '[]');
+        var comBF = medidas.find(function(m) { return m.pescoco && m.cintura; });
+        if (comBF && window.calcNavyBF) {
+          var bf = calcNavyBF(comBF.pescoco, comBF.cintura, 182);
+          var bfDisp = document.getElementById('bf-display');
+          var bfSub = document.getElementById('bf-sub');
+          if (bfDisp) bfDisp.textContent = bf + '%';
+          if (bfSub) bfSub.textContent = comBF.data;
         }
       }, 300);
     }
@@ -3078,6 +3089,21 @@ renderStreak();
 // TIMER DE DESCANSO
 var timerInterval = null;
 var timerSeconds = 0;
+function initPesoDisplay() {
+  var registros = getRegistros();
+  if (registros.length === 0) return;
+  var comPeso = registros.filter(function(r) { return r.peso; });
+  if (comPeso.length === 0) return;
+  var ultimo = comPeso[0];
+  var pesoGrid = document.getElementById('peso-display-grid');
+  var pesoDisp = document.getElementById('peso-display');
+  if (pesoGrid) pesoGrid.textContent = ultimo.peso;
+  if (pesoDisp) pesoDisp.textContent = ultimo.peso;
+  calcProjecao(registros);
+  renderStreak();
+}
+
+
 function startTimer(segundos, exName) {
   if (timerInterval) clearInterval(timerInterval);
   timerSeconds = segundos;
