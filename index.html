@@ -131,24 +131,7 @@
         });
       }
 
-      // Semana 17 - novos
-  'lunge': 'Passada c/ DB',
-  'stiff-db': 'Stiff c/ DB',
-  'glute-drive': 'Glute Drive',
-  'supino-inc-barra': 'Supino Inclinado Barra',
-  'supino-reto-sentado-maq': 'Supino Reto Sentado Máquina',
-  'crucifixo-maq': 'Crucifixo Máquina',
-  'dev-maq': 'Desenvolvimento Máquina',
-  'elev-frontal-pol': 'Elevação Frontal Barra Polia',
-  'deadlift-barra': 'Deadlift c/ Barra',
-  'puxada-neutra': 'Puxada Alta Pegada Neutra',
-  'pulldown-maq': 'Pull Down Máquina',
-  'rosca-barra-reta': 'Rosca Direta Barra Reta',
-  'stiff-uni-maq': 'Stiff Unilateral Máquina',
-  'flexora-uni-maq': 'Flexora Unilateral Máquina',
-  'pant-sentado': 'Panturrilha Sentado',
-  // Core
- done - so carrega se for do dia de hoje
+      // core_done - so carrega se for do dia de hoje
       const snapCore = await get(ref(db, 'core_done'));
       if (snapCore.exists()) {
         var coreData = snapCore.val();
@@ -3320,6 +3303,22 @@ var PR_NOMES = {
   'face-pull': 'Face Pull',
   'elev-pelvica': 'Elevação Pélvica Unilateral',
   'p-extensora': 'Cadeira Extensora',
+  // Semana 17 - novos
+  'lunge': 'Passada c/ DB',
+  'stiff-db': 'Stiff c/ DB',
+  'glute-drive': 'Glute Drive',
+  'supino-inc-barra': 'Supino Inclinado Barra',
+  'supino-reto-sentado-maq': 'Supino Reto Sentado Máquina',
+  'crucifixo-maq': 'Crucifixo Máquina',
+  'dev-maq': 'Desenvolvimento Máquina',
+  'elev-frontal-pol': 'Elevação Frontal Barra Polia',
+  'deadlift-barra': 'Deadlift c/ Barra',
+  'puxada-neutra': 'Puxada Alta Pegada Neutra',
+  'pulldown-maq': 'Pull Down Máquina',
+  'rosca-barra-reta': 'Rosca Direta Barra Reta',
+  'stiff-uni-maq': 'Stiff Unilateral Máquina',
+  'flexora-uni-maq': 'Flexora Unilateral Máquina',
+  'pant-sentado': 'Panturrilha Sentado',
   // Core
   'prancha-frontal': 'Prancha Frontal',
   'prancha-lateral': 'Prancha Lateral',
