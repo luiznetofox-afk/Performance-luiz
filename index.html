@@ -55,7 +55,7 @@
     } catch(e) { console.error('Erro ao salvar medidas:', e); }
   };
 
-  window.fbSaveParcial = async function(data) {
+  window.window.fbSaveParcial = async function(data) {
     try {
       await set(ref(db, 'checkin_parcial'), data);
     } catch(e) { console.error('Erro ao salvar parcial:', e); }
